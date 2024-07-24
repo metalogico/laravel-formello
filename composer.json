@@ -1,0 +1,31 @@
+{
+    "name": "metalogico/laravel-formello",
+    "description": "A Laravel package for generating Bootstrap 5 forms based on models",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Metalogico\\Formello\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Metalogico",
+            "email": "michele.brandolin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^9.0|^10.0|^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Metalogico\\Formello\\FormelloServiceProvider"
+            ],
+            "aliases": {
+                "Formello": "Metalogico\\Formello\\Facades\\Formello"
+            }
+        }
+    }
+}
