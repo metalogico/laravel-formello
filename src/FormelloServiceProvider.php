@@ -3,6 +3,7 @@
 namespace Metalogico\Formello;
 
 use Illuminate\Support\ServiceProvider;
+use Metalogico\Formello\Console\MakeFormelloCommand;
 
 class FormelloServiceProvider extends ServiceProvider
 {
@@ -21,8 +22,10 @@ class FormelloServiceProvider extends ServiceProvider
             __DIR__ . '/../config/formello.php' => config_path('formello.php'),
         ], 'config');
 
-        $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/formello'),
-        ], 'views');
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeFormelloCommand::class,
+            ]);
+        }
     }
 }

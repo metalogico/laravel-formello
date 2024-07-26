@@ -4,9 +4,10 @@ namespace Metalogico\Formello\Widgets;
 
 class DateTimeWidget extends BaseWidget
 {
-    public function getTemplate(): string
+
+    public function getWidgetName(): string
     {
-        return 'formello::widgets.bootstrap5.datetime';
+        return 'datetime';
     }
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array

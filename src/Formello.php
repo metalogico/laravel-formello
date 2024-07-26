@@ -146,8 +146,14 @@ abstract class Formello
         return $widget->render($name, $value, $config, $errors);
     }
 
+    public function getCssFramework()
+    {
+        return config('formello.css_framework', 'bootstrap5');
+    }
+
     public function getFields()
     {
         return $this->fields;
     }
+
 }

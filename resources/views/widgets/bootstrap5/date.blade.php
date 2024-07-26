@@ -1,12 +1,18 @@
 <div class="form-group mb-3">
+
     @if (isset($label))
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
+
     <input name="{{ $name }}" value="{{ old($name, $value) }}"
         class="form-control @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue)
             {{ $attr }}="{{ $attrValue }}" @endforeach>
-    <div class="form-text">{{ $config['help'] }}</div>
+    
+    @if (isset($config['help']))
+        <div class="form-text">{{ $config['help'] }}</div>
+    @endif
+
     @if ($errors)
         <div class="invalid-feedback">
             <ul>

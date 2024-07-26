@@ -4,9 +4,9 @@ namespace Metalogico\Formello\Widgets;
 
 class HiddenWidget extends BaseWidget
 {
-    public function getTemplate(): string
+    public function getWidgetName(): string
     {
-        return 'formello::widgets.bootstrap5.hidden';
+        return 'hidden';
     }
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array

@@ -1,4 +1,5 @@
 <div class="form-check form-switch">
+
     <input type="hidden" name="{{ $name }}" value="0"> <!-- for the unchecked value -->
     <input name="{{ $name }}" value="1"
         @foreach ($config['attributes'] as $attr => $attrValue)
@@ -6,7 +7,11 @@
     @if (isset($config['label']))
         <label class="form-check-label" for="{{ $config['attributes']['id'] }}">{{ $config['label'] }}</label>
     @endif
-    <div class="form-text">{{ $config['help'] }}</div>
+    
+    @if (isset($config['help']))
+        <div class="form-text">{{ $config['help'] }}</div>
+    @endif
+
     @if ($errors)
         <div class="invalid-feedback">
             <ul>
@@ -16,4 +21,5 @@
             </ul>
         </div>
     @endif
+    
 </div>
