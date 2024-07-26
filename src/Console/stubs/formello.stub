@@ -1,0 +1,29 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyRootNamespaceModels\DummyModel;
+use Metalogico\Formello\Formello;
+
+class DummyClass extends Formello
+{
+    protected function form(): array
+    {
+        return [
+            'method' => 'POST',
+            'action' => route('DummyModel.store'),
+            'attributes' => [
+                'class' => 'DummyModel-form',
+                'id' => 'create-DummyModel-form',
+            ],
+            'submit_label' => 'Create DummyModel',
+        ];
+    }
+
+    protected function fields(): array
+    {
+        return [
+DummyFields
+        ];
+    }
+}
