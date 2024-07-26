@@ -36,12 +36,7 @@ If you use this project, please consider giving it a ⭐.
 1. Install the package via Composer:
 
 ```bash
-composer require metalogico/formello
-```
-
-2. Export the config file
-```bash
-php artisan vendor:publish --provider="Metalogico\Formello\FormelloServiceProvider" --tag="config"
+composer require metalogico/laravel-formello
 ```
 
 ## 😎 How to use
@@ -110,6 +105,17 @@ class Product extends Model
 
 }
 ```
+
+## Using the provided artisan command
+
+You can generate a basic formello file using this command:
+
+```bash
+php artisan make:formello --model=Product
+```
+
+The script will generate a skeleton file that contains a basic field definition 
+for each fillable field found in your model.
 
 
 ## Rendering the Form
