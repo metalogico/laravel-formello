@@ -39,7 +39,7 @@ If you use this project, please consider giving it a ⭐.
 composer require metalogico/laravel-formello
 ```
 
-## 😎 How to use
+## 😎 How to use
 
 Creating a Form
 Create a new form class that extends `Metalogico\Formello\Formello`.
