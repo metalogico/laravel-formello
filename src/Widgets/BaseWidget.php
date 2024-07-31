@@ -18,7 +18,7 @@ abstract class BaseWidget implements WidgetInterface
 
     public function getTemplate(): string
     {
-        $framework = app(Formello::class)->getCssFramework();
+        $framework = app('formello')->getCssFramework();
         return "formello::widgets.{$framework}." . $this->getWidgetName();
     }
 
