@@ -7,18 +7,21 @@ use Metalogico\Formello\Formello;
 
 class DummyClass extends Formello
 {
-    protected function form(): array
+    protected function create(): array
     {
         return [
             'method' => 'POST',
-            'action' => route('DummyModel.store'),
-            'attributes' => [
-                'class' => 'DummyModel-form',
-                'id' => 'create-DummyModel-form',
-            ],
-            'submit_label' => 'Create DummyModel',
+            'action' => route('DummyModelLC.store'),
         ];
     }
+
+    protected function edit(): array
+    {
+        return [
+            'method' => 'POST',
+            'action' => route('DummyModelLC.update', $this->model->id),
+        ];
+    }    
 
     protected function fields(): array
     {
