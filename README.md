@@ -56,13 +56,21 @@ use Metalogico\Formello\Widgets\SelectWidget;
 
 class ProductForm extends Formello
 {
-    protected function form(): array
+    protected function create(): array
     {
         return [
             'method' => 'POST',
             'action' => route('products.store'),
         ];
     }
+
+    protected function edit(): array
+    {
+        return [
+            'method' => 'POST',
+            'action' => route('products.update', $this->model->id),
+        ];
+    }    
 
     protected function fields(): array
     {
@@ -141,7 +149,7 @@ public function edit(string $id)
 {
     // pass the model to the form
     $category = Product::findOrFail($id);
-    $formello = new TestForm($category);
+    $formello = new ProductForm($category);
     // pass it to the view
     return view('products.edit', [
         'formello' => $formello
@@ -153,6 +161,14 @@ Then in you blade template:
 
 ```php
 {{ $formello->render() }}
+```
+
+If you want to render only the fields (without the <form> tag) you can use:
+
+```php
+@foreach ($formello->getFields() as $name => $field)
+    {!! $formello->renderField($name) !!}
+@endforeach
 ```
 
 

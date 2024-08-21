@@ -2,6 +2,7 @@
 
 namespace Metalogico\Formello;
 
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\Database\Eloquent\Model;
 use Metalogico\Formello\Interfaces\WidgetInterface;
@@ -16,17 +17,24 @@ abstract class Formello
     public function __construct(Model $model, ViewErrorBag $errors = null)
     {
         $this->model = $model;
-        $this->errors = $errors ?? session()->get('errors', new ViewErrorBag);
+        $this->errors = $errors ?? session()->get('errors', new MessageBag);
         $this->initializeForm();
         $this->initializeFields();
     }
 
     abstract protected function fields(): array;
-    abstract protected function form(): array;
+    abstract protected function create(): array;
+    abstract protected function edit(): array;
 
     protected function initializeForm()
     {
-        $this->formConfig = $this->form();
+        if (method_exists($this, 'create') && !$this->model->exists) {
+            $this->formConfig = $this->create();
+        } elseif (method_exists($this, 'edit') && $this->model->exists) {
+            $this->formConfig = $this->edit();
+        } else {
+            throw new \RuntimeException('No form configuration method found.');
+        }
     }
 
     /**

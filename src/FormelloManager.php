@@ -25,10 +25,15 @@ class FormelloManager extends Formello
         return [];
     }
 
-    protected function form(): array
+    protected function create(): array
     {
         return [];
     }
+
+    protected function edit(): array
+    {
+        return [];
+    }    
 
     public function getCssFramework()
     {
