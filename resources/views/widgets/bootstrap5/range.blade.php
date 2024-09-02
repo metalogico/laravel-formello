@@ -19,7 +19,7 @@
     >
 
     @if (isset($config['help']))
-        <div class="form-text">{{ $config['help'] }}</div>
+        <div class="form-text">{!! $config['help'] !!}</div>
     @endif
 
     @if ($errors)
