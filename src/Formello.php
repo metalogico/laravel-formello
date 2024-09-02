@@ -9,10 +9,10 @@ use Metalogico\Formello\Interfaces\WidgetInterface;
 
 abstract class Formello
 {
-    protected $model;
-    protected $formConfig = [];
-    protected $fields = [];
-    protected $errors;
+    public $model;
+    public $formConfig = [];
+    public $fields = [];
+    public $errors;
 
     public function __construct(Model $model, ViewErrorBag $errors = null)
     {
@@ -58,9 +58,8 @@ abstract class Formello
 
     protected function getDefaultFields()
     {
-        $fillable = $this->model->getFillable();
         $defaults = [];
-        foreach ($fillable as $field) {
+        foreach ($this->fields() as $field => $config) {
             $defaults[$field] = $this->getDefaultWidgetForField($field);
         }
         return $defaults;

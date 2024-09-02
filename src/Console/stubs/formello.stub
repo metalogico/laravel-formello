@@ -2,7 +2,6 @@
 
 namespace DummyNamespace;
 
-use DummyRootNamespaceModels\DummyModel;
 use Metalogico\Formello\Formello;
 
 class DummyClass extends Formello
@@ -11,15 +10,15 @@ class DummyClass extends Formello
     {
         return [
             'method' => 'POST',
-            'action' => route('DummyModelLC.store'),
+            'action' => route('DummyModel.store'),
         ];
     }
 
     protected function edit(): array
     {
         return [
-            'method' => 'POST',
-            'action' => route('DummyModelLC.update', $this->model->id),
+            'method' => 'PATCH',
+            'action' => route('DummyModel.update', $this->model->id),
         ];
     }    
 

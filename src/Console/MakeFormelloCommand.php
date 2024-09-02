@@ -98,8 +98,7 @@ class MakeFormelloCommand extends Command
 
     protected function replaceModel($stub, $model)
     {
-        $stub = str_replace('DummyModel', $model, $stub);
-        $stub = str_replace('DummyModelLC', Str::lower($model), $stub);
+        $stub = str_replace('DummyModel', Str::plural(strtolower($model)), $stub);
         return $stub;
     }
 

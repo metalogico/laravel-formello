@@ -163,7 +163,7 @@ Then in you blade template:
 {{ $formello->render() }}
 ```
 
-If you want to render only the fields (without the <form> tag) you can use:
+If you want to render only the fields (without the __\<form>__ tag) you can use:
 
 ```php
 @foreach ($formello->getFields() as $name => $field)
