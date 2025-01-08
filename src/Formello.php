@@ -137,9 +137,10 @@ abstract class Formello
         $fieldConfig = $this->fields[$name];
         $widget = $fieldConfig['widget'];
         $config = $fieldConfig['config'] ?? [];
+        $customValue = $config['value'] ?? null;
 
         // Retrieve the value, considering old input
-        $value = old($name, $this->model->{$name} ?? null);
+        $value = old($name, $customValue ?? $this->model->{$name} ?? null);
 
         // Get any errors for this field
         $errors = $this->errors->get($name);
