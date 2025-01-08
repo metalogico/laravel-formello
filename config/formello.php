@@ -28,6 +28,7 @@ return [
         'datetime' => Metalogico\Formello\Widgets\DateTimeWidget::class,
         'timestamp' => Metalogico\Formello\Widgets\DateTimeWidget::class,
         'select' => Metalogico\Formello\Widgets\SelectWidget::class,
+        'checkboxes' => Metalogico\Formello\Widgets\CheckboxesWidget::class,
     ],
 
 ];
