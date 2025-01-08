@@ -6,6 +6,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\Database\Eloquent\Model;
 use Metalogico\Formello\Interfaces\WidgetInterface;
+use Illuminate\Support\Facades\Schema;
 
 abstract class Formello
 {
@@ -70,9 +71,13 @@ abstract class Formello
      */
     protected function getDefaultWidgetForField($field)
     {
-        $columnType = $this->model->getConnection()
-            ->getSchemaBuilder()
-            ->getColumnType($this->model->getTable(), $field);
+        // checks if the column exists and gets its type
+        $schema = $this->model->getConnection()->getSchemaBuilder();
+        if ($schema->hasColumn($this->model->getTable(), $field)) {
+            $columnType = $schema->getColumnType($this->model->getTable(), $field);
+        } else {
+            $columnType = 'string';
+        }
 
         switch ($columnType) {
             case 'string':
