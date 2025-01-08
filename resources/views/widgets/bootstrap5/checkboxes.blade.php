@@ -1,33 +1,32 @@
 <div class="form-group">
-    <!-- Display the main label for the checkbox list -->
-    @if(!empty($attributes['label']))
-        <label class="form-label">{{ $attributes['label'] }}</label>
+    @if (isset($label))
+        <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
 
-    @foreach($checkboxes as $checkbox)
-        <div class="form-check">
-            <!-- Render the checkbox input -->
+    @foreach($choices as $option)
+        <div class="form-check mb-3">
             <input
+                @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach
                 type="checkbox"
-                name="{{ $checkbox['name'] }}"
-                value="{{ $checkbox['value'] }}"
-                class="form-check-input {{ $attributes['class'] ?? '' }}"
-                id="{{ $checkbox['value'] }}"
-                {{ $checkbox['checked'] ? 'checked' : '' }}
+                name="{{ $name }}[]"
+                value="{{ $option['value'] }}"
+                class="{{ $attributes['class'] ?? '' }} @if ($errors) is-invalid @endif"
+                id="{{ $name }}_{{ $option['value'] }}"
+                {{ in_array($option['value'], (array)old($name, $value)) ? 'checked' : '' }}
             >
-            <!-- Render the label for the individual checkbox -->
-            <label class="form-check-label" for="{{ $checkbox['value'] }}">
-                {{ $checkbox['label'] }}
+            <label class="form-check-label" for="{{ $name }}_{{ $option['value'] }}">
+                {{ $option['label'] }}
             </label>
         </div>
     @endforeach
 
-    <!-- Display error messages, if any -->
-    @if($errors)
-        <div class="text-danger">
-            @foreach($errors as $error)
-                <p>{{ $error }}</p>
-            @endforeach
+    @if ($errors)
+        <div class="invalid-feedback">
+            <ul>
+                @foreach ($errors as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 </div>

@@ -14,28 +14,26 @@ class CheckboxesWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['options'] = $fieldConfig['options'] ?? [];
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-check-input');
+        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
 
-        $selectedValues = is_array($value) ? $value : [];
-
-        $checkboxes = array_map(function ($option) use ($selectedValues, $name) {
-            return [
-                'label' => $option['label'] ?? $option,
-                'value' => $option['value'] ?? $option,
-                'checked' => in_array($option['value'] ?? $option, $selectedValues),
-                'name' => $name . '[]',
-            ];
-        }, $fieldConfig['options']);
+        $choices = $this->resolveChoices($fieldConfig['choices']);
 
         return [
-            'checkboxes' => $checkboxes,
-            'attributes' => $fieldConfig['attributes'],
+            'name' => $name,
+            'value' => old($name, $value),
+            'label' => $fieldConfig['label'] ?? null,
+            'config' => $fieldConfig,
             'errors' => $errors,
+            'choices' => $choices,
         ];
     }
 
-    public function getValidationRules(array $fieldConfig): array
+    protected function resolveChoices($choices)
     {
-        return $fieldConfig['validation'] ?? [];
+        if (is_callable($choices)) {
+            return call_user_func($choices);
+        }
+        return $choices;
     }
 }
