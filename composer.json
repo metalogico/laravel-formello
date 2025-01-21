@@ -4,6 +4,7 @@
     "description": "A Laravel package for generating Bootstrap 5 forms based on models",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Metalogico\\Formello\\": "src/"
