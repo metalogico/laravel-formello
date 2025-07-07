@@ -21,11 +21,16 @@ If you use this project, please consider giving it a ⭐.
 - Support for various field types:
   - Text
   - Textarea
-  - Select
+  - Select (with multiple)
   - Radio
   - Toggle
   - Date
+  - Hidden
   - DateTime
+  - Checkboxes
+  - Radio
+  - Range
+  - File
   - And more!
 - Customizable widgets
 - Automatic error handling and display
@@ -122,13 +127,12 @@ You can generate a basic formello file using this command:
 php artisan make:formello --model=Product
 ```
 
-The script will generate a skeleton file that contains a basic field definition 
-for each fillable field found in your model.
+The script will generate a skeleton file that contains a basic field definition for each fillable field found in your model.
 
 
 ## Rendering the Form
 
-In your controller for the create:
+In your controller for an empty form (create action):
 
 ```php
 public function create()
@@ -142,7 +146,7 @@ public function create()
 }
 ```
 
-or, for the edit:
+or, for an edit form:
 
 ```php
 public function edit(string $id)
@@ -163,7 +167,7 @@ Then in you blade template:
 {{ $formello->render() }}
 ```
 
-If you want to render only the fields (without the __\<form>__ tag) you can use:
+If you want to render only the fields (without the \<form\> tag) you can use:
 
 ```php
 @foreach ($formello->getFields() as $name => $field)
@@ -174,7 +178,7 @@ If you want to render only the fields (without the __\<form>__ tag) you can use:
 
 ## ⚖️ License
 
-DjangoSonar is open-sourced software licensed under the [MIT license](LICENSE.md).
+Laravel Formello is open-sourced software licensed under the [MIT license](LICENSE.md).
 
 
 ## 🍺 Donations
