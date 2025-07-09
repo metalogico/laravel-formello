@@ -1,7 +1,8 @@
 <div class="form-group mb-3"> 
     
     <div class="custom-file">
-        <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ $value }}" class="@if ($errors) is-invalid @endif"
+        <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ $value }}" 
+            class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
             @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
         
         @if (isset($config['help']))
