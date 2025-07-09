@@ -80,6 +80,8 @@ abstract class Formello
         }
 
         switch ($columnType) {
+            case 'char':
+            case 'varchar':
             case 'string':
                 return new Widgets\TextWidget();
             case 'text':
