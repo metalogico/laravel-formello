@@ -5,7 +5,7 @@
     @endif
 
     <input name="{{ $name }}" value="{{ old($name, $value) }}"
-        class="form-control @if ($errors) is-invalid @endif"
+        class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue)
             {{ $attr }}="{{ $attrValue }}" @endforeach>
     
