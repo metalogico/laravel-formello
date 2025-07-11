@@ -10,15 +10,24 @@ use Illuminate\Support\Facades\Schema;
 
 abstract class Formello
 {
-    public $model;
-    public $formConfig = [];
-    public $fields = [];
-    public $errors;
+    protected Model $model;
+    protected ViewErrorBag $errors;
+    protected array $formConfig = [];
+    protected array $fields = [];
+    private WidgetFactory $widgetFactory;
+    private SchemaInspector $schemaInspector;
 
-    public function __construct(Model $model, ViewErrorBag $errors = null)
-    {
+    public function __construct(
+        Model $model, 
+        ViewErrorBag $errors = null,
+        WidgetFactory $widgetFactory = null,
+        SchemaInspector $schemaInspector = null
+    ) {
         $this->model = $model;
-        $this->errors = $errors ?? session()->get('errors', new MessageBag);
+        $this->errors = $errors ?? session()->get('errors', new ViewErrorBag);
+        $this->widgetFactory = $widgetFactory ?? new WidgetFactory();
+        $this->schemaInspector = $schemaInspector ?? new SchemaInspector();
+        
         $this->initializeForm();
         $this->initializeFields();
     }
@@ -27,15 +36,35 @@ abstract class Formello
     abstract protected function create(): array;
     abstract protected function edit(): array;
 
-    protected function initializeForm()
+    protected function initializeFields(): void
     {
-        if (method_exists($this, 'create') && !$this->model->exists) {
-            $this->formConfig = $this->create();
-        } elseif (method_exists($this, 'edit') && $this->model->exists) {
-            $this->formConfig = $this->edit();
-        } else {
-            throw new \RuntimeException('No form configuration method found.');
+        $definedFields = $this->fields();
+
+        foreach ($definedFields as $name => $fieldConfig) {
+            $widget = $this->resolveWidget($fieldConfig, $name);
+
+            $this->fields[$name] = [
+                'widget' => $widget,
+                'config' => $fieldConfig,
+            ];
         }
+    }
+
+    protected function resolveWidget(array $fieldConfig, string $fieldName): WidgetInterface
+    {
+        // Se widget specificato esplicitamente
+        if (isset($fieldConfig['widget'])) {
+            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
+                return new $fieldConfig['widget']();
+            }
+            if ($fieldConfig['widget'] instanceof WidgetInterface) {
+                return $fieldConfig['widget'];
+            }
+        }
+
+        // Auto-detect dal database schema
+        $columnType = $this->schemaInspector->getColumnType($this->model, $fieldName);
+        return $this->widgetFactory->make($columnType);
     }
 
     /**
@@ -99,29 +128,6 @@ abstract class Formello
         }
     }
 
-    /**
-     * Identifies the widget to use for a given field
-     */
-    protected function resolveWidget($widget)
-    {
-        if (is_null($widget)) {
-            return new Widgets\TextWidget();
-        }
-
-        if (is_string($widget)) {
-            if (class_exists($widget)) {
-                return new $widget();
-            }
-            return app('formello.widgets')->get($widget) ?? new Widgets\TextWidget();
-        }
-
-        if ($widget instanceof WidgetInterface) {
-            return $widget;
-        }
-
-        throw new \InvalidArgumentException("Invalid widget specification");
-    }
-
     public function render()
     {
         return view('formello::form', [
@@ -130,34 +136,19 @@ abstract class Formello
         ]);
     }
 
-    public function renderField($name)
+    public function renderField(string $name): string
     {
         if (!isset($this->fields[$name])) {
-            throw new \InvalidArgumentException("Field '{$name}' not found in form definition.");
+            throw new \InvalidArgumentException("Field '{$name}' not found");
         }
 
         $fieldConfig = $this->fields[$name];
         $widget = $fieldConfig['widget'];
-        $config = $fieldConfig['config'] ?? [];
-        $customValue = $config['value'] ?? null;
-
-        // Retrieve the value, considering old input
-        $value = old($name, $customValue ?? $this->model->{$name} ?? null);
-
-        // Get any errors for this field
+        $config = $fieldConfig['config'];
+        
+        $value = old($name, $config['value'] ?? $this->model->{$name} ?? null);
         $errors = $this->errors->get($name);
 
-        // If widget is a string (class name), instantiate it
-        if (is_string($widget)) {
-            $widget = new $widget();
-        }
-
-        // Ensure the widget implements WidgetInterface
-        if (!$widget instanceof WidgetInterface) {
-            throw new \InvalidArgumentException("Widget for field '{$name}' must implement WidgetInterface.");
-        }
-
-        // Render the widget
         return $widget->render($name, $value, $config, $errors);
     }
 

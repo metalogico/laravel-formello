@@ -2,7 +2,6 @@
 
 namespace Metalogico\Formello\Widgets;
 
-use Metalogico\Formello\Formello;
 use Illuminate\Support\Facades\View;
 use Metalogico\Formello\Interfaces\WidgetInterface;
 
@@ -25,5 +24,16 @@ abstract class BaseWidget implements WidgetInterface
     protected function getWidgetName(): string
     {
         return strtolower(class_basename($this));
+    }
+    
+    protected function mergeDefaultAttributes(array $fieldConfig, array $defaults, string $name): array
+    {
+        $fieldConfig['attributes'] = array_merge(
+            $defaults,
+            $fieldConfig['attributes'] ?? [],
+            ['id' => $fieldConfig['attributes']['id'] ?? $name]
+        );
+        
+        return $fieldConfig;
     }
 }
