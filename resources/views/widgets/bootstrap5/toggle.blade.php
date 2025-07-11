@@ -1,4 +1,4 @@
-<div class="form-check form-switch">
+<div class="form-check form-switch mb-3">
 
     <input type="hidden" name="{{ $name }}" value="0"> <!-- for the unchecked value -->
     <input name="{{ $name }}" value="1"
@@ -9,7 +9,7 @@
     @endif
     
     @if (isset($config['help']))
-        <div class="form-text">{{ $config['help'] }}</div>
+        <div class="form-text">{!! $config['help'] !!}</div>
     @endif
 
     @if ($errors)

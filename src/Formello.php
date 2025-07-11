@@ -6,13 +6,14 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\Database\Eloquent\Model;
 use Metalogico\Formello\Interfaces\WidgetInterface;
+use Illuminate\Support\Facades\Schema;
 
 abstract class Formello
 {
-    protected $model;
-    protected $formConfig = [];
-    protected $fields = [];
-    protected $errors;
+    public $model;
+    public $formConfig = [];
+    public $fields = [];
+    public $errors;
 
     public function __construct(Model $model, ViewErrorBag $errors = null)
     {
@@ -58,9 +59,8 @@ abstract class Formello
 
     protected function getDefaultFields()
     {
-        $fillable = $this->model->getFillable();
         $defaults = [];
-        foreach ($fillable as $field) {
+        foreach ($this->fields() as $field => $config) {
             $defaults[$field] = $this->getDefaultWidgetForField($field);
         }
         return $defaults;
@@ -71,11 +71,17 @@ abstract class Formello
      */
     protected function getDefaultWidgetForField($field)
     {
-        $columnType = $this->model->getConnection()
-            ->getSchemaBuilder()
-            ->getColumnType($this->model->getTable(), $field);
+        // checks if the column exists and gets its type
+        $schema = $this->model->getConnection()->getSchemaBuilder();
+        if ($schema->hasColumn($this->model->getTable(), $field)) {
+            $columnType = $schema->getColumnType($this->model->getTable(), $field);
+        } else {
+            $columnType = 'string';
+        }
 
         switch ($columnType) {
+            case 'char':
+            case 'varchar':
             case 'string':
                 return new Widgets\TextWidget();
             case 'text':
@@ -133,9 +139,10 @@ abstract class Formello
         $fieldConfig = $this->fields[$name];
         $widget = $fieldConfig['widget'];
         $config = $fieldConfig['config'] ?? [];
+        $customValue = $config['value'] ?? null;
 
         // Retrieve the value, considering old input
-        $value = old($name, $this->model->{$name} ?? null);
+        $value = old($name, $customValue ?? $this->model->{$name} ?? null);
 
         // Get any errors for this field
         $errors = $this->errors->get($name);

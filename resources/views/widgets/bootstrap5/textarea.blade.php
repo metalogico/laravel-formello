@@ -4,11 +4,11 @@
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
 
-    <textarea name="{{ $name }}" class="form-control @if ($errors) is-invalid @endif"
+    <textarea name="{{ $name }}" class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>{{ old($name, $value) }}</textarea>
 
     @if (isset($config['help']))        
-        <div class="form-text">{{ $config['help'] }}</div>
+        <div class="form-text">{!! $config['help'] !!}</div>
     @endif
 
     @if ($errors)

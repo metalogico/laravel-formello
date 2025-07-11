@@ -4,7 +4,8 @@
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
     
-    <select name="{{ $name }}" class="form-select @if ($errors) is-invalid @endif"
+    <select name="{{ $name }}"
+        class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
         @if (isset($config['placeholder']))
             <option value="">{{ $config['placeholder'] }}</option>
@@ -18,7 +19,7 @@
     </select>
     
     @if (isset($config['help']))
-        <div class="form-text">{{ $config['help'] }}</div>
+        <div class="form-text">{!! $config['help'] !!}</div>
     @endif
 
     @if ($errors)
