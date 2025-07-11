@@ -36,6 +36,23 @@ abstract class Formello
     abstract protected function create(): array;
     abstract protected function edit(): array;
 
+    /**
+     * Initialize the form
+     */
+    protected function initializeForm()
+    {
+        if (method_exists($this, 'create') && !$this->model->exists) {
+            $this->formConfig = $this->create();
+        } elseif (method_exists($this, 'edit') && $this->model->exists) {
+            $this->formConfig = $this->edit();
+        } else {
+            throw new \RuntimeException('No form configuration method found.');
+        }
+    }
+
+    /**
+     * Initialize the fields
+     */
     protected function initializeFields(): void
     {
         $definedFields = $this->fields();
@@ -65,25 +82,6 @@ abstract class Formello
         // Auto-detect dal database schema
         $columnType = $this->schemaInspector->getColumnType($this->model, $fieldName);
         return $this->widgetFactory->make($columnType);
-    }
-
-    /**
-     * Initialize the fields
-     */
-    protected function initializeFields()
-    {
-        $defaultFields = $this->getDefaultFields();
-        $definedFields = $this->fields();
-
-        foreach ($defaultFields as $name => $defaultWidget) {
-            $fieldConfig = $definedFields[$name] ?? [];
-            $widget = $this->resolveWidget($fieldConfig['widget'] ?? $defaultWidget);
-
-            $this->fields[$name] = [
-                'widget' => $widget,
-                'config' => $fieldConfig,
-            ];
-        }
     }
 
     protected function getDefaultFields()
