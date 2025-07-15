@@ -20,7 +20,7 @@
                 type="checkbox"
                 name="{{ $name }}[]"
                 value="{{ $optionValue }}"
-                class="form-check-input {{ $name }}-checkbox {{ $attributes['class'] ?? '' }} @if ($errors) is-invalid @endif"
+                class="form-check-input {{ $name }}-checkbox {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
                 id="{{ $name }}_{{ $optionValue }}"
                 {{ in_array($optionValue, (array)old($name, $value)) ? 'checked' : '' }}
             >

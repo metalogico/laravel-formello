@@ -2,38 +2,46 @@
 
 namespace Metalogico\Formello;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class SchemaInspector
 {
-    private array $columnTypeCache = [];
-    
     public function getColumnType(Model $model, string $field): string
     {
-        $table = $model->getTable();
-        $cacheKey = "{$table}.{$field}";
-        
-        if (isset($this->columnTypeCache[$cacheKey])) {
-            return $this->columnTypeCache[$cacheKey];
+        // 1. Check model casts first
+        $casts = $model->getCasts();
+        if (isset($casts[$field])) {
+            return $this->normalizeCastType($casts[$field]);
         }
         
-        $schema = $model->getConnection()->getSchemaBuilder();
-        
-        if (!$schema->hasColumn($table, $field)) {
-            return $this->columnTypeCache[$cacheKey] = 'string';
+        // 2. Check fillable/guarded hints
+        if (Str::endsWith($field, ['_id', 'Id'])) {
+            return 'select';
         }
         
-        $type = $schema->getColumnType($table, $field);
-        return $this->columnTypeCache[$cacheKey] = $this->normalizeType($type);
+        if (in_array($field, ['email'])) {
+            return 'email';
+        }
+        
+        if (in_array($field, ['password', 'password_confirmation'])) {
+            return 'password';
+        }
+        
+        // 3. Default fallback
+        return 'string';
     }
     
-    private function normalizeType(string $type): string
+    private function normalizeCastType(string $cast): string
     {
-        return match($type) {
-            'varchar', 'char' => 'string',
-            'tinyint' => 'boolean',
+        return match($cast) {
+            'boolean' => 'boolean',
+            'date' => 'date', 
+            'datetime' => 'datetime',
             'timestamp' => 'datetime',
-            default => $type
+            'array' => 'checkboxes',
+            'json' => 'textarea',
+            default => 'string'
         };
     }
 }

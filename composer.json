@@ -10,6 +10,11 @@
             "Metalogico\\Formello\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Metalogico",
@@ -28,6 +33,16 @@
             "aliases": {
                 "Formello": "Metalogico\\Formello\\Facades\\Formello"
             }
+        }
+    },
+    "require-dev": {
+        "pestphp/pest-plugin-laravel": "^3.2",
+        "orchestra/testbench": "^10.4",
+        "pestphp/pest": "^3.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }

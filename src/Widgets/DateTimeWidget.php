@@ -13,8 +13,8 @@ class DateTimeWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($attributes['class'] ?? '') . ' form-control');
-        $fieldConfig['attributes']['id'] = $attributes['id'] ?? $name;
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-control');
+        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
         $fieldConfig['attributes']['type'] = 'datetime-local';
 
         $format = $fieldConfig['format'] ?? 'Y-m-d\TH:i';
@@ -30,7 +30,7 @@ class DateTimeWidget extends BaseWidget
 
         // Set step attribute for seconds if format includes seconds
         if (strpos($format, ':s') !== false) {
-            $attributes['step'] = 1;
+            $fieldConfig['attributes']['step'] = 1;
         }
 
         return [

@@ -19,9 +19,9 @@ abstract class Formello
 
     public function __construct(
         Model $model, 
-        ViewErrorBag $errors = null,
-        WidgetFactory $widgetFactory = null,
-        SchemaInspector $schemaInspector = null
+        ?ViewErrorBag $errors = null,
+        ?WidgetFactory $widgetFactory = null,
+        ?SchemaInspector $schemaInspector = null
     ) {
         $this->model = $model;
         $this->errors = $errors ?? session()->get('errors', new ViewErrorBag);
