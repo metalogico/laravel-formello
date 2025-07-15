@@ -4,9 +4,10 @@ namespace Metalogico\Formello;
 
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
-use Illuminate\Database\Eloquent\Model;
-use Metalogico\Formello\Interfaces\WidgetInterface;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Model;
+use Metalogico\Formello\Widgets\UploadWidget;
+use Metalogico\Formello\Interfaces\WidgetInterface;
 
 abstract class Formello
 {
@@ -41,6 +42,12 @@ abstract class Formello
      */
     protected function initializeForm()
     {
+
+        // if there's an upload widget in the form add the multipart form attribute
+        if ($this->hasUploadWidget()) {
+            $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
+        }
+
         if (method_exists($this, 'create') && !$this->model->exists) {
             $this->formConfig = $this->create();
         } elseif (method_exists($this, 'edit') && $this->model->exists) {
@@ -48,6 +55,16 @@ abstract class Formello
         } else {
             throw new \RuntimeException('No form configuration method found.');
         }
+    }
+
+    protected function hasUploadWidget(): bool
+    {
+        foreach ($this->fields() as $fieldConfig) {
+            if (isset($fieldConfig['widget']) && $fieldConfig['widget'] instanceof UploadWidget) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
