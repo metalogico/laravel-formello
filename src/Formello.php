@@ -42,18 +42,20 @@ abstract class Formello
      */
     protected function initializeForm()
     {
-
-        // if there's an upload widget in the form add the multipart form attribute
-        if ($this->hasUploadWidget()) {
-            $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
-        }
-
         if (method_exists($this, 'create') && !$this->model->exists) {
             $this->formConfig = $this->create();
         } elseif (method_exists($this, 'edit') && $this->model->exists) {
             $this->formConfig = $this->edit();
         } else {
             throw new \RuntimeException('No form configuration method found.');
+        }
+
+        // if there's an upload widget in the form add the multipart form attribute
+        if ($this->hasUploadWidget()) {
+            if (!isset($this->formConfig['attributes'])) {
+                $this->formConfig['attributes'] = [];
+            }
+            $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
         }
     }
 
@@ -148,7 +150,7 @@ abstract class Formello
         return view('formello::form', [
             'formello' => $this,
             'formConfig' => $this->formConfig,
-        ]);
+        ])->render();
     }
 
     public function renderField(string $name): string
