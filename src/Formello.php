@@ -2,39 +2,45 @@
 
 namespace Metalogico\Formello;
 
-use Illuminate\Support\MessageBag;
-use Illuminate\Support\ViewErrorBag;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
-use Metalogico\Formello\Widgets\UploadWidget;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ViewErrorBag;
 use Metalogico\Formello\Interfaces\WidgetInterface;
+use Metalogico\Formello\Widgets\UploadWidget;
 
 abstract class Formello
 {
     protected Model $model;
+
     protected ViewErrorBag $errors;
+
     protected array $formConfig = [];
+
     protected array $fields = [];
+
     private WidgetFactory $widgetFactory;
+
     private SchemaInspector $schemaInspector;
 
     public function __construct(
-        Model $model, 
+        Model $model,
         ?ViewErrorBag $errors = null,
         ?WidgetFactory $widgetFactory = null,
         ?SchemaInspector $schemaInspector = null
     ) {
         $this->model = $model;
         $this->errors = $errors ?? session()->get('errors', new ViewErrorBag);
-        $this->widgetFactory = $widgetFactory ?? new WidgetFactory();
-        $this->schemaInspector = $schemaInspector ?? new SchemaInspector();
-        
+        $this->widgetFactory = $widgetFactory ?? new WidgetFactory;
+        $this->schemaInspector = $schemaInspector ?? new SchemaInspector;
+
         $this->initializeForm();
         $this->initializeFields();
     }
 
     abstract protected function fields(): array;
+
     abstract protected function create(): array;
+
     abstract protected function edit(): array;
 
     /**
@@ -42,7 +48,7 @@ abstract class Formello
      */
     protected function initializeForm()
     {
-        if (method_exists($this, 'create') && !$this->model->exists) {
+        if (method_exists($this, 'create') && ! $this->model->exists) {
             $this->formConfig = $this->create();
         } elseif (method_exists($this, 'edit') && $this->model->exists) {
             $this->formConfig = $this->edit();
@@ -52,7 +58,7 @@ abstract class Formello
 
         // if there's an upload widget in the form add the multipart form attribute
         if ($this->hasUploadWidget()) {
-            if (!isset($this->formConfig['attributes'])) {
+            if (! isset($this->formConfig['attributes'])) {
                 $this->formConfig['attributes'] = [];
             }
             $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
@@ -66,6 +72,7 @@ abstract class Formello
                 return true;
             }
         }
+
         return false;
     }
 
@@ -77,10 +84,10 @@ abstract class Formello
         $definedFields = $this->fields();
 
         foreach ($definedFields as $name => $fieldConfig) {
-            $widget = $this->resolveWidget($fieldConfig, $name);
 
+            $widget = $this->resolveWidget($fieldConfig, $name);
             $this->fields[$name] = [
-                'widget' => $fieldConfig['widget'] ?? $widget,
+                'widget' => $widget,
                 'config' => $fieldConfig,
             ];
         }
@@ -90,16 +97,26 @@ abstract class Formello
     {
         // Se widget specificato esplicitamente
         if (isset($fieldConfig['widget'])) {
-            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
-                return new $fieldConfig['widget']();
+            // Se è un alias (stringa breve, es: 'text', 'select2', ecc.)
+            if (is_string($fieldConfig['widget'])) {
+                // Usa la factory per risolvere l'alias
+                return $this->widgetFactory->make($fieldConfig['widget']);
             }
+            // Se è una classe completa
+            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
+                return new $fieldConfig['widget'];
+            }
+            // Se è già un oggetto widget
             if ($fieldConfig['widget'] instanceof WidgetInterface) {
                 return $fieldConfig['widget'];
             }
+            // Se arriva qui, il valore non è valido
+            throw new \InvalidArgumentException("Invalid widget definition for field '$fieldName'");
         }
 
         // Auto-detect dal database schema
         $columnType = $this->schemaInspector->getColumnType($this->model, $fieldName);
+
         return $this->widgetFactory->make($columnType);
     }
 
@@ -109,6 +126,7 @@ abstract class Formello
         foreach ($this->fields() as $field => $config) {
             $defaults[$field] = $this->getDefaultWidgetForField($field);
         }
+
         return $defaults;
     }
 
@@ -122,26 +140,26 @@ abstract class Formello
         if ($schema->hasColumn($this->model->getTable(), $field)) {
             $columnType = $schema->getColumnType($this->model->getTable(), $field);
         } else {
-            $columnType = 'string';
+            $columnType = 'text';
         }
 
         switch ($columnType) {
             case 'char':
             case 'varchar':
-            case 'string':
-                return new Widgets\TextWidget();
             case 'text':
-                return new Widgets\TextareaWidget();
+                return new Widgets\TextWidget;
+            case 'textarea':
+                return new Widgets\TextareaWidget;
             case 'boolean':
             case 'tinyint':
-                return new Widgets\ToggleWidget();
+                return new Widgets\ToggleWidget;
             case 'date':
-                return new Widgets\DateWidget();
+                return new Widgets\DateWidget;
             case 'datetime':
             case 'timestamp':
-                return new Widgets\DateTimeWidget();
+                return new Widgets\DateTimeWidget;
             default:
-                return new Widgets\TextWidget();
+                return new Widgets\TextWidget;
         }
     }
 
@@ -155,14 +173,14 @@ abstract class Formello
 
     public function renderField(string $name): string
     {
-        if (!isset($this->fields[$name])) {
+        if (! isset($this->fields[$name])) {
             throw new \InvalidArgumentException("Field '{$name}' not found");
         }
 
         $fieldConfig = $this->fields[$name];
         $widget = $fieldConfig['widget'];
         $config = $fieldConfig['config'];
-        
+
         $value = old($name, $config['value'] ?? $this->model->{$name} ?? null);
         $errors = $this->errors->get($name);
 
@@ -178,5 +196,4 @@ abstract class Formello
     {
         return $this->fields;
     }
-
 }

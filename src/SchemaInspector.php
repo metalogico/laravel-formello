@@ -29,7 +29,7 @@ class SchemaInspector
         }
         
         // 3. Default fallback
-        return 'string';
+        return 'text';
     }
     
     private function normalizeCastType(string $cast): string
@@ -41,7 +41,7 @@ class SchemaInspector
             'timestamp' => 'datetime',
             'array' => 'checkboxes',
             'json' => 'textarea',
-            default => 'string'
+            default => 'text'
         };
     }
 }

@@ -20,8 +20,8 @@ return [
      * Override the default widgets
      */
     'default_widgets' => [
-        'string' => Metalogico\Formello\Widgets\TextWidget::class,
-        'text' => Metalogico\Formello\Widgets\TextareaWidget::class,
+        'text' => Metalogico\Formello\Widgets\TextWidget::class,
+        'textarea' => Metalogico\Formello\Widgets\TextareaWidget::class,
         'boolean' => Metalogico\Formello\Widgets\ToggleWidget::class,
         'tinyint' => Metalogico\Formello\Widgets\ToggleWidget::class,        
         'date' => Metalogico\Formello\Widgets\DateWidget::class,

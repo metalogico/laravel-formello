@@ -11,8 +11,8 @@ class WidgetFactory
     public function __construct()
     {
         $this->widgetMap = config('formello.default_widgets', [
-            'string' => Widgets\TextWidget::class,
-            'text' => Widgets\TextareaWidget::class,
+            'text' => Widgets\TextWidget::class,
+            'textarea' => Widgets\TextareaWidget::class,
             'boolean' => Widgets\ToggleWidget::class,
             'date' => Widgets\DateWidget::class,
             'datetime' => Widgets\DateTimeWidget::class,
