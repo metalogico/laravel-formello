@@ -10,36 +10,47 @@ trait HasSelect2Widget
     /**
      * Handle AJAX search for Select2 widgets
      * 
-     * @param string $query Model class name (e.g., Category::class)
+     * @param string|\Illuminate\Database\Eloquent\Builder $query Model class name (e.g., Category::class) or Query Builder instance
      * @param array $searchFields Fields to search in
-     * @param string|null $term Search term
-     * @param array $ids Specific IDs to load
+     * @param string|array|null $term Search term or array of IDs when loading specific records
+     * @param array|string $ids Specific IDs to load (string if passed as query parameter)
      * @param string $labelField Field to use as display text
      * @param int $limit Maximum results
      * @return JsonResponse
      */
     public function select2Search(
-        string $query, 
+        $query, 
         array $searchFields, 
-        ?string $term = null, 
-        array $ids = [], 
+        $term = null, 
+        $ids = [], 
         string $labelField = 'name',
         int $limit = 50
     ): JsonResponse {
-        $queryBuilder = app($query)->newQuery();
+        // Handle string IDs from query parameters
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        } elseif (!is_array($ids)) {
+            $ids = [];
+        }
+
+        // Create new query or use existing query builder
+        $queryBuilder = is_string($query) ? app($query)->newQuery() : $query;
         
-        if ($term) {
+        // Apply search term if provided
+        if ($term && !empty($searchFields)) {
             $queryBuilder->where(function ($q) use ($searchFields, $term) {
                 foreach ($searchFields as $field) {
-                    $q->orWhere($field, 'ILIKE', "%{$term}%");
+                    $q->orWhere($field, 'LIKE', "%{$term}%");
                 }
             });
         }
         
+        // Filter by specific IDs if provided
         if (!empty($ids)) {
             $queryBuilder->whereIn('id', $ids);
         }
         
+        // Execute query and format results
         $items = $queryBuilder
             ->limit($limit)
             ->get()
