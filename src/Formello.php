@@ -80,7 +80,7 @@ abstract class Formello
             $widget = $this->resolveWidget($fieldConfig, $name);
 
             $this->fields[$name] = [
-                'widget' => $widget,
+                'widget' => $fieldConfig['widget'] ?? $widget,
                 'config' => $fieldConfig,
             ];
         }
