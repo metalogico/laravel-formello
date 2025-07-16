@@ -68,7 +68,7 @@ abstract class Formello
     protected function hasUploadWidget(): bool
     {
         foreach ($this->fields as $field) {
-            if ($field['widget'] instanceof UploadWidget) {
+            if ($field['widget'] instanceof UploadWidget || $field['widget'] == 'upload') {
                 return true;
             }
         }

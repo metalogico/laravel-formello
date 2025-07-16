@@ -1,4 +1,6 @@
-<form method="POST" action="{{ $formConfig['action'] ?? '' }}"
+<form
+    method="POST"
+    action="{{ $formConfig['action'] ?? '' }}"
     @foreach ($formConfig['attributes'] ?? [] as $attr => $value)
         {{ $attr }}="{{ $value }}" @endforeach>
 
