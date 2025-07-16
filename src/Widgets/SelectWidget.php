@@ -23,7 +23,7 @@ class SelectWidget extends BaseWidget
             $name .= '[]'; // Modify name to handle array submission
         }
 
-        $choices = $this->resolveChoices($fieldConfig['choices']);
+        $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
 
         return [
             'name' => $name,
