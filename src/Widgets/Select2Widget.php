@@ -11,15 +11,26 @@ class Select2Widget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, [
+        // Imposta i valori di default
+        $defaults = [
             'class' => 'form-control select2',
-        ], $name);
-        
+            'multiple' => false,
+        ];
+
+        // Unisci con le configurazioni fornite
+        $fieldConfig = array_merge($defaults, $fieldConfig);
+        $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
+
         // Handle multiple selection
-        if (!empty($fieldConfig['multiple'])) {
-            $fieldConfig['attributes']['multiple'] = 'multiple';
+        if (! empty($fieldConfig['multiple'])) {
             $name .= '[]';
         }
+
+        // Determina se usare AJAX in base alla presenza di una route
+        $usesAjax = ! empty($fieldConfig['route']);
+
+        // Se non stiamo usando AJAX, risolviamo le choices
+        $choices = $usesAjax ? [] : $this->resolveChoices($fieldConfig['choices'] ?? []);
 
         return [
             'name' => $name,
@@ -27,8 +38,8 @@ class Select2Widget extends BaseWidget
             'label' => $fieldConfig['label'] ?? null,
             'config' => $fieldConfig,
             'errors' => $errors,
-            'choices' => $this->resolveChoices($fieldConfig['choices'] ?? []),
-            'ajax' => !empty($fieldConfig['ajax']),
+            'choices' => $choices,
+            'usesAjax' => $usesAjax,
         ];
     }
 
@@ -37,7 +48,7 @@ class Select2Widget extends BaseWidget
         if (is_callable($choices)) {
             return call_user_func($choices);
         }
-        
+
         return $choices;
     }
 }
