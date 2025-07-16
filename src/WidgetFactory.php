@@ -17,6 +17,12 @@ class WidgetFactory
             'date' => Widgets\DateWidget::class,
             'datetime' => Widgets\DateTimeWidget::class,
             'select' => Widgets\SelectWidget::class,
+            'select2' => Widgets\Select2Widget::class,
+            'checkboxes' => Widgets\CheckboxesWidget::class,
+            'radio' => Widgets\RadioWidget::class,
+            'range' => Widgets\RangeWidget::class,
+            'upload' => Widgets\UploadWidget::class,
+            'hidden' => Widgets\HiddenWidget::class,
         ]);
     }
     
