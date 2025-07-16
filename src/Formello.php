@@ -33,8 +33,8 @@ abstract class Formello
         $this->widgetFactory = $widgetFactory ?? new WidgetFactory;
         $this->schemaInspector = $schemaInspector ?? new SchemaInspector;
 
-        $this->initializeForm();
         $this->initializeFields();
+        $this->initializeForm();
     }
 
     abstract protected function fields(): array;
@@ -67,8 +67,8 @@ abstract class Formello
 
     protected function hasUploadWidget(): bool
     {
-        foreach ($this->fields() as $fieldConfig) {
-            if (isset($fieldConfig['widget']) && $fieldConfig['widget'] instanceof UploadWidget) {
+        foreach ($this->fields as $field) {
+            if ($field['widget'] instanceof UploadWidget) {
                 return true;
             }
         }
