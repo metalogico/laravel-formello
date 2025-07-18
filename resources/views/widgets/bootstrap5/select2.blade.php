@@ -16,8 +16,9 @@
                     multiple
                 @endif
                 @if($usesAjax)
-                    data-ajax--url="{{ $config['route'] }}"
+                    data-ajax--url="{{ $config['select2']['route'] }}"
                     data-ajax--cache="true"
+                    data-ajax--delay="250"
                     data-minimum-input-length="2"
                 @endif
                 data-placeholder="{{ $config['placeholder'] }}"
@@ -25,15 +26,12 @@
                 data-language="it"
                 data-dropdown-parent="{{ $config['dropdownParent'] ?? 'body' }}">
 
-                @if (!$usesAjax)
-                    @foreach ($choices as $optionValue => $optionLabel)
-                        <option value="{{ $optionValue }}"
-                            {{ in_array($optionValue, (array)old($name, $value)) ? 'selected' : '' }}
-                            {{ $optionValue == $value ? 'selected' : '' }}>
-                            {{ $optionLabel }}
-                        </option>
-                    @endforeach
-                @endif
+                {{-- Render pre-selected options for AJAX or all options for non-AJAX --}}
+                @foreach ($choices as $optionValue => $optionLabel)
+                    <option value="{{ $optionValue }}" {{ in_array($optionValue, (array)$value) ? 'selected' : '' }}>
+                        {{ $optionLabel }}
+                    </option>
+                @endforeach
             </select>
         </div>
     </div>

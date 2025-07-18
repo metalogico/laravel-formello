@@ -26,15 +26,33 @@ class Select2Widget extends BaseWidget
             $name .= '[]';
         }
 
-        // Determina se usare AJAX in base alla presenza di una route
-        $usesAjax = ! empty($fieldConfig['route']);
+        // Estrai la configurazione specifica di select2
+        $select2Config = $fieldConfig['select2'] ?? [];
+        $usesAjax = ! empty($select2Config['route']);
 
-        // Se non stiamo usando AJAX, risolviamo le choices
-        $choices = $usesAjax ? [] : $this->resolveChoices($fieldConfig['choices'] ?? []);
+        $currentValue = old($name, $value);
+        $choices = [];
+
+        // Se usiamo AJAX e c'è un valore, dobbiamo caricare l'opzione iniziale
+        if ($usesAjax && !empty($currentValue)) {
+            $modelClass = $select2Config['model'] ?? null;
+            $labelField = $select2Config['label_field'] ?? 'name';
+            $valueField = $select2Config['value_field'] ?? 'id';
+
+            if ($modelClass) {
+                $initialItems = $modelClass::whereIn($valueField, (array) $currentValue)->get();
+                foreach ($initialItems as $item) {
+                    $choices[$item->$valueField] = data_get($item, $labelField);
+                }
+            }
+        } elseif (!$usesAjax) {
+            // Altrimenti, se non usiamo AJAX, risolviamo le choices come prima
+            $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
+        }
 
         return [
             'name' => $name,
-            'value' => old($name, $value),
+            'value' => $currentValue,
             'label' => $fieldConfig['label'] ?? null,
             'config' => $fieldConfig,
             'errors' => $errors,

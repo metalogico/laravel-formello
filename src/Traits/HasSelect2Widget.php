@@ -12,8 +12,7 @@ trait HasSelect2Widget
      * 
      * @param string|\Illuminate\Database\Eloquent\Builder $query Model class name (e.g., Category::class) or Query Builder instance
      * @param array $searchFields Fields to search in
-     * @param string|array|null $term Search term or array of IDs when loading specific records
-     * @param array|string $ids Specific IDs to load (string if passed as query parameter)
+     * @param string|null $term Search term
      * @param string $labelField Field to use as display text
      * @param int $limit Maximum results
      * @return JsonResponse
@@ -21,18 +20,11 @@ trait HasSelect2Widget
     public function select2Search(
         $query, 
         array $searchFields, 
-        $term = null, 
-        $ids = [], 
+        ?string $term = null, 
         string $labelField = 'name',
+        string $valueField = 'id',
         int $limit = 50
     ): JsonResponse {
-        // Handle string IDs from query parameters
-        if (is_string($ids)) {
-            $ids = explode(',', $ids);
-        } elseif (!is_array($ids)) {
-            $ids = [];
-        }
-
         // Create new query or use existing query builder
         $queryBuilder = is_string($query) ? app($query)->newQuery() : $query;
         
@@ -45,17 +37,13 @@ trait HasSelect2Widget
             });
         }
         
-        // Filter by specific IDs if provided
-        if (!empty($ids)) {
-            $queryBuilder->whereIn('id', $ids);
-        }
-        
+
         // Execute query and format results
         $items = $queryBuilder
             ->limit($limit)
             ->get()
             ->map(fn($item) => [
-                'id' => $item->id,
+                'id' => $item->$valueField,
                 'text' => data_get($item, $labelField), // supports nested fields like 'user.name'
             ]);
             
