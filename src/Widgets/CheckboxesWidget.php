@@ -16,7 +16,7 @@ class CheckboxesWidget extends BaseWidget
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
 
-        $choices = $this->resolveChoices($fieldConfig['choices']);
+        $choices = $this->resolveChoices($fieldConfig['choices']) ?? [];
 
         return [
             'name' => $name,

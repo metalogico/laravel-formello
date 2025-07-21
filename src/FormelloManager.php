@@ -8,7 +8,7 @@ use Illuminate\Support\ViewErrorBag;
 class FormelloManager extends Formello
 {
 
-    public function __construct(Model $model = null, ViewErrorBag $errors = null)
+    public function __construct(?Model $model = null, ?ViewErrorBag $errors = null)
     {
         if (!$model) {
             // Instead of creating a new Model, we'll use a null object pattern

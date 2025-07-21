@@ -6,11 +6,11 @@ Formello is a comprehensive form generation and handling tool for Laravel applic
 
 ## 🎉 Motivation
 
-Cross contamination again! After working with Django's powerful form system, I found myself missing a similar tool in the Laravel ecosystem. So, I decided to create Formello to bring that ease of use and flexibility to Laravel developers.
+The Laravel ecosystem offers powerful tools for building applications, from full-featured admin panels like Nova and Filament to complex form-handling libraries. However, I felt there was a need for a tool that sits in the "sweet spot" between these solutions.
 
-Formello is built using:
-- [Laravel](https://laravel.com/)
-- [Bootstrap 5](https://getbootstrap.com/)
+Formello was created for developers who need to generate forms quickly without the overhead of a complete admin panel, but who also want a simpler, more intuitive API than more complex form libraries. It's designed to automate the repetitive aspects of form creation while giving you full control over the final output.
+
+Currently, Formello ships with built-in support for **Bootstrap 5**, and support for **Tailwind CSS** is coming soon™!
 
 If you use this project, please consider giving it a ⭐.
 
@@ -22,16 +22,15 @@ If you use this project, please consider giving it a ⭐.
   - Text
   - Textarea
   - Select (with multiple)
+  - Select2
   - Radio
-  - Toggle
-  - Date
-  - Hidden
-  - DateTime
   - Checkboxes
-  - Radio
+  - Toggle
   - Range
-  - File
-  - And more!
+  - Date
+  - DateTime
+  - Upload
+  - Hidden
 - Customizable widgets
 - Automatic error handling and display
 - Form validation integration
@@ -161,10 +160,36 @@ public function edit(string $id)
 }
 ```
 
+## Conditional Logic
+
+You can use `isCreating()` and `isEditing()` methods in your form class to dynamically change fields, labels, rules, or other options based on the form's mode.
+
+Here's an example of how to use these methods to change a field's behavior:
+
+```php
+protected function fields(): array
+{
+    $fields = [
+        'name' => [
+            'label' => __('User Name'),
+            'help' => 'Enter the name of the user',
+        ],
+        'password' => [
+            'label' => __('Password'),
+            'type' => 'password',
+            'required' => $this->isCreating(),
+            'help' => $this->isEditing() ? 'Leave the field empty to keep the current password' : '',
+        ],
+    ];
+
+    return $fields;
+}
+```
+
 Then in you blade template:
 
 ```php
-{{ $formello->render() }}
+{!! $formello->render() !!}
 ```
 
 If you want to render only the fields (without the \<form\> tag) you can use:
@@ -174,6 +199,103 @@ If you want to render only the fields (without the \<form\> tag) you can use:
     {!! $formello->renderField($name) !!}
 @endforeach
 ```
+
+
+## Creating Custom Widgets
+
+Formello is designed to be extensible, allowing you to create your own custom widgets. This is useful when you need a specific form control that isn't included in the default set.
+
+To create a custom widget, you need to follow these steps:
+
+### 1. Create a Widget Class
+
+First, create a new PHP class for your widget. This class must implement the `Metalogico\Formello\Interfaces\WidgetInterface`. This interface requires you to implement a single `render` method.
+
+You can place this class anywhere in your project, for example, in `app/Widgets`.
+
+To maintain a clean separation of concerns, the `render` method should delegate the rendering to a Blade template.
+
+Here is an example of a `StarRatingWidget` class:
+
+```php
+<?php
+
+namespace App\Widgets;
+
+use Metalogico\Formello\Interfaces\WidgetInterface;
+
+class StarRatingWidget implements WidgetInterface
+{
+    public function render(string $name, $value, array $config, array $errors): string
+    {
+        return view('widgets.star-rating', [
+            'name' => $name,
+            'value' => $value,
+            'config' => $config,
+            'errors' => $errors,
+        ])->render();
+    }
+}
+```
+
+### 2. Create the Widget's Blade Template
+
+Next, create the Blade template that will render the widget's HTML. For instance, you can create the file `resources/views/widgets/star-rating.blade.php`:
+
+```blade
+<div class="mb-3">
+    <label for="{{ $name }}" class="form-label">{{ $config['label'] }}</label>
+    <input type="number" 
+           name="{{ $name }}" 
+           id="{{ $name }}" 
+           value="{{ $value }}" 
+           class="form-control @if ($errors) is-invalid @endif" 
+           min="1" 
+           max="5"/>
+
+    @if ($errors)
+        <div class="invalid-feedback">
+            <ul>
+                @foreach ($errors as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+</div>
+```
+
+### 3. Use the Custom Widget in Your Form
+
+Once you have created your widget class, you can use it in your Formello form by specifying the fully qualified class name in the `widget` option for a field.
+
+```php
+<?php
+
+namespace App\Forms;
+
+use Metalogico\Formello\Formello;
+use App\Widgets\StarRatingWidget; // Import your custom widget
+
+class ProductForm extends Formello
+{
+    // ... create() and edit() methods
+    
+    protected function fields(): array
+    {
+        return [
+            // ... other fields
+            'rating' => [
+                'label' => __('Product Rating'),
+                'widget' => StarRatingWidget::class,
+                'help' => 'Rate the product from 1 to 5 stars.'
+            ],
+        ];
+    }
+}
+```
+
+Formello will automatically instantiate your widget class and call its `render` method to generate the HTML for the form field.
 
 
 ## ⚖️ License

@@ -14,9 +14,9 @@ class DateWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($attributes['class'] ?? '') . ' form-control');
-        $fieldConfig['attributes']['id'] = $attributes['id'] ?? $name;
-        $attributes['type'] = 'date';
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-control');
+        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $fieldConfig['attributes']['type'] = 'date';
 
         $format = $fieldConfig['format'] ?? 'Y-m-d';
 

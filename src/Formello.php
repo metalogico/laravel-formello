@@ -2,59 +2,130 @@
 
 namespace Metalogico\Formello;
 
-use Illuminate\Support\MessageBag;
-use Illuminate\Support\ViewErrorBag;
 use Illuminate\Database\Eloquent\Model;
-use Metalogico\Formello\Interfaces\WidgetInterface;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\Interfaces\WidgetInterface;
+use Metalogico\Formello\Widgets\UploadWidget;
 
 abstract class Formello
 {
-    public $model;
-    public $formConfig = [];
-    public $fields = [];
-    public $errors;
+    public string $formMode;
 
-    public function __construct(Model $model, ViewErrorBag $errors = null)
-    {
+    protected Model $model;
+
+    protected ViewErrorBag $errors;
+
+    protected array $formConfig = [];
+
+    protected array $fields = [];
+
+    private WidgetFactory $widgetFactory;
+
+    private SchemaInspector $schemaInspector;
+
+    public function __construct(
+        Model $model,
+        ?ViewErrorBag $errors = null,
+        ?WidgetFactory $widgetFactory = null,
+        ?SchemaInspector $schemaInspector = null
+    ) {
         $this->model = $model;
-        $this->errors = $errors ?? session()->get('errors', new MessageBag);
-        $this->initializeForm();
+        $this->errors = $errors ?? session()->get('errors', new ViewErrorBag);
+        $this->widgetFactory = $widgetFactory ?? new WidgetFactory;
+        $this->schemaInspector = $schemaInspector ?? new SchemaInspector;
+
+        if ($model->exists) {
+            $this->setFormMode('edit');
+        } else {
+            $this->setFormMode('create');
+        }
+
         $this->initializeFields();
+        $this->initializeForm();
     }
 
     abstract protected function fields(): array;
+
     abstract protected function create(): array;
+
     abstract protected function edit(): array;
 
+    /**
+     * Initialize the form
+     */
     protected function initializeForm()
     {
-        if (method_exists($this, 'create') && !$this->model->exists) {
+        if (method_exists($this, 'create') && ! $this->model->exists) {
             $this->formConfig = $this->create();
         } elseif (method_exists($this, 'edit') && $this->model->exists) {
             $this->formConfig = $this->edit();
         } else {
             throw new \RuntimeException('No form configuration method found.');
         }
+
+        // if there's an upload widget in the form add the multipart form attribute
+        if ($this->hasUploadWidget()) {
+            if (! isset($this->formConfig['attributes'])) {
+                $this->formConfig['attributes'] = [];
+            }
+            $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
+        }
+    }
+
+    protected function hasUploadWidget(): bool
+    {
+        foreach ($this->fields as $field) {
+            if ($field['widget'] instanceof UploadWidget || $field['widget'] == 'upload') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Initialize the fields
      */
-    protected function initializeFields()
+    protected function initializeFields(): void
     {
-        $defaultFields = $this->getDefaultFields();
         $definedFields = $this->fields();
 
-        foreach ($defaultFields as $name => $defaultWidget) {
-            $fieldConfig = $definedFields[$name] ?? [];
-            $widget = $this->resolveWidget($fieldConfig['widget'] ?? $defaultWidget);
+        foreach ($definedFields as $name => $fieldConfig) {
 
+            $widget = $this->resolveWidget($fieldConfig, $name);
             $this->fields[$name] = [
                 'widget' => $widget,
                 'config' => $fieldConfig,
             ];
         }
+    }
+
+    protected function resolveWidget(array $fieldConfig, string $fieldName): WidgetInterface
+    {
+        // Se widget specificato esplicitamente
+        if (isset($fieldConfig['widget'])) {
+            // Se è un alias (stringa breve, es: 'text', 'select2', ecc.)
+            if (is_string($fieldConfig['widget'])) {
+                // Usa la factory per risolvere l'alias
+                return $this->widgetFactory->make($fieldConfig['widget']);
+            }
+            // Se è una classe completa
+            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
+                return new $fieldConfig['widget'];
+            }
+            // Se è già un oggetto widget
+            if ($fieldConfig['widget'] instanceof WidgetInterface) {
+                return $fieldConfig['widget'];
+            }
+            // Se arriva qui, il valore non è valido
+            throw new \InvalidArgumentException("Invalid widget definition for field '$fieldName'");
+        }
+
+        // Auto-detect dal database schema
+        $columnType = $this->schemaInspector->getColumnType($this->model, $fieldName);
+
+        return $this->widgetFactory->make($columnType);
     }
 
     protected function getDefaultFields()
@@ -63,6 +134,7 @@ abstract class Formello
         foreach ($this->fields() as $field => $config) {
             $defaults[$field] = $this->getDefaultWidgetForField($field);
         }
+
         return $defaults;
     }
 
@@ -76,50 +148,35 @@ abstract class Formello
         if ($schema->hasColumn($this->model->getTable(), $field)) {
             $columnType = $schema->getColumnType($this->model->getTable(), $field);
         } else {
-            $columnType = 'string';
+            $columnType = 'text';
         }
 
         switch ($columnType) {
             case 'char':
             case 'varchar':
-            case 'string':
-                return new Widgets\TextWidget();
             case 'text':
-                return new Widgets\TextareaWidget();
+                return new Widgets\TextWidget;
+            case 'textarea':
+                return new Widgets\TextareaWidget;
             case 'boolean':
             case 'tinyint':
-                return new Widgets\ToggleWidget();
+                return new Widgets\ToggleWidget;
             case 'date':
-                return new Widgets\DateWidget();
+                return new Widgets\DateWidget;
             case 'datetime':
             case 'timestamp':
-                return new Widgets\DateTimeWidget();
+                return new Widgets\DateTimeWidget;
             default:
-                return new Widgets\TextWidget();
+                return new Widgets\TextWidget;
         }
     }
 
-    /**
-     * Identifies the widget to use for a given field
-     */
-    protected function resolveWidget($widget)
+    public function renderForm()
     {
-        if (is_null($widget)) {
-            return new Widgets\TextWidget();
-        }
-
-        if (is_string($widget)) {
-            if (class_exists($widget)) {
-                return new $widget();
-            }
-            return app('formello.widgets')->get($widget) ?? new Widgets\TextWidget();
-        }
-
-        if ($widget instanceof WidgetInterface) {
-            return $widget;
-        }
-
-        throw new \InvalidArgumentException("Invalid widget specification");
+        return view('formello::form', [
+            'formello' => $this,
+            'formConfig' => $this->formConfig,
+        ])->render();
     }
 
     public function render()
@@ -127,37 +184,22 @@ abstract class Formello
         return view('formello::form', [
             'formello' => $this,
             'formConfig' => $this->formConfig,
-        ]);
+        ])->render();
     }
 
-    public function renderField($name)
+    public function renderField(string $name): string
     {
-        if (!isset($this->fields[$name])) {
-            throw new \InvalidArgumentException("Field '{$name}' not found in form definition.");
+        if (! isset($this->fields[$name])) {
+            throw new \InvalidArgumentException("Field '{$name}' not found");
         }
 
         $fieldConfig = $this->fields[$name];
         $widget = $fieldConfig['widget'];
-        $config = $fieldConfig['config'] ?? [];
-        $customValue = $config['value'] ?? null;
+        $config = $fieldConfig['config'];
 
-        // Retrieve the value, considering old input
-        $value = old($name, $customValue ?? $this->model->{$name} ?? null);
-
-        // Get any errors for this field
+        $value = old($name, $config['value'] ?? $this->model->{$name} ?? null);
         $errors = $this->errors->get($name);
 
-        // If widget is a string (class name), instantiate it
-        if (is_string($widget)) {
-            $widget = new $widget();
-        }
-
-        // Ensure the widget implements WidgetInterface
-        if (!$widget instanceof WidgetInterface) {
-            throw new \InvalidArgumentException("Widget for field '{$name}' must implement WidgetInterface.");
-        }
-
-        // Render the widget
         return $widget->render($name, $value, $config, $errors);
     }
 
@@ -171,4 +213,20 @@ abstract class Formello
         return $this->fields;
     }
 
+    public function isCreating(): bool
+    {
+        return $this->formMode === 'create';
+    }
+
+    public function isEditing(): bool
+    {
+        return $this->formMode === 'edit';
+    }
+
+    public function setFormMode(string $mode): self
+    {
+        $this->formMode = $mode;
+
+        return $this;
+    }
 }
