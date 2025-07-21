@@ -13,8 +13,9 @@
         {!! $formello->renderField($name) !!}
     @endforeach
 
-    <div class="form-group mt-2">
-        <button type="submit" class="btn btn-primary">{{ $formConfig['submit_label'] ?? 'Save' }}</button>
+    <div class="form-group mt-5 border-top pt-5">
+        <button type="submit" class="btn btn-sm btn-primary">{{ $formConfig['submit_label'] ?? __('Save') }}</button>
+        <a href="{{ url()->previous() }}" class="btn btn-sm btn-secondary ms-2">{{ $formConfig['cancel_label'] ?? __('Cancel') }}</a>
     </div>
 
 </form>
