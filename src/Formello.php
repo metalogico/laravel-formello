@@ -35,7 +35,7 @@ abstract class Formello
         $this->widgetFactory = $widgetFactory ?? new WidgetFactory;
         $this->schemaInspector = $schemaInspector ?? new SchemaInspector;
 
-        if ($model) {
+        if ($model->exists) {
             $this->setFormMode('edit');
         } else {
             $this->setFormMode('create');
