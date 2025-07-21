@@ -13,6 +13,8 @@ class FormelloServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/formello.php', 'formello');
+
         $this->app->singleton('formello', FormelloManager::class);
         $this->app->bind(Formello::class, FormelloManager::class);
         
