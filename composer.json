@@ -1,9 +1,10 @@
 {
     "name": "metalogico/laravel-formello",
-    "version": "0.1.0",
     "description": "A Laravel package for generating Bootstrap 5 forms based on models",
+    "keywords": ["laravel", "forms", "form-builder", "bootstrap", "metalogico"],
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/metalogico/laravel-formello",
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
