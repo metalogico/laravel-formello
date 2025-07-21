@@ -10,7 +10,9 @@
     @endif
 
     @foreach ($formello->getFields() as $name => $field)
-        {!! $formello->renderField($name) !!}
+        <div class="mb-6">
+            {!! $formello->renderField($name) !!}
+        </div>
     @endforeach
 
     <div class="form-group mt-5 border-top pt-5">

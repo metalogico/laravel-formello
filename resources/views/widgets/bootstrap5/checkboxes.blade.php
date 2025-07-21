@@ -30,6 +30,10 @@
         </div>
     @endforeach
 
+    @if (isset($config['help']))
+        <div class="form-text">{!! $config['help'] !!}</div>
+    @endif
+
     @if ($errors)
         <div class="invalid-feedback">
             <ul>
