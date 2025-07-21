@@ -21,7 +21,7 @@
                     data-ajax--delay="250"
                     data-minimum-input-length="2"
                 @endif
-                data-placeholder="{{ $config['placeholder'] }}"
+                data-placeholder="{{ $config['placeholder'] ?? __('Select') }}"
                 data-allow-clear="true"
                 data-language="it"
                 data-dropdown-parent="{{ $config['dropdownParent'] ?? 'body' }}">
