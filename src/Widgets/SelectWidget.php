@@ -14,7 +14,7 @@ class SelectWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-control');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-select');
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
         
         // Add support for multiple selection

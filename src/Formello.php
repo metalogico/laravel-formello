@@ -10,6 +10,8 @@ use Metalogico\Formello\Widgets\UploadWidget;
 
 abstract class Formello
 {
+    public string $formMode = 'create';
+
     protected Model $model;
 
     protected ViewErrorBag $errors;
@@ -163,8 +165,18 @@ abstract class Formello
         }
     }
 
+    public function renderFor($id)
+    {
+        $this->setFormMode('edit');
+        return view('formello::form', [
+            'formello' => $this,
+            'formConfig' => $this->formConfig,
+        ])->render();
+    }
+
     public function render()
     {
+        $this->setFormMode('create');
         return view('formello::form', [
             'formello' => $this,
             'formConfig' => $this->formConfig,
@@ -195,5 +207,21 @@ abstract class Formello
     public function getFields()
     {
         return $this->fields;
+    }
+
+    public function isCreating(): bool
+    {
+        return $this->formMode === 'create';
+    }
+
+    public function isEditing(): bool
+    {
+        return $this->formMode === 'edit';
+    }
+
+    public function setFormMode(string $mode): self
+    {
+        $this->formMode = $mode;
+        return $this;
     }
 }
