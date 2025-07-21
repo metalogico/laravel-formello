@@ -52,4 +52,33 @@ class FormelloTest extends TestCase
             $this->fail('Render exception: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
     }
+
+    public function test_is_creating_returns_true_for_new_model()
+    {
+        $model = $this->makeDummyModel();
+
+        $form = new class($model, new ViewErrorBag()) extends Formello {
+            protected function fields(): array { return []; }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $this->assertTrue($form->isCreating());
+        $this->assertFalse($form->isEditing());
+    }
+
+    public function test_is_editing_returns_true_for_existing_model()
+    {
+        $model = $this->makeDummyModel();
+        $model->exists = true; // Simulate an existing model
+
+        $form = new class($model, new ViewErrorBag()) extends Formello {
+            protected function fields(): array { return []; }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $this->assertTrue($form->isEditing());
+        $this->assertFalse($form->isCreating());
+    }
 }
