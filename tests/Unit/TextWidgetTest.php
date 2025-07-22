@@ -53,4 +53,25 @@ class TextWidgetTest extends TestCase
         $output = $form->renderField('field');
         $this->assertIsString($output);
     }
+
+    public function test_text_widget_renders_with_icon()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field_with_icon' => [
+                        'widget' => new TextWidget(),
+                        'icon' => '<i class="fa-solid fa-user"></i>',
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field_with_icon');
+
+        $this->assertStringContainsString('<div class="input-group">', $output);
+        $this->assertStringContainsString('<i class="fa-solid fa-user"></i>', $output);
+    }
 }
