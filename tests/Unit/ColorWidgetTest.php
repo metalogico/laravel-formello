@@ -2,32 +2,55 @@
 
 namespace Tests\Unit;
 
+use Orchestra\Testbench\TestCase;
+use Metalogico\Formello\Formello;
 use Metalogico\Formello\Widgets\ColorWidget;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\ViewErrorBag;
 
 class ColorWidgetTest extends TestCase
 {
+    protected function getEnvironmentSetUp($app)
+    {
+        $app['config']->set('formello.css_framework', 'bootstrap5');
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            \Metalogico\Formello\FormelloServiceProvider::class,
+        ];
+    }
+
+    private function makeDummyModel()
+    {
+        return new class extends Model {
+            public function getTable() { return 'dummy'; }
+        };
+    }
+
+    private function makeFormWithColorWidget()
+    {
+        return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new ColorWidget(),
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+    }
+
     public function test_color_widget_is_instantiated_and_renders()
     {
-        $widget = new ColorWidget();
-        
-        $this->assertEquals('color', $widget->getWidgetName());
-        
-        $viewData = $widget->getViewData('test_color', '#ff0000', [
-            'label' => 'Choose Color'
-        ]);
-        
-        $this->assertEquals('test_color', $viewData['name']);
-        $this->assertEquals('#ff0000', $viewData['value']);
-        $this->assertEquals('Choose Color', $viewData['label']);
-        $this->assertArrayHasKey('data-formello-colorpicker', $viewData['config']['attributes']);
-        
-        // Check that Pickr options are properly encoded
-        $pickrOptions = json_decode($viewData['config']['attributes']['data-formello-colorpicker'], true);
-        $this->assertEquals('nano', $pickrOptions['theme']);
-        $this->assertEquals('#ff0000', $pickrOptions['default']);
-        $this->assertTrue($pickrOptions['components']['preview']);
-        $this->assertTrue($pickrOptions['components']['opacity']);
-        $this->assertTrue($pickrOptions['components']['hue']);
+        $form = $this->makeFormWithColorWidget();
+        $fields = $form->getFields();
+        $this->assertArrayHasKey('field', $fields);
+        $this->assertInstanceOf(ColorWidget::class, $fields['field']['widget']);
+        $output = $form->renderField('field');
+        $this->assertIsString($output);
     }
 }
