@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Icon Support for Text Fields**: Added a new `icon` option to the text widget to display an icon inside the input field using Bootstrap's input groups.
 - **Input Masking for Text Fields**: Integrated IMask.js to add input masking capabilities. Added a new `mask` option to the text widget to define custom input masks.
+- **Flatpickr Date/DateTime Widgets**: Replaced native HTML5 date inputs with Flatpickr for better UX and cross-browser compatibility.
+- **Italian Localization**: Added Italian locale support for Flatpickr date/datetime pickers with proper month and day names.
+- **Color Picker Widget**: New `ColorWidget` using Pickr nano library for full color selection with preview, opacity, and multiple format support.
+- **Color Swatch Widget**: New `ColorSwatchWidget` for predefined color selection from customizable swatches, perfect for brand colors and design systems.
+- **Enhanced Asset Management**: Added Pickr library assets (JS/CSS) with automatic publishing via ServiceProvider.
+
+### Changed
+- **DateTimeWidget Refactoring**: DateTimeWidget now extends DateWidget for better code reuse and consistency.
+- **Template Optimization**: Eliminated duplicate datetime.blade.php template by reusing the date template.
+- **Improved JavaScript Integration**: Enhanced formello.js with proper Pickr initialization and event handling.
+
 
 
 ## [1.0.0] - 2025-07-21
