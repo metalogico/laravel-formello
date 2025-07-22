@@ -2,8 +2,6 @@
 
 namespace Metalogico\Formello\Widgets;
 
-use Metalogico\Formello\Widgets\BaseWidget;
-
 class DateWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -14,9 +12,24 @@ class DateWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-control');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'date';
+        $fieldConfig['attributes']['type'] = 'text'; // Flatpickr works on text inputs
+
+        // Define default Flatpickr options
+        $defaultFlatpickrOptions = [
+            'altInput' => true,
+            'altFormat' => 'd F Y',
+            'dateFormat' => 'Y-m-d',
+            'locale' => 'it',
+        ];
+
+        // Merge default options with user-provided options
+        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
+
+        // Pass the final options to the view
+        $fieldConfig['attributes']['data-formello-datepicker'] = json_encode($mergedOptions);
 
         $format = $fieldConfig['format'] ?? 'Y-m-d';
 

@@ -2,22 +2,18 @@
 
 namespace Metalogico\Formello;
 
-use Metalogico\Formello\Formello;
-use Metalogico\Formello\WidgetFactory;
 use Illuminate\Support\ServiceProvider;
-use Metalogico\Formello\FormelloManager;
-use Metalogico\Formello\SchemaInspector;
 use Metalogico\Formello\Console\MakeFormelloCommand;
 
 class FormelloServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/formello.php', 'formello');
+        $this->mergeConfigFrom(__DIR__.'/../config/formello.php', 'formello');
 
         $this->app->singleton('formello', FormelloManager::class);
         $this->app->bind(Formello::class, FormelloManager::class);
-        
+
         // Register factory and inspector
         $this->app->singleton(WidgetFactory::class);
         $this->app->singleton(SchemaInspector::class);
@@ -25,18 +21,27 @@ class FormelloServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'formello');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'formello');
 
         $this->publishes([
-            __DIR__ . '/../config/formello.php' => config_path('formello.php'),
+            __DIR__.'/../config/formello.php' => config_path('formello.php'),
         ], 'formello-config');
-        
+
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/formello'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/formello'),
         ], 'formello-views');
 
         $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/formello'),
+            // Main script
+            __DIR__.'/../resources/assets/js/formello.js' => public_path('vendor/formello/js/formello.js'),
+            // IMask
+            __DIR__.'/../resources/assets/js/imask.min.js' => public_path('vendor/formello/js/imask.min.js'),
+            // Flatpickr
+            __DIR__.'/../resources/assets/js/flatpickr.min.js' => public_path('vendor/formello/js/flatpickr.min.js'),
+            __DIR__.'/../resources/assets/css/flatpickr.min.css' => public_path('vendor/formello/css/flatpickr.min.css'),
+            __DIR__.'/../resources/assets/js/l10n/it.js' => public_path('vendor/formello/js/l10n/it.js'),
+            __DIR__.'/../resources/assets/js/pickr.min.js' => public_path('vendor/formello/js/pickr.min.js'),
+            __DIR__.'/../resources/assets/css/nano.min.css' => public_path('vendor/formello/css/nano.min.css'),
         ], 'formello-assets');
 
         if ($this->app->runningInConsole()) {

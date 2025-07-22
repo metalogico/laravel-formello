@@ -22,5 +22,5 @@
 
 </form>
 
-<script src="{{ asset('vendor/formello/js/formello.js') }}"></script>
 @stack('formello-scripts')
+<script src="{{ asset('vendor/formello/js/formello.js') }}"></script>

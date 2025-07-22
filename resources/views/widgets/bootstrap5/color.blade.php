@@ -29,11 +29,10 @@
 
 </div>
 
-{{-- Push Flatpickr assets to the stack --}}
+{{-- Push Pickr assets to the stack --}}
 @push('formello-scripts')
     @once
-        <link rel="stylesheet" href="{{ asset('vendor/formello/css/flatpickr.min.css') }}">
-        <script src="{{ asset('vendor/formello/js/flatpickr.min.js') }}"></script>
-        <script src="{{ asset('vendor/formello/js/l10n/it.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('vendor/formello/css/nano.min.css') }}">
+        <script src="{{ asset('vendor/formello/js/pickr.min.js') }}"></script>
     @endonce
 @endpush
