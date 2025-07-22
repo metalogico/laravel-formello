@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.1.0] - 2025-07-22
+
+### Added
+- **Icon Support for Text Fields**: Added a new `icon` option to the text widget to display an icon inside the input field using Bootstrap's input groups.
+- **Input Masking for Text Fields**: Integrated IMask.js to add input masking capabilities. Added a new `mask` option to the text widget to define custom input masks.
+
+
 ## [1.0.0] - 2025-07-21
 
 ### Added

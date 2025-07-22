@@ -11,13 +11,18 @@
 
     <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ old($name, $value) }}"
         class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
-        @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
+        @if (isset($config['attributes']['data-formello-mask'])) data-formello-mask='{{ $config['attributes']['data-formello-mask'] }}' @endif
+        @foreach ($config['attributes'] as $attr => $attrValue)
+            @if (!in_array($attr, ['data-formello-mask']))
+                {{ $attr }}="{{ $attrValue }}"
+            @endif
+        @endforeach>
 
     @if (isset($config['icon']))
         </div>
     @endif
 
-    @if (isset($config['help']))
+@if (isset($config['help']))
         <div class="form-text">{!! $config['help'] !!}</div>
     @endif
 
@@ -32,3 +37,11 @@
     @endif
 
 </div>
+
+@if (isset($config['mask']))
+    @push('formello-scripts')
+        @once
+            <script src="{{ asset('vendor/formello/js/imask.min.js') }}"></script>
+        @endonce
+    @endpush
+@endif

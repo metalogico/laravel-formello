@@ -43,6 +43,27 @@ If you use this project, please consider giving it a ⭐.
 composer require metalogico/laravel-formello
 ```
 
+2. Publish the assets:
+
+```bash
+php artisan vendor:publish --tag=formello-assets
+```
+
+3. (Optional) Auto-publish assets on update
+
+To ensure that Formello's assets are automatically updated every time you run `composer update`, you can add a command to the `post-update-cmd` script in your project's `composer.json` file.
+
+```json
+"scripts": {
+    "post-update-cmd": [
+        "@php artisan vendor:publish --tag=formello-assets --force"
+    ]
+}
+```
+
+This will overwrite the existing assets with the latest ones from the package.
+
+
 ## 😎 How to use
 
 Creating a Form

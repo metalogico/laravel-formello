@@ -35,6 +35,10 @@ class FormelloServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/views' => resource_path('views/vendor/formello'),
         ], 'formello-views');
 
+        $this->publishes([
+            __DIR__.'/../resources/assets' => public_path('vendor/formello'),
+        ], 'formello-assets');
+
         if ($this->app->runningInConsole()) {
             $this->commands([MakeFormelloCommand::class]);
         }
