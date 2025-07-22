@@ -2,44 +2,57 @@
 
 namespace Metalogico\Formello\Widgets;
 
-class DateTimeWidget extends BaseWidget
+class DateTimeWidget extends DateWidget
 {
-
     public function getWidgetName(): string
     {
         return 'datetime';
     }
 
+    public function getTemplate(): string
+    {
+        // Use the same template as DateWidget since they're identical
+        $framework = app('formello')->getCssFramework();
+
+        return "formello::widgets.{$framework}.date";
+    }
+
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-control');
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'datetime-local';
+        // Get base data from parent DateWidget
+        $data = parent::getViewData($name, $value, $fieldConfig, $errors);
 
-        $format = $fieldConfig['format'] ?? 'Y-m-d\TH:i';
+        // Override Flatpickr options for datetime
+        $defaultFlatpickrOptions = [
+            'altInput' => true,
+            'altFormat' => 'd F Y H:i',
+            'dateFormat' => 'Y-m-d H:i',
+            'locale' => 'it',
+            'enableTime' => true,
+            'time_24hr' => true,
+        ];
 
+        // Merge with user options
+        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
+
+        // Update the data-formello-datepicker attribute
+        $data['config']['attributes']['data-formello-datepicker'] = json_encode($mergedOptions);
+
+        // Override format for datetime
+        $format = $fieldConfig['format'] ?? 'Y-m-d H:i';
+        $data['format'] = $format;
+
+        // Handle datetime value formatting
         if ($value instanceof \DateTime) {
-            $value = $value->format($format);
-        } elseif (is_string($value)) {
+            $data['value'] = old($name, $value->format($format));
+        } elseif (is_string($value) && $format !== 'Y-m-d H:i') {
             $date = \DateTime::createFromFormat($format, $value);
             if ($date) {
-                $value = $date->format('Y-m-d\TH:i');
+                $data['value'] = old($name, $date->format('Y-m-d H:i'));
             }
         }
 
-        // Set step attribute for seconds if format includes seconds
-        if (strpos($format, ':s') !== false) {
-            $fieldConfig['attributes']['step'] = 1;
-        }
-
-        return [
-            'name' => $name,
-            'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
-            'format' => $format,
-        ];
+        return $data;
     }
 }

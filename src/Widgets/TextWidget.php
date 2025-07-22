@@ -24,6 +24,10 @@ class TextWidget extends BaseWidget
         };
     
         $fieldConfig['attributes'] = array_merge($fieldConfig['attributes'], $typeAttributes);
+
+        if (isset($fieldConfig['mask'])) {
+            $fieldConfig['attributes']['data-formello-mask'] = json_encode($fieldConfig['mask']);
+        }
     
         return [
             'name' => $name,

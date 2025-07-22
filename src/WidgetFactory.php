@@ -23,6 +23,8 @@ class WidgetFactory
             'range' => Widgets\RangeWidget::class,
             'upload' => Widgets\UploadWidget::class,
             'hidden' => Widgets\HiddenWidget::class,
+            'color' => Widgets\ColorWidget::class,
+            'colorswatch' => Widgets\ColorSwatchWidget::class,
         ]);
     }
     

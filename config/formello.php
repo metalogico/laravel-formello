@@ -34,6 +34,8 @@ return [
         'upload' => Metalogico\Formello\Widgets\UploadWidget::class,
         'hidden' => Metalogico\Formello\Widgets\HiddenWidget::class,
         'select2' => Metalogico\Formello\Widgets\Select2Widget::class,
+        'color' => Metalogico\Formello\Widgets\ColorWidget::class,
+        'colorswatch' => Metalogico\Formello\Widgets\ColorSwatchWidget::class,
     ],
 
 ];

@@ -4,11 +4,11 @@ namespace Tests\Unit;
 
 use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\TextWidget;
+use Metalogico\Formello\Widgets\ColorWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
 
-class TextWidgetTest extends TestCase
+class ColorWidgetTest extends TestCase
 {
     protected function getEnvironmentSetUp($app)
     {
@@ -29,13 +29,13 @@ class TextWidgetTest extends TestCase
         };
     }
 
-    private function makeFormWithTextWidget()
+    private function makeFormWithColorWidget()
     {
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
                     'field' => [
-                        'widget' => new TextWidget(),
+                        'widget' => new ColorWidget(),
                     ],
                 ];
             }
@@ -44,34 +44,13 @@ class TextWidgetTest extends TestCase
         };
     }
 
-    public function test_text_widget_is_instantiated_and_renders()
+    public function test_color_widget_is_instantiated_and_renders()
     {
-        $form = $this->makeFormWithTextWidget();
+        $form = $this->makeFormWithColorWidget();
         $fields = $form->getFields();
         $this->assertArrayHasKey('field', $fields);
-        $this->assertInstanceOf(TextWidget::class, $fields['field']['widget']);
+        $this->assertInstanceOf(ColorWidget::class, $fields['field']['widget']);
         $output = $form->renderField('field');
         $this->assertIsString($output);
-    }
-
-    public function test_text_widget_renders_with_icon()
-    {
-        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
-            protected function fields(): array {
-                return [
-                    'field_with_icon' => [
-                        'widget' => new TextWidget(),
-                        'icon' => '<i class="fa-solid fa-user"></i>',
-                    ],
-                ];
-            }
-            protected function create(): array { return []; }
-            protected function edit(): array { return []; }
-        };
-
-        $output = $form->renderField('field_with_icon');
-
-        $this->assertStringContainsString('<div class="input-group">', $output);
-        $this->assertStringContainsString('<i class="fa-solid fa-user"></i>', $output);
     }
 }
