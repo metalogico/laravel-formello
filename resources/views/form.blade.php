@@ -9,11 +9,14 @@
         @method($formConfig['method'])
     @endif
 
-    @foreach ($formello->getFields() as $name => $field)
-        <div class="mb-6">
-            {!! $formello->renderField($name) !!}
-        </div>
-    @endforeach
+    {{-- Grid container per columnSpan --}}
+    <div class="row">
+        @foreach ($formello->getFields() as $name => $field)
+            <div class="col-md-{{ $field['config']['columns'] ?? 12 }} mb-3">
+                {!! $formello->renderField($name) !!}
+            </div>
+        @endforeach
+    </div>
 
     <div class="form-group mt-5 border-top pt-5">
         <button type="submit" class="btn btn-sm btn-primary">{{ $formConfig['submit_label'] ?? __('Save') }}</button>
