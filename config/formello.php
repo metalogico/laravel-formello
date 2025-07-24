@@ -21,9 +21,10 @@ return [
      */
     'default_widgets' => [
         'text' => Metalogico\Formello\Widgets\TextWidget::class,
+        'mask' => Metalogico\Formello\Widgets\MaskWidget::class,
         'textarea' => Metalogico\Formello\Widgets\TextareaWidget::class,
         'boolean' => Metalogico\Formello\Widgets\ToggleWidget::class,
-        'tinyint' => Metalogico\Formello\Widgets\ToggleWidget::class,        
+        'tinyint' => Metalogico\Formello\Widgets\ToggleWidget::class,
         'date' => Metalogico\Formello\Widgets\DateWidget::class,
         'datetime' => Metalogico\Formello\Widgets\DateTimeWidget::class,
         'timestamp' => Metalogico\Formello\Widgets\DateTimeWidget::class,
@@ -36,6 +37,22 @@ return [
         'select2' => Metalogico\Formello\Widgets\Select2Widget::class,
         'color' => Metalogico\Formello\Widgets\ColorWidget::class,
         'colorswatch' => Metalogico\Formello\Widgets\ColorSwatchWidget::class,
+        'wysiwyg' => Metalogico\Formello\Widgets\WysiwygWidget::class,
+        'mask' => Metalogico\Formello\Widgets\MaskWidget::class,
+    ],
+
+    /**
+     * Asset loading configuration
+     * Set to false any library you already have in your theme to avoid conflicts
+     */
+    'assets' => [
+        'select2' => true,
+        'date' => true,
+        'datetime' => true,
+        'mask' => true,
+        'color' => true,
+        'colorswatch' => true,
+        'wysiwyg' => true,
     ],
 
 ];

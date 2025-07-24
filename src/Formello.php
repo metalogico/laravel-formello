@@ -98,6 +98,9 @@ abstract class Formello
                 'widget' => $widget,
                 'config' => $fieldConfig,
             ];
+
+            // Register assets for this widget
+            $this->registerWidgetAssets($widget, $fieldConfig);
         }
     }
 
@@ -228,5 +231,44 @@ abstract class Formello
         $this->formMode = $mode;
 
         return $this;
+    }
+
+    /**
+     * Register assets for a widget
+     */
+    protected function registerWidgetAssets(WidgetInterface $widget, array $fieldConfig): void
+    {
+        $type = $fieldConfig['widget'] ?? 'text';
+        $assetConfig = config('formello.assets', []);
+
+        // Check if assets are enabled for this widget type
+        if (! ($assetConfig[$type] ?? true)) {
+            return;
+        }
+
+        // Get assets from widget, passing field configuration for conditional assets
+        $assets = $widget->getAssets($fieldConfig);
+
+        if ($assets) {
+            $this->registerAssets($assets);
+        }
+    }
+
+    /**
+     * Register an array of assets
+     */
+    protected function registerAssets(array $assets): void
+    {
+        if (isset($assets['scripts'])) {
+            foreach ($assets['scripts'] as $script) {
+                AssetManager::addScript($script);
+            }
+        }
+
+        if (isset($assets['styles'])) {
+            foreach ($assets['styles'] as $style) {
+                AssetManager::addStyle($style);
+            }
+        }
     }
 }
