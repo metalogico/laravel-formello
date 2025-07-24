@@ -26,6 +26,7 @@ class WidgetFactory
             'color' => Widgets\ColorWidget::class,
             'colorswatch' => Widgets\ColorSwatchWidget::class,
             'wysiwyg' => Widgets\WysiwygWidget::class,
+            'mask' => Widgets\MaskWidget::class,
         ]);
     }
 

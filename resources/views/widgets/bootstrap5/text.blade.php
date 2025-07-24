@@ -8,7 +8,6 @@
         <div class="input-group">
             <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
     @endif
-
     <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ old($name, $value) }}"
         class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
         @if (isset($config['attributes']['data-formello-mask'])) data-formello-mask='{{ $config['attributes']['data-formello-mask'] }}' @endif

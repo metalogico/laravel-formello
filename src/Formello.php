@@ -238,7 +238,7 @@ abstract class Formello
      */
     protected function registerWidgetAssets(WidgetInterface $widget, array $fieldConfig): void
     {
-        $type = $fieldConfig['widget'] ?? 'text';
+        $type = $widget->getWidgetName();
         $assetConfig = config('formello.assets', []);
 
         // Check if assets are enabled for this widget type
