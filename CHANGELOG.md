@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.2.0] - 2025-07-24
+
+### Added
+- **WYSIWYG Editor Widget**: New `WysiwygWidget` using Jodit Editor for rich text editing with comprehensive features including tables, images, links, and formatting.
+- **Dedicated Mask Widget**: New `MaskWidget` extending `TextWidget` specifically for input masking with IMask.js, providing better separation of concerns.
+- **Enhanced Asset Management System**: Completely redesigned asset configuration system allowing users to disable specific widget libraries to prevent conflicts with existing theme assets.
+
+### Changed
+- **Improved Asset Configuration**: Asset configuration now uses widget names directly (`'wysiwyg' => false`) instead of library names, making it more intuitive and maintainable.
+- **TextWidget Simplification**: Removed mask logic from `TextWidget` as it's now handled by the dedicated `MaskWidget`.
+- **Streamlined Asset Loading**: Simplified asset registration logic with direct widget-to-config mapping, eliminating hardcoded mappings.
+
+### Fixed
+- **Asset Configuration Bug**: Fixed issue where setting libraries to `false` in config didn't prevent asset loading.
+- **Widget Type Detection**: Improved widget type detection in asset management system for more reliable asset filtering.
+
+
 ## [1.1.0] - 2025-07-22
 
 ### Added
