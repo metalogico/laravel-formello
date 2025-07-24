@@ -4,16 +4,10 @@
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
 
-    @if (isset($config['icon']))
-        <div class="input-group">
-            <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
-            <input @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
-        </div>
-    @else
-        <input @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
-    @endif
+    <textarea data-formello-wysiwyg="{{ json_encode($fieldConfig['jodit'] ?? []) }}" name="{{ $name }}" class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+        @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>{{ old($name, $value) }}</textarea>
 
-    @if (isset($config['help']))
+    @if (isset($config['help']))        
         <div class="form-text">{!! $config['help'] !!}</div>
     @endif
 
@@ -28,5 +22,3 @@
     @endif
 
 </div>
-
-

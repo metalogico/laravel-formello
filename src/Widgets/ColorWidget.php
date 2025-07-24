@@ -49,4 +49,12 @@ class ColorWidget extends BaseWidget
             'errors' => $errors,
         ];
     }
+    
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return [
+            'scripts' => ['pickr.min.js'],
+            'styles' => ['nano.min.css'],
+        ];
+    }
 }

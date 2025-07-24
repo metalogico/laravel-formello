@@ -37,11 +37,3 @@
     @endif
 
 </div>
-
-@if (isset($config['mask']))
-    @push('formello-scripts')
-        @once
-            <script src="{{ asset('vendor/formello/js/imask.min.js') }}"></script>
-        @endonce
-    @endpush
-@endif
