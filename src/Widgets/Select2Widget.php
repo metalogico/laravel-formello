@@ -34,7 +34,7 @@ class Select2Widget extends BaseWidget
         $choices = [];
 
         // Se usiamo AJAX e c'è un valore, dobbiamo caricare l'opzione iniziale
-        if ($usesAjax && !empty($currentValue)) {
+        if ($usesAjax && ! empty($currentValue)) {
             $modelClass = $select2Config['model'] ?? null;
             $labelField = $select2Config['label_field'] ?? 'name';
             $valueField = $select2Config['value_field'] ?? 'id';
@@ -45,7 +45,7 @@ class Select2Widget extends BaseWidget
                     $choices[$item->$valueField] = data_get($item, $labelField);
                 }
             }
-        } elseif (!$usesAjax) {
+        } elseif (! $usesAjax) {
             // Altrimenti, se non usiamo AJAX, risolviamo le choices come prima
             $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
         }
@@ -68,5 +68,13 @@ class Select2Widget extends BaseWidget
         }
 
         return $choices;
+    }
+
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return [
+            'scripts' => ['select2.min.js'],
+            'styles' => ['select2.min.css', 'select2-bootstrap-5-theme.min.css'],
+        ];
     }
 }

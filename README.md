@@ -320,6 +320,85 @@ class ProductForm extends Formello
 
 Formello will automatically instantiate your widget class and call its `render` method to generate the HTML for the form field.
 
+## 🎨 Asset Management - Modular System
+
+Formello uses a modular and flexible system for loading JavaScript and CSS assets, avoiding conflicts with themes that already include the same libraries.
+
+### How It Works
+
+#### 1. Widget-Based Asset Management
+
+Each widget defines its own assets through the `getAssets()` method (optional):
+
+```php
+public function getAssets(?array $fieldConfig = null): ?array
+{
+    return [
+        'scripts' => ['flatpickr.min.js'],
+        'styles' => ['flatpickr.min.css'],
+    ];
+}
+```
+
+#### 2. Blade Directives
+
+Use the new blade directives in your layout:
+
+```blade
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your App</title>
+    
+    <!-- Your existing CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Formello CSS - loads only what's needed -->
+    @formelloStyles
+</head>
+<body>
+    <!-- Your content -->
+    
+    <!-- Your existing JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Formello JS - loads only what's needed -->
+    @formelloScripts
+</body>
+</html>
+```
+
+#### 3. Custom Widgets
+
+Custom widgets can optionally implement `getAssets()`:
+
+```php
+class CustomWidget extends BaseWidget
+{
+    // The getAssets() method is OPTIONAL
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return [
+            'scripts' => ['my-custom-lib.js'],
+            'styles' => ['my-custom-styles.css'],
+        ];
+    }
+    
+    // If you don't implement getAssets(), the widget still works
+}
+```
+
+### Supported Libraries
+
+| Library | Widgets that use it | Assets loaded |
+|----------|-------------------|----------------|
+| `select2` | SelectWidget, Select2Widget | select2.min.js, select2.min.css, select2-bootstrap-5-theme.min.css |
+| `flatpickr` | DateWidget, DateTimeWidget | flatpickr.min.js, l10n/it.js, flatpickr.min.css |
+| `imask` | TextWidget (with mask) | imask.min.js |
+| `pickr` | ColorWidget, ColorSwatchWidget | pickr.min.js, nano.min.css |
+| `jodit` | WysiwygWidget | jodit.min.js, jodit.min.css |
+
 
 ## ⚖️ License
 

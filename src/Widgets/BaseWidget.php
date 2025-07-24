@@ -36,4 +36,16 @@ abstract class BaseWidget implements WidgetInterface
         
         return $fieldConfig;
     }
+    
+    /**
+     * Get assets required by this widget (optional)
+     * Override in child classes to specify required assets
+     * 
+     * @param array|null $fieldConfig Optional field configuration for conditional assets
+     * @return array|null Array with 'scripts' and 'styles' keys, or null if no assets needed
+     */
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return null;
+    }
 }

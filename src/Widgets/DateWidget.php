@@ -51,4 +51,12 @@ class DateWidget extends BaseWidget
             'format' => $format,
         ];
     }
+    
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return [
+            'scripts' => ['flatpickr.min.js', 'l10n/it.js'],
+            'styles' => ['flatpickr.min.css'],
+        ];
+    }
 }

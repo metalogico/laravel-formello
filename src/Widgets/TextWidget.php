@@ -12,23 +12,19 @@ class TextWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-control');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
         $fieldConfig['attributes']['type'] = $fieldConfig['type'] ?? 'text';
-    
-        $typeAttributes = match($fieldConfig['attributes']['type']) {
+
+        $typeAttributes = match ($fieldConfig['attributes']['type']) {
             'number' => ['inputmode' => 'numeric', 'pattern' => '[0-9]*'],
             'email' => ['autocomplete' => 'email'],
             'password' => ['autocomplete' => 'new-password'],
             default => []
         };
-    
+
         $fieldConfig['attributes'] = array_merge($fieldConfig['attributes'], $typeAttributes);
 
-        if (isset($fieldConfig['mask'])) {
-            $fieldConfig['attributes']['data-formello-mask'] = json_encode($fieldConfig['mask']);
-        }
-    
         return [
             'name' => $name,
             'value' => old($name, $value),
@@ -36,5 +32,13 @@ class TextWidget extends BaseWidget
             'config' => $fieldConfig,
             'errors' => $errors,
         ];
+    }
+
+    /**
+     * Get assets for TextWidget - no assets needed
+     */
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return null;
     }
 }

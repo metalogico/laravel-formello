@@ -2,8 +2,6 @@
 
 namespace Metalogico\Formello\Widgets;
 
-use Illuminate\Support\Arr;
-
 class SelectWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -14,11 +12,11 @@ class SelectWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-select');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-select');
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        
+
         // Add support for multiple selection
-        if (!empty($fieldConfig['multiple'])) {
+        if (! empty($fieldConfig['multiple'])) {
             $fieldConfig['attributes']['multiple'] = 'multiple';
             $name .= '[]'; // Modify name to handle array submission
         }
@@ -42,5 +40,13 @@ class SelectWidget extends BaseWidget
         }
 
         return $choices;
+    }
+    
+    public function getAssets(?array $fieldConfig = null): ?array
+    {
+        return [
+            'scripts' => ['select2.min.js'],
+            'styles' => ['select2.min.css'],
+        ];
     }
 }

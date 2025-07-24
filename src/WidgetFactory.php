@@ -7,7 +7,7 @@ use Metalogico\Formello\Interfaces\WidgetInterface;
 class WidgetFactory
 {
     private array $widgetMap;
-    
+
     public function __construct()
     {
         $this->widgetMap = config('formello.default_widgets', [
@@ -25,23 +25,24 @@ class WidgetFactory
             'hidden' => Widgets\HiddenWidget::class,
             'color' => Widgets\ColorWidget::class,
             'colorswatch' => Widgets\ColorSwatchWidget::class,
+            'wysiwyg' => Widgets\WysiwygWidget::class,
         ]);
     }
-    
+
     public function make(string $type): WidgetInterface
     {
         $widgetClass = $this->widgetMap[$type] ?? Widgets\TextWidget::class;
-        
-        if (!class_exists($widgetClass)) {
+
+        if (! class_exists($widgetClass)) {
             throw new \InvalidArgumentException("Widget class {$widgetClass} not found");
         }
-        
-        $widget = new $widgetClass();
-        
-        if (!$widget instanceof WidgetInterface) {
-            throw new \InvalidArgumentException("Widget must implement WidgetInterface");
+
+        $widget = new $widgetClass;
+
+        if (! $widget instanceof WidgetInterface) {
+            throw new \InvalidArgumentException('Widget must implement WidgetInterface');
         }
-        
+
         return $widget;
     }
 }
