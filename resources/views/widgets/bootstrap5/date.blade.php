@@ -7,10 +7,10 @@
     @if (isset($config['icon']))
         <div class="input-group">
             <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
-            <input @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
+            <input name="{{ $name }}" value="{{ old($name, $value) }}" @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
         </div>
     @else
-        <input @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
+        <input name="{{ $name }}" value="{{ old($name, $value) }}" @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>
     @endif
 
     @if (isset($config['help']))
