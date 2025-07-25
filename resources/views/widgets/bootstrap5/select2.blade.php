@@ -21,10 +21,16 @@
                     data-ajax--delay="250"
                     data-minimum-input-length="2"
                 @endif
-                data-placeholder="{{ $config['placeholder'] ?? __('Select') }}"
+                data-placeholder="{{ $config['select2']['placeholder'] ?? __('Select') }}"
                 data-allow-clear="true"
                 data-language="it"
-                data-dropdown-parent="{{ $config['dropdownParent'] ?? 'body' }}">
+                data-dropdown-parent="{{ $config['select2']['dropdownParent'] ?? 'body' }}"
+                data-theme="{{ $config['select2']['theme'] ?? 'bootstrap-5' }}"
+                @foreach ($config['attributes'] as $attr => $attrValue)
+                    {{ $attr }}="{{ $attrValue }}"
+                @endforeach
+                >
+
 
                 {{-- Render pre-selected options for AJAX or all options for non-AJAX --}}
                 @foreach ($choices as $optionValue => $optionLabel)

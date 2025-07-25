@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Initialize Select2
                 $(el).select2({
-                    theme: 'bootstrap-5',
+                    theme: 'bootstrap-5'
                 });
 
                 // Trigger change event for form validation
