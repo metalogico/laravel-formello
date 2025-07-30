@@ -6,6 +6,8 @@ A Laravel package for generating Bootstrap 5 forms based on models. Laravel 9+
 
 Formello is a comprehensive form generation and handling tool for Laravel applications, inspired by Django forms.
 
+<img width="1255" height="887" alt="SCR-20250730-kida" src="https://github.com/user-attachments/assets/dbc897c6-2d1d-40f7-8d3f-14bed9e8868a" />
+
 ## 🎉 Motivation
 
 The Laravel ecosystem offers powerful tools for building applications, from full-featured admin panels like Nova and Filament to complex form-handling libraries. However, I felt there was a need for a tool that sits in the "sweet spot" between these solutions.
