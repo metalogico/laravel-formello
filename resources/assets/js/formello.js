@@ -129,14 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
         select2Elements.forEach(function (el) {
             try {
 
-                // Initialize Select2
                 $(el).select2({
-                    theme: 'bootstrap-5'
-                });
-
-                // Trigger change event for form validation
-                $(el).on('select2:select select2:unselect', function () {
-                    $(this).trigger('change');
+                    theme: 'bootstrap-5',
                 });
 
             } catch (e) {

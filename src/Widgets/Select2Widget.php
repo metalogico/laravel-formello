@@ -21,11 +21,6 @@ class Select2Widget extends BaseWidget
         $fieldConfig = array_merge($defaults, $fieldConfig);
         $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
 
-        // Handle multiple selection
-        if (! empty($fieldConfig['multiple'])) {
-            $name .= '[]';
-        }
-
         // Estrai la configurazione specifica di select2
         $select2Config = $fieldConfig['select2'] ?? [];
         $usesAjax = ! empty($select2Config['route']);
