@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.2.4] - 2025-07-30
+
+### Fixed
+- Fixed an issue where the Select2 widget would incorrectly get the `multiple` attribute even when not specified in the field configuration. The logic now correctly passes the `multiple` state from the PHP backend to the JavaScript initialization via a `data-multiple` attribute, ensuring the widget behaves as expected.
+
 ## [1.2.2] - 2025-07-24
 
 ### Added
