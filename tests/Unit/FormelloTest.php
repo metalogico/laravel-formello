@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use Metalogico\Formello\Formello;
-use Orchestra\Testbench\TestCase;
-use Illuminate\Support\ViewErrorBag;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\Formello;
 use Metalogico\Formello\Widgets\TextWidget;
+use Orchestra\Testbench\TestCase;
 
 class FormelloTest extends TestCase
 {
@@ -24,32 +24,46 @@ class FormelloTest extends TestCase
 
     private function makeDummyModel()
     {
-        return new class extends Model {
-            public function getTable() { return 'dummy'; }
+        return new class extends Model
+        {
+            public function getTable()
+            {
+                return 'dummy';
+            }
         };
     }
 
     public function test_formello_can_be_instantiated_and_renders()
     {
-        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
-            protected function fields(): array {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag) extends Formello
+        {
+            protected function fields(): array
+            {
                 return [
                     'field' => [
                         'name' => 'test',
                         'label' => 'Test',
-                        'widget' => new TextWidget(),
+                        'widget' => new TextWidget,
                     ],
                 ];
             }
-            protected function create(): array { return []; }
-            protected function edit(): array { return []; }
+
+            protected function create(): array
+            {
+                return [];
+            }
+
+            protected function edit(): array
+            {
+                return [];
+            }
         };
         $this->assertInstanceOf(Formello::class, $form);
         try {
             $output = $form->render();
             $this->assertIsString($output);
         } catch (\Throwable $e) {
-            $this->fail('Render exception: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            $this->fail('Render exception: '.$e->getMessage()."\n".$e->getTraceAsString());
         }
     }
 
@@ -57,10 +71,22 @@ class FormelloTest extends TestCase
     {
         $model = $this->makeDummyModel();
 
-        $form = new class($model, new ViewErrorBag()) extends Formello {
-            protected function fields(): array { return []; }
-            protected function create(): array { return []; }
-            protected function edit(): array { return []; }
+        $form = new class($model, new ViewErrorBag) extends Formello
+        {
+            protected function fields(): array
+            {
+                return [];
+            }
+
+            protected function create(): array
+            {
+                return [];
+            }
+
+            protected function edit(): array
+            {
+                return [];
+            }
         };
 
         $this->assertTrue($form->isCreating());
@@ -72,10 +98,22 @@ class FormelloTest extends TestCase
         $model = $this->makeDummyModel();
         $model->exists = true; // Simulate an existing model
 
-        $form = new class($model, new ViewErrorBag()) extends Formello {
-            protected function fields(): array { return []; }
-            protected function create(): array { return []; }
-            protected function edit(): array { return []; }
+        $form = new class($model, new ViewErrorBag) extends Formello
+        {
+            protected function fields(): array
+            {
+                return [];
+            }
+
+            protected function create(): array
+            {
+                return [];
+            }
+
+            protected function edit(): array
+            {
+                return [];
+            }
         };
 
         $this->assertTrue($form->isEditing());

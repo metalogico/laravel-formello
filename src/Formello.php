@@ -24,18 +24,32 @@ abstract class Formello
 
     private SchemaInspector $schemaInspector;
 
+    /**
+     * Creates a new instance of Formello.
+     *
+     * @param  Model|string  $model  Model instance or class-string
+     * @param  ViewErrorBag|null  $errors  Validation errors bag
+     * @param  WidgetFactory|null  $widgetFactory  Widget factory
+     * @param  SchemaInspector|null  $schemaInspector  Database schema inspector
+     */
     public function __construct(
-        Model $model,
+        Model|string $model,
         ?ViewErrorBag $errors = null,
         ?WidgetFactory $widgetFactory = null,
         ?SchemaInspector $schemaInspector = null
     ) {
-        $this->model = $model;
+        // Se è una stringa, creiamo una nuova istanza del modello
+        if (is_string($model)) {
+            $this->model = new $model;
+        } else {
+            $this->model = $model;
+        }
         $this->errors = $errors ?? session()->get('errors', new ViewErrorBag);
         $this->widgetFactory = $widgetFactory ?? new WidgetFactory;
         $this->schemaInspector = $schemaInspector ?? new SchemaInspector;
 
-        if ($model->exists) {
+        // Set the form mode based on the model's existence
+        if ($this->model->exists) {
             $this->setFormMode('edit');
         } else {
             $this->setFormMode('create');
@@ -50,6 +64,14 @@ abstract class Formello
     abstract protected function create(): array;
 
     abstract protected function edit(): array;
+
+    /**
+     * Returns the model instance associated with the form.
+     */
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
 
     /**
      * Initialize the form
