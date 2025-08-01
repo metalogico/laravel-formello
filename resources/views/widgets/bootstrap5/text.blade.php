@@ -4,9 +4,13 @@
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
 
-    @if (isset($config['icon']))
+    @if (isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']))
         <div class="input-group">
-            <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
+            @if (isset($config['prefix']))
+                <span class="input-group-text">@if (isset($config['icon'])) <i class="{!! $config['icon'] !!}"></i> @endif {{ $config['prefix'] }}</span>
+            @elseif (isset($config['icon']))
+                <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
+            @endif
     @endif
     <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ old($name, $value) }}"
         class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
@@ -17,7 +21,10 @@
             @endif
         @endforeach>
 
-    @if (isset($config['icon']))
+    @if (isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']))
+            @if (isset($config['suffix']))
+                <span class="input-group-text">{{ $config['suffix'] }}</span>
+            @endif
         </div>
     @endif
 

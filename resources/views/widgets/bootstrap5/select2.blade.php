@@ -4,9 +4,13 @@
     @endif
 
     <div class="input-group flex-nowrap">
-        <span class="input-group-text">
-            <i class="fas fa-search fs-6"></i>
-        </span>
+        @if (isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']))
+            @if (isset($config['prefix']))
+                <span class="input-group-text">@if (isset($config['icon'])) <i class="{!! $config['icon'] !!}"></i> @endif {{ $config['prefix'] }}</span>
+            @elseif (isset($config['icon']))
+                <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
+            @endif
+        @endif
         <div class="overflow-hidden flex-grow-1">
             <select id="{{ $config['attributes']['id'] }}"
                 name="{{ $name }}"
@@ -38,6 +42,9 @@
                 @endforeach
             </select>
         </div>
+        @if (isset($config['suffix']))
+            <span class="input-group-text">{{ $config['suffix'] }}</span>
+        @endif
     </div>
 
     @if (isset($config['help']))
