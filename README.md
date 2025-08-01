@@ -162,7 +162,7 @@ In your controller for an empty form (create action):
 public function create()
 {
     // create the form
-    $formello = new ProductForm(new Product);
+    $formello = new ProductForm(Product::class);
     // pass it to the view
     return view('products.create', [
       'formello' => $formello
@@ -173,11 +173,10 @@ public function create()
 or, for an edit form:
 
 ```php
-public function edit(string $id)
+public function edit(Product $product)
 {
     // pass the model to the form
-    $category = Product::findOrFail($id);
-    $formello = new ProductForm($category);
+    $formello = new ProductForm($product);
     // pass it to the view
     return view('products.edit', [
         'formello' => $formello
@@ -225,16 +224,25 @@ If you want to render only the fields (without the \<form\> tag) you can use:
 @endforeach
 ```
 
-
 ## Creating Custom Widgets
 
 Formello is designed to be extensible, allowing you to create your own custom widgets. This is useful when you need a specific form control that isn't included in the default set.
 
 To create a custom widget, you need to follow these steps:
 
+### First of all, the config file!
+
+You need to have the config file to add the widget in the Formello list of available widgets.
+
+```bash
+php artisan vendor:publish --tag=formello-config
+```
+In this file you will see a list of all the available widgets. Add your widget to the list.
+
+
 ### 1. Create a Widget Class
 
-First, create a new PHP class for your widget. This class must implement the `Metalogico\Formello\Interfaces\WidgetInterface`. This interface requires you to implement a single `render` method.
+Then, create a new PHP class for your widget. This class must implement the `Metalogico\Formello\Interfaces\WidgetInterface`. This interface requires you to implement a single `render` method.
 
 You can place this class anywhere in your project, for example, in `app/Widgets`.
 
