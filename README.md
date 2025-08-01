@@ -237,16 +237,19 @@ You need to have the config file to add the widget in the Formello list of avail
 ```bash
 php artisan vendor:publish --tag=formello-config
 ```
-In this file you will see a list of all the available widgets. Add your widget to the list.
+In this file you will see a list of all the available widgets. 
+Add your widget to the list with a name, for example: `star-rating`.
 
 
 ### 1. Create a Widget Class
 
-Then, create a new PHP class for your widget. This class must implement the `Metalogico\Formello\Interfaces\WidgetInterface`. This interface requires you to implement a single `render` method.
+Then, create a new PHP class for your widget. This class must extend the `Metalogico\Formello\Widgets\BaseWidget` class.
 
 You can place this class anywhere in your project, for example, in `app/Widgets`.
 
-To maintain a clean separation of concerns, the `render` method should delegate the rendering to a Blade template.
+To maintain a clean separation of concerns, the `getViewData` method should return an array of data that will be used to render the widget.
+
+To set the template you can use the `getTemplate` method.
 
 Here is an example of a `StarRatingWidget` class:
 
@@ -255,18 +258,23 @@ Here is an example of a `StarRatingWidget` class:
 
 namespace App\Widgets;
 
-use Metalogico\Formello\Interfaces\WidgetInterface;
+use Metalogico\Formello\Widgets\BaseWidget;
 
-class StarRatingWidget implements WidgetInterface
+class StarRatingWidget extends BaseWidget
 {
-    public function render(string $name, $value, array $config, array $errors): string
+    public function getViewData(string $name, $value, array $config, array $errors): array
     {
-        return view('widgets.star-rating', [
+        return [
             'name' => $name,
             'value' => $value,
             'config' => $config,
             'errors' => $errors,
-        ])->render();
+        ];
+    }
+
+    public function getTemplate(): string
+    {
+        return "widgets.star-rating";
     }
 }
 ```
@@ -275,7 +283,7 @@ class StarRatingWidget implements WidgetInterface
 
 Next, create the Blade template that will render the widget's HTML. For instance, you can create the file `resources/views/widgets/star-rating.blade.php`:
 
-```blade
+```php
 <div class="mb-3">
     <label for="{{ $name }}" class="form-label">{{ $config['label'] }}</label>
     <input type="number" 
@@ -308,7 +316,6 @@ Once you have created your widget class, you can use it in your Formello form by
 namespace App\Forms;
 
 use Metalogico\Formello\Formello;
-use App\Widgets\StarRatingWidget; // Import your custom widget
 
 class ProductForm extends Formello
 {
@@ -320,8 +327,7 @@ class ProductForm extends Formello
             // ... other fields
             'rating' => [
                 'label' => __('Product Rating'),
-                'widget' => StarRatingWidget::class,
-                'help' => 'Rate the product from 1 to 5 stars.'
+                'widget' => 'star-rating',
             ],
         ];
     }

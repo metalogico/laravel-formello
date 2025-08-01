@@ -41,7 +41,7 @@ class SelectWidget extends BaseWidget
 
         return $choices;
     }
-    
+
     public function getAssets(?array $fieldConfig = null): ?array
     {
         return [

@@ -2,8 +2,6 @@
 
 namespace Metalogico\Formello\Widgets;
 
-use Illuminate\Support\Arr;
-
 class CheckboxesWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -33,6 +31,7 @@ class CheckboxesWidget extends BaseWidget
         if (is_callable($choices)) {
             return call_user_func($choices);
         }
+
         return $choices;
     }
 }

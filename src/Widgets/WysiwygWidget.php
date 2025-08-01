@@ -26,7 +26,7 @@ class WysiwygWidget extends BaseWidget
             'errors' => $errors,
         ];
     }
-    
+
     public function getAssets(?array $fieldConfig = null): ?array
     {
         return [

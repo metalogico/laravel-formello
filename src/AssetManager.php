@@ -8,8 +8,6 @@ class AssetManager
 
     protected static array $styles = [];
 
-
-
     /**
      * Add a script to the queue
      */

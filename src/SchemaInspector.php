@@ -2,8 +2,8 @@
 
 namespace Metalogico\Formello;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SchemaInspector
 {
@@ -14,29 +14,29 @@ class SchemaInspector
         if (isset($casts[$field])) {
             return $this->normalizeCastType($casts[$field]);
         }
-        
+
         // 2. Check fillable/guarded hints
         if (Str::endsWith($field, ['_id', 'Id'])) {
             return 'select';
         }
-        
+
         if (in_array($field, ['email'])) {
             return 'email';
         }
-        
+
         if (in_array($field, ['password', 'password_confirmation'])) {
             return 'password';
         }
-        
+
         // 3. Default fallback
         return 'text';
     }
-    
+
     private function normalizeCastType(string $cast): string
     {
-        return match($cast) {
+        return match ($cast) {
             'boolean' => 'boolean',
-            'date' => 'date', 
+            'date' => 'date',
             'datetime' => 'datetime',
             'timestamp' => 'datetime',
             'array' => 'checkboxes',

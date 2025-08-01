@@ -12,20 +12,22 @@ abstract class BaseWidget implements WidgetInterface
     public function render($name, $value, array $fieldConfig, $errors = null): string
     {
         $viewData = $this->getViewData($name, $value, $fieldConfig, $errors);
+
         return View::make($this->getTemplate(), $viewData)->render();
     }
 
     public function getTemplate(): string
     {
         $framework = app('formello')->getCssFramework();
-        return "formello::widgets.{$framework}." . $this->getWidgetName();
+
+        return "formello::widgets.{$framework}.".$this->getWidgetName();
     }
 
-    protected function getWidgetName(): string
+    public function getWidgetName(): string
     {
         return strtolower(class_basename($this));
     }
-    
+
     protected function mergeDefaultAttributes(array $fieldConfig, array $defaults, string $name): array
     {
         $fieldConfig['attributes'] = array_merge(
@@ -33,15 +35,15 @@ abstract class BaseWidget implements WidgetInterface
             $fieldConfig['attributes'] ?? [],
             ['id' => $fieldConfig['attributes']['id'] ?? $name]
         );
-        
+
         return $fieldConfig;
     }
-    
+
     /**
      * Get assets required by this widget (optional)
      * Override in child classes to specify required assets
-     * 
-     * @param array|null $fieldConfig Optional field configuration for conditional assets
+     *
+     * @param  array|null  $fieldConfig  Optional field configuration for conditional assets
      * @return array|null Array with 'scripts' and 'styles' keys, or null if no assets needed
      */
     public function getAssets(?array $fieldConfig = null): ?array

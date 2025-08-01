@@ -3,12 +3,13 @@
 namespace Metalogico\Formello\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 class MakeFormelloCommand extends Command
 {
     protected $signature = 'make:formello {--model=}';
+
     protected $description = 'Create a new Formello form class';
 
     protected $files;
@@ -22,24 +23,27 @@ class MakeFormelloCommand extends Command
     public function handle()
     {
         $model = $this->option('model');
-        
-        if (!$model) {
+
+        if (! $model) {
             $this->error('The --model option is required.');
+
             return;
         }
 
         $modelClass = $this->qualifyModel($model);
-        
-        if (!class_exists($modelClass)) {
+
+        if (! class_exists($modelClass)) {
             $this->error("Model {$modelClass} does not exist.");
+
             return;
         }
 
-        $formName = class_basename($model) . 'Form';
+        $formName = class_basename($model).'Form';
         $formPath = app_path("Forms/{$formName}.php");
 
         if ($this->files->exists($formPath)) {
             $this->error("Form {$formName} already exists!");
+
             return;
         }
 
@@ -74,7 +78,7 @@ class MakeFormelloCommand extends Command
 
     protected function makeDirectory($path)
     {
-        if (!$this->files->isDirectory(dirname($path))) {
+        if (! $this->files->isDirectory(dirname($path))) {
             $this->files->makeDirectory(dirname($path), 0777, true, true);
         }
     }
@@ -86,6 +90,7 @@ class MakeFormelloCommand extends Command
             [$this->getNamespace($name), $this->rootNamespace()],
             $stub
         );
+
         return $stub;
     }
 
@@ -93,12 +98,14 @@ class MakeFormelloCommand extends Command
     {
         $class = str_replace($this->getNamespace($name).'\\', '', $name);
         $stub = str_replace('DummyClass', $class, $stub);
+
         return $stub;
     }
 
     protected function replaceModel($stub, $model)
     {
         $stub = str_replace('DummyModel', Str::plural(strtolower($model)), $stub);
+
         return $stub;
     }
 
@@ -106,15 +113,16 @@ class MakeFormelloCommand extends Command
     {
         $model = new $modelClass;
         $fillable = $model->getFillable();
-    
+
         $fields = '';
         foreach ($fillable as $field) {
             $fields .= "            '{$field}' => [\n";
-            $fields .= "                'label' => __('" . Str::title(str_replace('_', ' ', $field)) . "'),\n";
+            $fields .= "                'label' => __('".Str::title(str_replace('_', ' ', $field))."'),\n";
             $fields .= "            ],\n";
         }
-    
+
         $stub = str_replace('DummyFields', $fields, $stub);
+
         return $stub;
     }
 

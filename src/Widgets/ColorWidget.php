@@ -49,7 +49,7 @@ class ColorWidget extends BaseWidget
             'errors' => $errors,
         ];
     }
-    
+
     public function getAssets(?array $fieldConfig = null): ?array
     {
         return [

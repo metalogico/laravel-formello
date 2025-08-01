@@ -7,16 +7,15 @@ use Illuminate\Support\ViewErrorBag;
 
 class FormelloManager extends Formello
 {
-
     public function __construct(?Model $model = null, ?ViewErrorBag $errors = null)
     {
-        if (!$model) {
+        if (! $model) {
             // Instead of creating a new Model, we'll use a null object pattern
             $model = new class extends Model {};
         }
-        
+
         $errors = $errors ?? new ViewErrorBag;
-        
+
         parent::__construct($model, $errors);
     }
 
@@ -33,7 +32,7 @@ class FormelloManager extends Formello
     protected function edit(): array
     {
         return [];
-    }    
+    }
 
     public function getCssFramework()
     {

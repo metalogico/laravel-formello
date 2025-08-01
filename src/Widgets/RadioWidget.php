@@ -12,7 +12,7 @@ class RadioWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '') . ' form-check-input');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-check-input');
 
         return [
             'name' => $name,
