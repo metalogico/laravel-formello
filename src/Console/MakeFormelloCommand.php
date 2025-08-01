@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class MakeFormelloCommand extends Command
 {
-    protected $signature = 'make:formello {--model=}';
+    protected $signature = 'make:formello {--model=} {--name=}';
 
     protected $description = 'Create a new Formello form class';
 
@@ -38,7 +38,8 @@ class MakeFormelloCommand extends Command
             return;
         }
 
-        $formName = class_basename($model).'Form';
+        $name = $this->option('name');
+        $formName = $name ? $name : class_basename($model).'Form';
         $formPath = app_path("Forms/{$formName}.php");
 
         if ($this->files->exists($formPath)) {
