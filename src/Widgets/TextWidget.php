@@ -25,9 +25,14 @@ class TextWidget extends BaseWidget
 
         $fieldConfig['attributes'] = array_merge($fieldConfig['attributes'], $typeAttributes);
 
+        $safeValue = $value;
+        if ($fieldConfig['attributes']['type'] === 'password') {
+            $safeValue = '';
+        }
+
         return [
             'name' => $name,
-            'value' => old($name, $value),
+            'value' => old($name, $safeValue),
             'label' => $fieldConfig['label'] ?? null,
             'config' => $fieldConfig,
             'errors' => $errors,
