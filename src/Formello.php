@@ -130,14 +130,14 @@ abstract class Formello
     {
         // Se widget specificato esplicitamente
         if (isset($fieldConfig['widget'])) {
+            // Se è una classe completa
+            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
+                return new $fieldConfig['widget'];
+            }
             // Se è un alias (stringa breve, es: 'text', 'select2', ecc.)
             if (is_string($fieldConfig['widget'])) {
                 // Usa la factory per risolvere l'alias
                 return $this->widgetFactory->make($fieldConfig['widget']);
-            }
-            // Se è una classe completa
-            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
-                return new $fieldConfig['widget'];
             }
             // Se è già un oggetto widget
             if ($fieldConfig['widget'] instanceof WidgetInterface) {
