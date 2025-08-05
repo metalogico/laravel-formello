@@ -113,10 +113,8 @@ class ProductForm extends Formello
             ],
             'category_id' => [
                 'label' => __('Category'),
-                'widget' => SelectWidget::class,
-                'choices' => function () {
-                    return Category::pluck('name', 'id');
-                },
+                'widget' => 'select',
+                'choices' => Category::pluck('name', 'id')->toArray();
             ],
             'in_stock' => [
               'label' => __('In Stock'),
@@ -184,6 +182,20 @@ public function edit(Product $product)
 }
 ```
 
+Then in you blade template:
+
+```php
+{!! $formello->render() !!}
+```
+
+If you want to render only the fields (without the \<form\> tag) you can use:
+
+```php
+@foreach ($formello->getFields() as $name => $field)
+    {!! $formello->renderField($name) !!}
+@endforeach
+```
+
 ## Conditional Logic
 
 You can use `isCreating()` and `isEditing()` methods in your form class to dynamically change fields, labels, rules, or other options based on the form's mode.
@@ -208,20 +220,6 @@ protected function fields(): array
 
     return $fields;
 }
-```
-
-Then in you blade template:
-
-```php
-{!! $formello->render() !!}
-```
-
-If you want to render only the fields (without the \<form\> tag) you can use:
-
-```php
-@foreach ($formello->getFields() as $name => $field)
-    {!! $formello->renderField($name) !!}
-@endforeach
 ```
 
 ## Creating Custom Widgets
