@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Select2 initialization
-    const select2Elements = document.querySelectorAll('[data-control="select2"]');
+    const select2Elements = document.querySelectorAll('[data-formello-select2]');
     if (typeof $ !== 'undefined' && $.fn.select2) {
         select2Elements.forEach(function (el) {
             try {

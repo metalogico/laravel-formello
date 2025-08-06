@@ -13,7 +13,7 @@ class WidgetFactory
         $this->widgetMap = config('formello.default_widgets', [
             'text' => Widgets\TextWidget::class,
             'textarea' => Widgets\TextareaWidget::class,
-            'boolean' => Widgets\ToggleWidget::class,
+            'toggle' => Widgets\ToggleWidget::class,
             'date' => Widgets\DateWidget::class,
             'datetime' => Widgets\DateTimeWidget::class,
             'select' => Widgets\SelectWidget::class,

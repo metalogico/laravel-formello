@@ -21,10 +21,8 @@ return [
      */
     'default_widgets' => [
         'text' => Metalogico\Formello\Widgets\TextWidget::class,
-        'mask' => Metalogico\Formello\Widgets\MaskWidget::class,
         'textarea' => Metalogico\Formello\Widgets\TextareaWidget::class,
-        'boolean' => Metalogico\Formello\Widgets\ToggleWidget::class,
-        'tinyint' => Metalogico\Formello\Widgets\ToggleWidget::class,
+        'toggle' => Metalogico\Formello\Widgets\ToggleWidget::class,
         'date' => Metalogico\Formello\Widgets\DateWidget::class,
         'datetime' => Metalogico\Formello\Widgets\DateTimeWidget::class,
         'timestamp' => Metalogico\Formello\Widgets\DateTimeWidget::class,
