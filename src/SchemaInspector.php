@@ -35,7 +35,7 @@ class SchemaInspector
     private function normalizeCastType(string $cast): string
     {
         return match ($cast) {
-            'boolean' => 'boolean',
+            'boolean' => 'toggle',
             'date' => 'date',
             'datetime' => 'datetime',
             'timestamp' => 'datetime',

@@ -11,7 +11,7 @@
             <select id="{{ $config['attributes']['id'] }}"
                 name="{{ $name }}"
                 class="form-select rounded-start-0"
-                data-control="select2"
+                data-formello-select2="true"
                 data-multiple="{{ $config['multiple'] ?? 'false' }}"
                 @if($usesAjax)
                     data-ajax--url="{{ $config['select2']['route'] }}"
