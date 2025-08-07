@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class ToggleWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,26 +11,27 @@ class ToggleWidget extends BaseWidget
         return 'toggle';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-check-input');
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'checkbox';
-        $fieldConfig['attributes']['role'] = 'switch';
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-check-input');
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
+        $this->widgetConfig['attributes']['type'] = 'checkbox';
+        $this->widgetConfig['attributes']['role'] = 'switch';
 
         // Convert value to boolean
         $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
 
         // Set checked attribute if the value is true
         if ($value) {
-            $fieldConfig['attributes']['checked'] = 'checked';
+            $this->widgetConfig['attributes']['checked'] = 'checked';
         }
 
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'config' => $fieldConfig,
+            'config' => $this->getConfig($field),
             'errors' => $errors,
         ];
     }

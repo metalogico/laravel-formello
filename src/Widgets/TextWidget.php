@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class TextWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,41 +11,34 @@ class TextWidget extends BaseWidget
         return 'text';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = $fieldConfig['type'] ?? 'text';
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-control');
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
+        $this->widgetConfig['attributes']['type'] = $this->widgetConfig['type'] ?? 'text';
 
-        $typeAttributes = match ($fieldConfig['attributes']['type']) {
+        $typeAttributes = match ($this->widgetConfig['attributes']['type']) {
             'number' => ['inputmode' => 'numeric', 'pattern' => '[0-9]*'],
             'email' => ['autocomplete' => 'email'],
             'password' => ['autocomplete' => 'new-password'],
             default => []
         };
 
-        $fieldConfig['attributes'] = array_merge($fieldConfig['attributes'], $typeAttributes);
+        $this->widgetConfig['attributes'] = array_merge($this->widgetConfig['attributes'], $typeAttributes);
 
         $safeValue = $value;
-        if ($fieldConfig['attributes']['type'] === 'password') {
+        if ($this->widgetConfig['attributes']['type'] === 'password') {
             $safeValue = '';
         }
 
         return [
             'name' => $name,
             'value' => old($name, $safeValue),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
         ];
-    }
-
-    /**
-     * Get assets for TextWidget - no assets needed
-     */
-    public function getAssets(?array $fieldConfig = null): ?array
-    {
-        return null;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class DateWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,12 +11,13 @@ class DateWidget extends BaseWidget
         return 'date';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'text'; // Flatpickr works on text inputs
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-control');
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
+        $this->widgetConfig['attributes']['type'] = 'text'; // Flatpickr works on text inputs
 
         // Define default Flatpickr options
         $defaultFlatpickrOptions = [
@@ -25,13 +28,13 @@ class DateWidget extends BaseWidget
         ];
 
         // Merge default options with user-provided options
-        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $userFlatpickrOptions = $this->widgetConfig['flatpickr'] ?? [];
         $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
 
         // Pass the final options to the view
-        $fieldConfig['attributes']['data-formello-datepicker'] = json_encode($mergedOptions);
+        $this->widgetConfig['attributes']['data-formello-datepicker'] = json_encode($mergedOptions);
 
-        $format = $fieldConfig['format'] ?? 'Y-m-d';
+        $format = $this->widgetConfig['format'] ?? 'Y-m-d';
 
         if ($value instanceof \DateTime) {
             $value = $value->format($format);
@@ -45,14 +48,14 @@ class DateWidget extends BaseWidget
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
             'format' => $format,
         ];
     }
 
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['flatpickr.min.js', 'l10n/it.js'],

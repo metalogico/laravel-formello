@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class ColorSwatchWidget extends ColorWidget
 {
     public function getWidgetName(): string
@@ -17,10 +19,10 @@ class ColorSwatchWidget extends ColorWidget
         return "formello::widgets.{$framework}.color";
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
         // Get base data from parent ColorWidget
-        $data = parent::getViewData($name, $value, $fieldConfig, $errors);
+        $data = parent::getViewData($field, $value, $errors);
 
         // Override Pickr options for swatches-only mode
         $defaultPickrOptions = [
@@ -57,7 +59,7 @@ class ColorSwatchWidget extends ColorWidget
         ];
 
         // Merge with user options (user can override swatches)
-        $userPickrOptions = $fieldConfig['pickr'] ?? [];
+        $userPickrOptions = $this->widgetConfig['pickr'] ?? [];
         $mergedOptions = array_merge($defaultPickrOptions, $userPickrOptions);
 
         // Update the data-formello-colorpicker attribute

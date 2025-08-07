@@ -2,11 +2,12 @@
 
 namespace Tests\Unit;
 
-use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\SelectWidget;
-use Illuminate\Database\Eloquent\Model;
+use Orchestra\Testbench\TestCase;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
+use Illuminate\Database\Eloquent\Model;
+use Metalogico\Formello\Widgets\SelectWidget;
 
 class SelectWidgetTest extends TestCase
 {
@@ -34,10 +35,8 @@ class SelectWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new SelectWidget(),
-                        'choices' => ['a' => 'A', 'b' => 'B'],
-                    ],
+                    FormelloField::make('field')
+                        ->widget(SelectWidget::class, ['choices' => ['a' => 'A', 'b' => 'B']])
                 ];
             }
             protected function create(): array { return []; }

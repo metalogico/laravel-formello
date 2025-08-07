@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class MaskWidget extends TextWidget
 {
     public function getWidgetName(): string
@@ -17,14 +19,15 @@ class MaskWidget extends TextWidget
         return "formello::widgets.{$framework}.text";
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
+        $name = $field->name;
         // Get base data from TextWidget
-        $viewData = parent::getViewData($name, $value, $fieldConfig, $errors);
+        $viewData = parent::getViewData($field, $value, $errors);
 
         // Add mask data attribute if mask is configured
-        if (isset($fieldConfig['mask'])) {
-            $viewData['config']['attributes']['data-formello-mask'] = json_encode($fieldConfig['mask']);
+        if (isset($this->widgetConfig['mask'])) {
+            $viewData['config']['attributes']['data-formello-mask'] = json_encode($this->widgetConfig['mask']);
         }
 
         return $viewData;
@@ -33,7 +36,7 @@ class MaskWidget extends TextWidget
     /**
      * Get assets for MaskWidget - always returns IMask assets
      */
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['imask.min.js'],

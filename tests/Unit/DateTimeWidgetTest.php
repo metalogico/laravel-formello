@@ -7,6 +7,7 @@ use Metalogico\Formello\Formello;
 use Metalogico\Formello\Widgets\DateTimeWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
 
 class DateTimeWidgetTest extends TestCase
 {
@@ -34,9 +35,8 @@ class DateTimeWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new DateTimeWidget(),
-                    ],
+                    FormelloField::make('field')
+                        ->widget(DateTimeWidget::class)
                 ];
             }
             protected function create(): array { return []; }

@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class CheckboxesWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,18 +11,19 @@ class CheckboxesWidget extends BaseWidget
         return 'checkboxes';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
 
-        $choices = $this->resolveChoices($fieldConfig['choices']) ?? [];
+        $choices = $this->resolveChoices($this->widgetConfig['choices']) ?? [];
 
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
             'choices' => $choices,
         ];

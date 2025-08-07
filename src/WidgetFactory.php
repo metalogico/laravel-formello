@@ -30,15 +30,19 @@ class WidgetFactory
         ]);
     }
 
-    public function make(string $type): WidgetInterface
+    public function make(string $type, array $config = []): WidgetInterface
     {
-        $widgetClass = $this->widgetMap[$type] ?? Widgets\TextWidget::class;
+        if (class_exists($type)) {
+            $widgetClass = $type;
+        } else {
+            $widgetClass = $this->widgetMap[$type] ?? Widgets\TextWidget::class;
+        }
 
         if (! class_exists($widgetClass)) {
             throw new \InvalidArgumentException("Widget class {$widgetClass} not found");
         }
 
-        $widget = new $widgetClass;
+        $widget = new $widgetClass($config);
 
         if (! $widget instanceof WidgetInterface) {
             throw new \InvalidArgumentException('Widget must implement WidgetInterface');

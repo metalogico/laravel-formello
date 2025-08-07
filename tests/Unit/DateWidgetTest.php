@@ -2,11 +2,12 @@
 
 namespace Tests\Unit;
 
-use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\DateWidget;
-use Illuminate\Database\Eloquent\Model;
+use Orchestra\Testbench\TestCase;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
+use Illuminate\Database\Eloquent\Model;
+use Metalogico\Formello\Widgets\DateWidget;
 
 class DateWidgetTest extends TestCase
 {
@@ -34,9 +35,8 @@ class DateWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new DateWidget(),
-                    ],
+                    FormelloField::make('field')
+                        ->widget(DateWidget::class)
                 ];
             }
             protected function create(): array { return []; }

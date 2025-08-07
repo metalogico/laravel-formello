@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class Select2Widget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,8 +11,9 @@ class Select2Widget extends BaseWidget
         return 'select2';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
+        $name = $field->name;
         // Imposta i valori di default
         $defaults = [
             'class' => 'form-control select2',
@@ -18,15 +21,15 @@ class Select2Widget extends BaseWidget
         ];
 
         // Unisci con le configurazioni fornite
-        $fieldConfig = array_merge($defaults, $fieldConfig);
-        $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
+        $this->widgetConfig = array_merge($defaults, $this->widgetConfig);
+        $this->mergeDefaultAttributes($defaults, $name);
 
-        if ($fieldConfig['multiple']) {
+        if ($this->widgetConfig['multiple']) {
             $name .= '[]'; // Modify name to handle array submission
         }
 
         // Estrai la configurazione specifica di select2
-        $select2Config = $fieldConfig['select2'] ?? [];
+        $select2Config = $this->widgetConfig['select2'] ?? [];
         $usesAjax = ! empty($select2Config['route']);
 
         $currentValue = old($name, $value);
@@ -46,14 +49,14 @@ class Select2Widget extends BaseWidget
             }
         } elseif (! $usesAjax) {
             // Altrimenti, se non usiamo AJAX, risolviamo le choices come prima
-            $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
+            $choices = $this->resolveChoices($this->widgetConfig['choices'] ?? []);
         }
 
         return [
             'name' => $name,
             'value' => $currentValue,
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
             'choices' => $choices,
             'usesAjax' => $usesAjax,
@@ -69,7 +72,7 @@ class Select2Widget extends BaseWidget
         return $choices;
     }
 
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['select2.min.js'],

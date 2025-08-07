@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class DateTimeWidget extends DateWidget
 {
     public function getWidgetName(): string
@@ -17,10 +19,12 @@ class DateTimeWidget extends DateWidget
         return "formello::widgets.{$framework}.date";
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
+        $name = $field->name;
+
         // Get base data from parent DateWidget
-        $data = parent::getViewData($name, $value, $fieldConfig, $errors);
+        $data = parent::getViewData($field, $value, $errors);
 
         // Override Flatpickr options for datetime
         $defaultFlatpickrOptions = [
@@ -33,14 +37,14 @@ class DateTimeWidget extends DateWidget
         ];
 
         // Merge with user options
-        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $userFlatpickrOptions = $this->widgetConfig['flatpickr'] ?? [];
         $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
 
         // Update the data-formello-datepicker attribute
         $data['config']['attributes']['data-formello-datepicker'] = json_encode($mergedOptions);
 
         // Override format for datetime
-        $format = $fieldConfig['format'] ?? 'Y-m-d H:i';
+        $format = $this->widgetConfig['format'] ?? 'Y-m-d H:i';
         $data['format'] = $format;
 
         // Handle datetime value formatting

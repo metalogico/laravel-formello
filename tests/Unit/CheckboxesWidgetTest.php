@@ -2,11 +2,12 @@
 
 namespace Tests\Unit;
 
-use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\CheckboxesWidget;
-use Illuminate\Database\Eloquent\Model;
+use Orchestra\Testbench\TestCase;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
+use Illuminate\Database\Eloquent\Model;
+use Metalogico\Formello\Widgets\CheckboxesWidget;
 
 class CheckboxesWidgetTest extends TestCase
 {
@@ -34,10 +35,8 @@ class CheckboxesWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new CheckboxesWidget(),
-                        'choices' => ['foo' => 'Foo'],
-                    ],
+                    FormelloField::make('field')
+                        ->widget(CheckboxesWidget::class, ['choices' => ['foo' => 'Foo']])
                 ];
             }
             protected function create(): array { return []; }

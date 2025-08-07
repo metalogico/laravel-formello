@@ -7,6 +7,7 @@ use Metalogico\Formello\Formello;
 use Metalogico\Formello\Widgets\RadioWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
 
 class RadioWidgetTest extends TestCase
 {
@@ -34,10 +35,8 @@ class RadioWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new RadioWidget(),
-                        'options' => ['x' => 'X', 'y' => 'Y'],
-                    ],
+                    FormelloField::make('field')
+                        ->widget(RadioWidget::class, ['x' => 'X', 'y' => 'Y'])
                 ];
             }
             protected function create(): array { return []; }

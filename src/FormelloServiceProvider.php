@@ -17,7 +17,6 @@ class FormelloServiceProvider extends ServiceProvider
 
         // Register factory and inspector
         $this->app->singleton(WidgetFactory::class);
-        $this->app->singleton(SchemaInspector::class);
     }
 
     public function boot(): void

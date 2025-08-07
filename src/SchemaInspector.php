@@ -7,12 +7,21 @@ use Illuminate\Support\Str;
 
 class SchemaInspector
 {
-    public function getColumnType(Model $model, string $field): string
+
+    public static function assignDefaultWidgets(Model $model, array $fields): void
+    {
+        foreach ($fields as $field) {
+            if ($field->hasWidget()) continue;
+            $field->widget(self::getColumnType($model, $field->name));
+        }
+    }
+
+    public static function getColumnType(Model $model, string $field): string
     {
         // 1. Check model casts first
         $casts = $model->getCasts();
         if (isset($casts[$field])) {
-            return $this->normalizeCastType($casts[$field]);
+            return self::normalizeCastType($casts[$field]);
         }
 
         // 2. Check fillable/guarded hints
@@ -32,7 +41,7 @@ class SchemaInspector
         return 'text';
     }
 
-    private function normalizeCastType(string $cast): string
+    private static function normalizeCastType(string $cast): string
     {
         return match ($cast) {
             'boolean' => 'toggle',

@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class SelectWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,25 +11,26 @@ class SelectWidget extends BaseWidget
         return 'select';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-select');
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-select');
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
 
         // Add support for multiple selection
-        if (! empty($fieldConfig['multiple'])) {
-            $fieldConfig['attributes']['multiple'] = 'multiple';
+        if (! empty($this->widgetConfig['multiple'])) {
+            $this->widgetConfig['attributes']['multiple'] = 'multiple';
             $name .= '[]'; // Modify name to handle array submission
         }
 
-        $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
+        $choices = $this->resolveChoices($this->widgetConfig['choices'] ?? []);
 
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
             'choices' => $choices,
         ];
@@ -42,7 +45,7 @@ class SelectWidget extends BaseWidget
         return $choices;
     }
 
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['select2.min.js'],

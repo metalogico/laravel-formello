@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class RangeWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,25 +11,26 @@ class RangeWidget extends BaseWidget
         return 'range';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-range');
-        $fieldConfig['attributes']['type'] = 'range';
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-range');
+        $this->widgetConfig['attributes']['type'] = 'range';
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
 
         // Set default min, max, and step if not provided
-        $fieldConfig['attributes']['min'] = $fieldConfig['attributes']['min'] ?? 0;
-        $fieldConfig['attributes']['max'] = $fieldConfig['attributes']['max'] ?? 100;
-        $fieldConfig['attributes']['step'] = $fieldConfig['attributes']['step'] ?? 1;
+        $this->widgetConfig['attributes']['min'] = $this->widgetConfig['attributes']['min'] ?? 0;
+        $this->widgetConfig['attributes']['max'] = $this->widgetConfig['attributes']['max'] ?? 100;
+        $this->widgetConfig['attributes']['step'] = $this->widgetConfig['attributes']['step'] ?? 1;
 
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
-            'showValue' => $fieldConfig['showValue'] ?? true,
+            'showValue' => $this->widgetConfig['showValue'] ?? true,
         ];
     }
 }

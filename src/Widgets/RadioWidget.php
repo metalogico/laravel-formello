@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class RadioWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,24 +11,25 @@ class RadioWidget extends BaseWidget
         return 'radio';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-check-input');
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-check-input');
 
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
-            'options' => $this->getOptions($fieldConfig),
+            'options' => $this->getOptions(),
         ];
     }
 
-    protected function getOptions(array $fieldConfig): array
+    protected function getOptions(): array
     {
-        $options = $fieldConfig['options'] ?? [];
+        $options = $this->widgetConfig['options'] ?? [];
 
         if (is_callable($options)) {
             $options = call_user_func($options);

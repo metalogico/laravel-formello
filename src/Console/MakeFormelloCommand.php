@@ -117,9 +117,8 @@ class MakeFormelloCommand extends Command
 
         $fields = '';
         foreach ($fillable as $field) {
-            $fields .= "            '{$field}' => [\n";
-            $fields .= "                'label' => __('".Str::title(str_replace('_', ' ', $field))."'),\n";
-            $fields .= "            ],\n";
+            $fields .= "            FormelloField::make('{$field}')\n";
+            $fields .= "                ->label(__('".Str::title(str_replace('_', ' ', $field))."')),\n\n";
         }
 
         $stub = str_replace('DummyFields', $fields, $stub);

@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class ColorWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,12 +11,13 @@ class ColorWidget extends BaseWidget
         return 'color';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'text'; // Pickr works on text inputs
+        $name = $field->name;
+        $this->widgetConfig['attributes'] = $this->widgetConfig['attributes'] ?? [];
+        $this->widgetConfig['attributes']['class'] = trim(($this->widgetConfig['attributes']['class'] ?? '').' form-control');
+        $this->widgetConfig['attributes']['id'] = $this->widgetConfig['attributes']['id'] ?? $name;
+        $this->widgetConfig['attributes']['type'] = 'text'; // Pickr works on text inputs
 
         // Define default Pickr options
         $defaultPickrOptions = [
@@ -35,22 +38,22 @@ class ColorWidget extends BaseWidget
         ];
 
         // Merge default options with user-provided options
-        $userPickrOptions = $fieldConfig['pickr'] ?? [];
+        $userPickrOptions = $this->widgetConfig['pickr'] ?? [];
         $mergedOptions = array_merge($defaultPickrOptions, $userPickrOptions);
 
         // Pass the final options to the view
-        $fieldConfig['attributes']['data-formello-colorpicker'] = json_encode($mergedOptions);
+        $this->widgetConfig['attributes']['data-formello-colorpicker'] = json_encode($mergedOptions);
 
         return [
             'name' => $name,
             'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
+            'label' => $field->getLabel(),
+            'config' => $this->getConfig($field),
             'errors' => $errors,
         ];
     }
 
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['pickr.min.js'],

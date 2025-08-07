@@ -2,11 +2,12 @@
 
 namespace Tests\Unit;
 
-use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\TextareaWidget;
-use Illuminate\Database\Eloquent\Model;
+use Orchestra\Testbench\TestCase;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
+use Illuminate\Database\Eloquent\Model;
+use Metalogico\Formello\Widgets\TextareaWidget;
 
 class TextareaWidgetTest extends TestCase
 {
@@ -34,9 +35,8 @@ class TextareaWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new TextareaWidget(),
-                    ],
+                    FormelloField::make('field')
+                        ->widget(TextareaWidget::class)
                 ];
             }
             protected function create(): array { return []; }

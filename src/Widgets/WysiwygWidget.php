@@ -2,6 +2,8 @@
 
 namespace Metalogico\Formello\Widgets;
 
+use Metalogico\Formello\FormelloField;
+
 class WysiwygWidget extends BaseWidget
 {
     public function getWidgetName(): string
@@ -9,25 +11,26 @@ class WysiwygWidget extends BaseWidget
         return 'wysiwyg';
     }
 
-    public function getViewData($name, $value, array $fieldConfig, $errors = null): array
+    public function getViewData(FormelloField $field, $value, $errors = null): array
     {
+        $name = $field->name;
         $defaults = [
             'class' => 'form-control',
-            'data-formello-wysiwyg' => json_encode($fieldConfig['jodit'] ?? []),
+            'data-formello-wysiwyg' => json_encode($this->widgetConfig['jodit'] ?? []),
         ];
 
-        $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
+        $this->mergeDefaultAttributes($defaults, $name);
 
         return [
             'name' => $name,
             'value' => $value,
-            'config' => $fieldConfig,
-            'label' => $fieldConfig['label'] ?? null,
+            'config' => $this->getConfig($field),
+            'label' => $field->getLabel(),
             'errors' => $errors,
         ];
     }
 
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['jodit.min.js'],

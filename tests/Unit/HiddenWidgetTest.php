@@ -2,11 +2,12 @@
 
 namespace Tests\Unit;
 
-use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\HiddenWidget;
-use Illuminate\Database\Eloquent\Model;
+use Orchestra\Testbench\TestCase;
 use Illuminate\Support\ViewErrorBag;
+use Metalogico\Formello\FormelloField;
+use Illuminate\Database\Eloquent\Model;
+use Metalogico\Formello\Widgets\HiddenWidget;
 
 class HiddenWidgetTest extends TestCase
 {
@@ -34,9 +35,8 @@ class HiddenWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new HiddenWidget(),
-                    ],
+                    FormelloField::make('field')
+                        ->widget(HiddenWidget::class),
                 ];
             }
             protected function create(): array { return []; }

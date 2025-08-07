@@ -3,6 +3,7 @@
 namespace DummyNamespace;
 
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 
 class DummyClass extends Formello
 {
