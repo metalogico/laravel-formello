@@ -81,6 +81,7 @@ Here's a simple example for a product form.
 namespace App\Forms;
 
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Widgets\SelectWidget;
 
 class ProductForm extends Formello
@@ -104,21 +105,21 @@ class ProductForm extends Formello
     protected function fields(): array
     {
         return [
-            'name' => [
-                'label' => __('Product Name'),
-                'help' => 'Enter the name of the product',
-            ],
-            'description' => [
-                'label' => __('Description'),
-            ],
-            'category_id' => [
-                'label' => __('Category'),
-                'widget' => 'select',
-                'choices' => Category::pluck('name', 'id')->toArray();
-            ],
-            'in_stock' => [
-              'label' => __('In Stock'),
-            ],
+            FormelloField::make('name')
+                ->label(__('Product Name'))
+                ->help('Enter the name of the product'),
+            
+            FormelloField::make('description')
+                ->help(__('Description'))
+
+            FormelloField::make('category_id')
+                ->label(__('Category'))
+                ->widget('select', [
+                    'choices' => Category::pluck('name', 'id')->toArray(),
+                ]),
+            
+            FormelloField::make('in_stock')
+                ->label(__('In Stock')),
         ];
     }
 }
@@ -206,16 +207,17 @@ Here's an example of how to use these methods to change a field's behavior:
 protected function fields(): array
 {
     $fields = [
-        'name' => [
-            'label' => __('User Name'),
-            'help' => 'Enter the name of the user',
-        ],
-        'password' => [
-            'label' => __('Password'),
-            'type' => 'password',
-            'required' => $this->isCreating(),
-            'help' => $this->isEditing() ? 'Leave the field empty to keep the current password' : '',
-        ],
+        FormelloField::make('name')
+            ->label(__('User Name'))
+            ->help('Enter the name of the user')
+        
+        FormelloField::make('password')
+            ->label(__('Password'))
+            ->required($this->isCreating())
+            ->help($this->isEditing() ? 'Leave the field empty to keep the current password' : '')
+            ->widget('text', [
+                'type' => 'password',
+            ])
     ];
 
     return $fields;
@@ -228,20 +230,9 @@ Formello is designed to be extensible, allowing you to create your own custom wi
 
 To create a custom widget, you need to follow these steps:
 
-### First of all, the config file!
-
-You need to have the config file to add the widget in the Formello list of available widgets.
-
-```bash
-php artisan vendor:publish --tag=formello-config
-```
-In this file you will see a list of all the available widgets. 
-Add your widget to the list with a name, for example: `star-rating`.
-
-
 ### 1. Create a Widget Class
 
-Then, create a new PHP class for your widget. This class must extend the `Metalogico\Formello\Widgets\BaseWidget` class.
+Create a new PHP class for your widget. This class must extend the `Metalogico\Formello\Widgets\BaseWidget` class.
 
 You can place this class anywhere in your project, for example, in `app/Widgets`.
 
@@ -256,16 +247,17 @@ Here is an example of a `StarRatingWidget` class:
 
 namespace App\Widgets;
 
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Widgets\BaseWidget;
 
 class StarRatingWidget extends BaseWidget
 {
-    public function getViewData(string $name, $value, array $config, array $errors): array
+    public function getViewData(FormelloField $field, $value, array $errors): array
     {
         return [
-            'name' => $name,
+            'name' => $field->name,
             'value' => $value,
-            'config' => $config,
+            'config' => $this->getConfig($field),
             'errors' => $errors,
         ];
     }
@@ -313,7 +305,10 @@ Once you have created your widget class, you can use it in your Formello form by
 
 namespace App\Forms;
 
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Formello;
+
+use App\Widgets\StarRatingWidget;
 
 class ProductForm extends Formello
 {
@@ -323,16 +318,33 @@ class ProductForm extends Formello
     {
         return [
             // ... other fields
-            'rating' => [
-                'label' => __('Product Rating'),
-                'widget' => 'star-rating',
-            ],
+            FormelloField::make('rating')
+                ->label(__('Product Rating'))
+                ->widget(StarRatingWidget::class),
         ];
     }
 }
 ```
 
 Formello will automatically instantiate your widget class and call its `render` method to generate the HTML for the form field.
+
+### (Optional) Call the widget with a shortcut
+
+If you want to call your widget with a shortcut, you need to have the config file published and add the widget in the Formello list of widget's shortcuts.
+
+```bash
+php artisan vendor:publish --tag=formello-config
+```
+In this file you will see a list of all the widget's shortcuts. 
+Add your widget to the list with a name, for example: `star-rating`.
+
+Then to use your widget in your form you can use the shortcut:
+
+```php
+FormelloField::make('rating')
+    ->label(__('Product Rating'))
+    ->widget('star-rating'),
+```
 
 ## 🎨 Asset Management - Modular System
 
@@ -345,13 +357,19 @@ Formello uses a modular and flexible system for loading JavaScript and CSS asset
 Each widget defines its own assets through the `getAssets()` method (optional):
 
 ```php
-public function getAssets(?array $fieldConfig = null): ?array
+public function getAssets(): ?array
 {
     return [
         'scripts' => ['flatpickr.min.js'],
         'styles' => ['flatpickr.min.css'],
     ];
 }
+```
+
+You can access the widget's config via:
+
+```php
+$this->widgetConfig;
 ```
 
 #### 2. Blade Directives
@@ -391,7 +409,7 @@ Custom widgets can optionally implement `getAssets()`:
 class CustomWidget extends BaseWidget
 {
     // The getAssets() method is OPTIONAL
-    public function getAssets(?array $fieldConfig = null): ?array
+    public function getAssets(): ?array
     {
         return [
             'scripts' => ['my-custom-lib.js'],
@@ -420,5 +438,4 @@ Laravel Formello is open-sourced software licensed under the [MIT license](LICEN
 
 
 ## 🍺 Donations
-If you really like this project and you want to help me please consider [buying me a beer 🍺](https://www.buymeacoffee.com/metalogico
-) 
+If you really like this project and you want to help me please consider [buying me a beer 🍺](https://www.buymeacoffee.com/metalogico) 

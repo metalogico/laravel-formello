@@ -11,6 +11,7 @@ class FormelloField
 {
     public string $name;
     private ?string $label;
+    private ?string $help;
     private bool $required;
     private $value;
     private int $columns;
@@ -22,6 +23,7 @@ class FormelloField
     {
         $this->name = $name;
         $this->label = null;
+        $this->help = null;
         $this->required = false;
         $this->value = null;
         $this->columns = 12;
@@ -76,6 +78,17 @@ class FormelloField
     public function getColumns(): int
     {
         return $this->columns;
+    }
+
+    public function help(string $value): self
+    {
+        $this->help = $value;
+
+        return $this;
+    }
+    public function getHelp(): ?string
+    {
+        return $this->help;
     }
 
     public function widget(string $widgetType, array $widgetConfig = []): self
