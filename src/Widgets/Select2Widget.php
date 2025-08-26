@@ -23,6 +23,8 @@ class Select2Widget extends BaseWidget
 
         if ($fieldConfig['multiple']) {
             $name .= '[]'; // Modify name to handle array submission
+            // Ensure the HTML select has the multiple attribute for native Select2 handling
+            $fieldConfig['attributes']['multiple'] = 'multiple';
         }
 
         // Estrai la configurazione specifica di select2
