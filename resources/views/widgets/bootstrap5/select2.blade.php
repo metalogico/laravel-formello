@@ -51,7 +51,8 @@
             document.addEventListener('DOMContentLoaded', function () {
                 var childId = @json($config['attributes']['id']);
                 var parentId = @json(data_get($config, 'select2.depends_on'));
-                var dependsParam = @json(data_get($config, 'select2.depends_param', data_get($config, 'select2.depends_on')));
+                // Compute dependsParam without using @php blocks
+                var dependsParam = @json(data_get($config, 'select2.depends_param')) || @json(data_get($config, 'select2.depends_on'));
 
                 var childEl = document.getElementById(childId);
                 var parentEl = document.getElementById(parentId);
