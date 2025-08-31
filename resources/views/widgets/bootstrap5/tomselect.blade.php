@@ -5,7 +5,7 @@
     @endif
 
     <select name="{{ $name }}"
-        class="form-select {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
+        class="{{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>
         @if (isset($config['placeholder']))
             <option value="">{{ $config['placeholder'] }}</option>

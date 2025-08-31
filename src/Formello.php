@@ -25,6 +25,13 @@ abstract class Formello
     private SchemaInspector $schemaInspector;
 
     /**
+     * Track whether we have registered widget assets for this form instance.
+     * Assets depend on the resolved CSS framework, so we defer registration
+     * until render time (after potential setCssFramework() calls).
+     */
+    protected bool $assetsRegistered = false;
+
+    /**
      * Optional per-form CSS framework override.
      * If null, falls back to the global config('formello.css_framework').
      */
@@ -132,10 +139,26 @@ abstract class Formello
                 'widget' => $widget,
                 'config' => $fieldConfig,
             ];
-
-            // Register assets for this widget
-            $this->registerWidgetAssets($widget, $fieldConfig);
         }
+    }
+
+    /**
+     * Ensure assets are registered once, using the current CSS framework value.
+     */
+    protected function ensureAssetsRegistered(): void
+    {
+        if ($this->assetsRegistered) {
+            return;
+        }
+
+        // Bind current form instance so widgets can resolve per-form settings
+        app()->instance('formello', $this);
+
+        foreach ($this->fields as $name => $field) {
+            $this->registerWidgetAssets($field['widget'], $field['config']);
+        }
+
+        $this->assetsRegistered = true;
     }
 
     protected function resolveWidget(array $fieldConfig, string $fieldName): WidgetInterface
@@ -213,6 +236,9 @@ abstract class Formello
         // Ensure widgets resolve the current form instance when calling app('formello')
         app()->instance('formello', $this);
 
+        // Register assets now, so per-form CSS framework overrides are applied
+        $this->ensureAssetsRegistered();
+
         return view('formello::form', [
             'formello' => $this,
             'formConfig' => $this->formConfig,
@@ -223,6 +249,9 @@ abstract class Formello
     {
         // Ensure widgets resolve the current form instance when calling app('formello')
         app()->instance('formello', $this);
+
+        // Register assets now, so per-form CSS framework overrides are applied
+        $this->ensureAssetsRegistered();
 
         return view('formello::form', [
             'formello' => $this,
@@ -245,6 +274,9 @@ abstract class Formello
 
         // Ensure widgets resolve the current form instance when calling app('formello')
         app()->instance('formello', $this);
+
+        // Ensure assets are registered (important when rendering single fields)
+        $this->ensureAssetsRegistered();
 
         return $widget->render($name, $value, $config, $errors);
     }
