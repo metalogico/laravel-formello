@@ -6,7 +6,7 @@ Notes
 - Common keys: `label`, `help`, `attributes` (HTML attributes), `class` (inside `attributes`), `id` (inside `attributes`).
 - Choices/options can be arrays or callables returning arrays.
 - Some inputs support `prefix`, `suffix`, and `icon` for grouped inputs in templates.
-- Frameworks: templates exist for `bootstrap5` and `tailwindcss`. Rendering differs in classes only.
+- Frameworks: templates exist for `bootstrap5` and `tailwindcss4`. Rendering differs in classes only.
 - Assets: see `config/formello.php` under `assets` to enable/disable library loading.
 
 ---
@@ -151,7 +151,7 @@ Keys
 
 ## Assets and Framework Config
 - See `config/formello.php`:
-  - `css_framework`: `bootstrap5` or `tailwindcss`
+  - `css_framework`: `bootstrap5` or `tailwindcss4`
   - `default_widgets`: map widget names to classes
   - `assets`: enable/disable library loading per widget type (e.g., `select2`, `date`, `datetime`, `mask`, `color`, `colorswatch`, `wysiwyg`)
 

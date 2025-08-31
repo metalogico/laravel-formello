@@ -3,7 +3,7 @@
 return [
 
     /**
-     * Options bootstrap5 tailwindcss
+     * Options bootstrap5 tailwindcss4
      */
     'css_framework' => 'bootstrap5',
 
