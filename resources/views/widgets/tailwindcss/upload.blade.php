@@ -6,7 +6,7 @@
 
     @php
         // Error styles applied directly to the input
-        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : '';
+        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : '';
     @endphp
 
     <input type="file" name="{{ $name }}"

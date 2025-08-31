@@ -7,7 +7,7 @@
     @if(isset($config['select-all']['enabled']))
         <div class="mt-2 mb-2">
             <label class="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" id="select-all-{{ $config['attributes']['id'] }}" class="h-4 w-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                <input type="checkbox" id="select-all-{{ $config['attributes']['id'] }}" class="h-4 w-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-300 focus:ring-1">
                 <span class="text-gray-900">{{ $config['select-all']['label'] ?? 'Select all / Unselect all' }}</span>
             </label>
         </div>
@@ -21,7 +21,7 @@
                     name="{{ $name }}[]"
                     value="{{ $optionValue }}"
                     id="{{ $name }}_{{ $optionValue }}"
-                    class="{{ $name }}-checkbox h-4 w-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 {{ $errors ? 'border-red-500 focus:ring-red-500' : '' }} {{ $config['attributes']['class'] ?? '' }}"
+                    class="{{ $name }}-checkbox h-4 w-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-200 focus:ring-1 {{ $errors ? 'border-red-500 focus:ring-red-300' : '' }} {{ $config['attributes']['class'] ?? '' }}"
                     {{ in_array($optionValue, (array)old($name, $value)) ? 'checked' : '' }}
                     @foreach ($config['attributes'] as $attr => $attrValue)
                         @if ($attr !== 'class' && $attr !== 'id') {{ $attr }}="{{ $attrValue }}" @endif

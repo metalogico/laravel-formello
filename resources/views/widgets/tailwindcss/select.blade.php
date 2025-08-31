@@ -5,11 +5,11 @@
     @endif
 
     @php
-        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : '';
+        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : '';
     @endphp
 
     <select name="{{ $name }}"
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-blue-500 bg-white {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
         @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>
         @if (isset($config['placeholder']))
             <option value="">{{ $config['placeholder'] }}</option>

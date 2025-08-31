@@ -5,11 +5,11 @@
     @endif
 
     @php
-        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : '';
+        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : '';
     @endphp
 
     <textarea name="{{ $name }}"
-        class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+        class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-300 {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
         @foreach ($config['attributes'] as $attr => $attrValue)
             @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
         @endforeach>{{ old($name, $value) }}</textarea>

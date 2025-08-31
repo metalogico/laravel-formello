@@ -7,7 +7,7 @@
     @php
         $hasGroup = isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']);
         // Use ring-based error styling, compatible with modern Tailwind styles
-        $errorState = $errors ? 'ring-red-500 focus:ring-red-500 border-red-500' : '';
+        $errorState = $errors ? 'ring-red-300 focus:ring-red-300 border-red-500' : '';
     @endphp
 
     @if ($hasGroup)
@@ -20,7 +20,7 @@
             @endif
 
             <input name="{{ $name }}" value="{{ old($name, $value) }}"
-                class="block w-full min-w-0 flex-1 rounded-none {{ (isset($config['prefix']) || isset($config['icon'])) ? 'rounded-r-md' : 'rounded-md' }} appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none border-0 px-3 py-2 transition {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+                class="block w-full min-w-0 flex-1 rounded-none {{ (isset($config['prefix']) || isset($config['icon'])) ? 'rounded-r-md' : 'rounded-md' }} appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-1 focus:ring-blue-300 focus:outline-none border-0 px-3 py-2 transition {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
                 @foreach ($config['attributes'] as $attr => $attrValue)
                     @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
                 @endforeach>
@@ -31,7 +31,7 @@
         </div>
     @else
         <input name="{{ $name }}" value="{{ old($name, $value) }}"
-            class="mt-1 block w-full rounded-md appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none border-0 px-3 py-2 transition {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+            class="mt-1 block w-full rounded-md appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-1 focus:ring-blue-300 focus:outline-none border-0 px-3 py-2 transition {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
             @foreach ($config['attributes'] as $attr => $attrValue)
                 @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
             @endforeach>

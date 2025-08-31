@@ -5,7 +5,7 @@
     @endif
 
     @php
-        $colorState = $errors ? 'text-red-600 focus:ring-red-500' : 'text-blue-600 focus:ring-blue-500';
+        $colorState = $errors ? 'text-red-600 focus:ring-red-300' : 'text-blue-600 focus:ring-blue-300';
     @endphp
 
     <div class="mt-2 space-y-2">
@@ -17,7 +17,7 @@
                        id="{{ $optionId }}"
                        value="{{ $optionValue }}"
                        {{ $value == $optionValue ? 'checked' : '' }}
-                       class="h-4 w-4 bg-white border-gray-300 focus:ring-2 {{ $colorState }} {{ $config['attributes']['class'] ?? '' }}"
+                       class="h-4 w-4 bg-white border-gray-300 focus:ring-1 {{ $colorState }} {{ $config['attributes']['class'] ?? '' }}"
                        @foreach ($config['attributes'] as $attr => $attrValue)
                            @if ($attr !== 'class' && $attr !== 'id') {{ $attr }}="{{ $attrValue }}" @endif
                        @endforeach

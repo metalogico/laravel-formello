@@ -1,5 +1,10 @@
+/* Tom Select - Optimized for Tailwind CSS 4 CDN */
+/* No @apply directives - Pure CSS for CDN compatibility */
+
+/* Plugin: Drag & Drop */
 .ts-wrapper.plugin-drag_drop.multi>.ts-control>div.ui-sortable-placeholder {
-    @apply visible border-none;
+    visibility: visible;
+    border: none;
 }
 
 .ts-wrapper.plugin-drag_drop .ui-sortable-placeholder::after {
@@ -7,284 +12,433 @@
     visibility: hidden;
 }
 
+/* Plugin: Checkbox Options */
 .plugin-checkbox_options .option input {
     margin-right: 0.5rem;
 }
 
+/* Plugin: Clear Button */
 .plugin-clear_button .clear-button {
-    @apply opacity-0 absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 1.125rem;
+    line-height: 1;
+    padding: 0.25rem;
 }
 
 .plugin-clear_button.single .clear-button {
-    @apply right-2;
+    right: 0.75rem;
 }
 
 .plugin-clear_button.focus.has-items .clear-button,
 .plugin-clear_button:hover.has-items .clear-button {
-    @apply opacity-100;
+    opacity: 1;
 }
 
+.plugin-clear_button .clear-button:hover {
+    color: #374151;
+}
+
+/* Plugin: Dropdown Header */
 .ts-wrapper .dropdown-header {
-    @apply relative p-2.5 rounded-t;
-    border-bottom: 20px solid #d0d0d0;
-    background: #f8f8f8;
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
 }
 
 .ts-wrapper .dropdown-header-close {
-    @apply absolute right-2 top-1/2 opacity-40 -m-3 leading-5 text-xl;
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 1.25rem;
+    cursor: pointer;
 }
 
 .ts-wrapper .dropdown-header-close:hover {
-    @apply text-black;
+    color: #000000;
 }
 
+/* Plugin: Dropdown Input */
 .plugin-dropdown_input .dropdown-input {
-    @apply block p-2 shadow-none w-full bg-transparent;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
 }
 
+/* Plugin: Input Autogrow */
 .ts-wrapper.plugin-input_autogrow.has-items .ts-control>input {
-    @apply min-w-0;
+    min-width: 0;
 }
 
 .ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control>input {
-    @apply flex;
+    display: flex;
     min-width: 4px;
 }
 
-.ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control>input::-webkit-input-placeholder {
-    @apply text-transparent;
-}
-
-.ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control>input::-ms-input-placeholder {
-    @apply text-transparent;
-}
-
 .ts-wrapper.plugin-input_autogrow.has-items.focus .ts-control>input::placeholder {
-    @apply text-transparent;
+    color: transparent;
 }
 
+/* Plugin: Optgroup Columns */
 .ts-dropdown.plugin-optgroup_columns .ts-dropdown-content {
-    @apply flex;
+    display: flex;
 }
 
 .ts-dropdown.plugin-optgroup_columns .optgroup {
-    @apply flex-grow border-t-0 border-r border-gray-100 basis-0 min-w-0;
+    flex: 1;
+    border-right: 1px solid #f3f4f6;
+    min-width: 0;
 }
 
 .ts-dropdown.plugin-optgroup_columns .optgroup:last-child {
-    @apply border-r-0;
+    border-right: 0;
 }
 
 .ts-dropdown.plugin-optgroup_columns .optgroup:before {
-    @apply hidden;
+    display: none;
 }
 
 .ts-dropdown.plugin-optgroup_columns .optgroup-header {
-    @apply border-t-0;
+    border-top: 0;
 }
 
+/* Plugin: Remove Button */
 .ts-wrapper.plugin-remove_button .item {
-    @apply inline-flex items-center pr-0;
+    display: inline-flex;
+    align-items: center;
 }
 
 .ts-wrapper.plugin-remove_button .item .remove {
-    @apply text-inherit no-underline align-middle inline-block p-0 border-l border-gray-300 rounded-r-sm box-border ml-1.5;
+    margin-left: 0.25rem;
+    padding: 0.125rem 0.25rem;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-radius: 0.125rem;
 }
 
 .ts-wrapper.plugin-remove_button .item .remove:hover {
-    background: rgba(0, 0, 0, 0.05);
+    color: #374151;
+    background-color: #f3f4f6;
 }
 
 .ts-wrapper.plugin-remove_button .item.active .remove {
-    border-left-color: #cacaca;
-}
-
-.ts-wrapper.plugin-remove_button.disabled .item .remove:hover {
-    background: none;
+    color: #6b7280;
 }
 
 .ts-wrapper.plugin-remove_button.disabled .item .remove {
-    border-left-color: white;
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.ts-wrapper.plugin-remove_button.disabled .item .remove:hover {
+    background-color: transparent;
 }
 
 .ts-wrapper.plugin-remove_button .remove-single {
     position: absolute;
-    right: 0;
-    top: 0;
-    font-size: 23px;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 1.125rem;
+    cursor: pointer;
 }
 
+/* Main Wrapper */
 .ts-wrapper {
     position: relative;
 }
 
-.ts-dropdown,
-.ts-control,
-.ts-control input {
-    color: #303030;
+/* Control (Main Input Area) - Clean Bootstrap style */
+.ts-control {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.375rem 0.75rem;
     font-family: inherit;
-    font-size: 13px;
-    line-height: 18px;
-}
-
-/* Color for input */
-.ts-control,
-.ts-wrapper.single.input-active .ts-control {
-    @apply bg-gray-100 dark:bg-gray-900;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
     cursor: text;
 }
 
-.ts-control {
-    @apply border border-gray-300 dark:border-gray-600 p-2.5 w-full overflow-hidden relative z-10 box-border shadow-none rounded-md flex flex-wrap;
-}
-
+/* Multi-select with items */
 .ts-wrapper.multi.has-items .ts-control {
-    padding: 6px 8px 3px;
+    padding: 0.375rem 0.5rem 0.1875rem;
 }
 
-.full .ts-control {
-    @apply bg-gray-100 dark:bg-gray-900 dark:text-gray-100;
+/* Single select styles */
+.ts-wrapper.single .ts-control {
+    cursor: pointer;
 }
 
-.disabled .ts-control,
-.disabled .ts-control * {
-    @apply cursor-pointer;
+/* Input active state */
+.ts-wrapper.single.input-active .ts-control {
+    cursor: text;
 }
 
-.focus .ts-control {
-    @apply shadow-none;
+/* Focus state - More subtle like Bootstrap Select2 */
+.ts-wrapper.focus .ts-control {
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 0.25rem rgba(156, 163, 175, 0.25);
+    outline: 0;
 }
 
-.ts-control>* {
-    @apply align-baseline inline-block;
+/* Disabled state - Subtle like Bootstrap */
+.ts-wrapper.disabled .ts-control {
+    color: #6c757d;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    cursor: not-allowed;
+    opacity: 1;
 }
 
+.ts-wrapper.disabled .ts-control * {
+    cursor: not-allowed;
+}
+
+/* Selected items in multi-select - Bootstrap style */
 .ts-wrapper.multi .ts-control>div {
-    @apply cursor-pointer m-0 mx-1 my-1 p-1 px-1.5 bg-gray-200 text-gray-800 border-0;
+    display: inline-flex;
+    align-items: center;
+    cursor: default;
+    padding: 0.35em 0.65em;
+    margin: 0 0.375rem 0.375rem 0;
+    font-size: 1rem;
+    color: #212529;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #ffffff;
 }
 
 .ts-wrapper.multi .ts-control>div.active {
-    @apply bg-gray-300 text-gray-800 border-0;
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
 }
 
-.ts-wrapper.multi.disabled .ts-control>div,
-.ts-wrapper.multi.disabled .ts-control>div.active {
-    @apply text-gray-400 bg-white border-0;
+.ts-wrapper.multi.disabled .ts-control>div {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
 }
 
+/* Input field inside control */
 .ts-control>input {
-    @apply inline-block p-0 min-h-0 max-w-full m-0 indent-0 border-0 bg-transparent flex-grow select-auto placeholder-gray-300 dark:placeholder-gray-600;
-    min-width: 7rem;
-    max-height: none !important;
+    flex: 1;
+    min-width: 120px;
+    border: none;
+    background: transparent;
+    outline: none;
+    color: #212529;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
     box-shadow: none !important;
+    appearance: none;
+}
+
+.ts-control>input::placeholder {
+    color: #6c757d;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 .ts-control>input::-ms-clear {
-    @apply hidden;
+    display: none;
 }
 
-.ts-control>input:focus {
-    @apply outline-0;
-}
-
+/* Input with items */
 .has-items .ts-control>input {
-    @apply m-0 mx-1;
-    margin: 0 4px !important;
+    min-width: 60px;
+    margin: 0 4px;
 }
 
+/* Hidden input */
+.input-hidden .ts-control>input {
+    position: absolute;
+    left: -10000px;
+    opacity: 0;
+}
+
+/* RTL Support */
 .ts-control.rtl {
-    @apply text-right;
-}
-
-.ts-control.rtl.single .ts-control:after {
-    @apply absolute right-auto;
-    content: '';
-    left: 15px;
+    text-align: right;
 }
 
 .ts-control.rtl .ts-control>input {
-    @apply m-0 mx-1;
-    margin: 0 4px 0 -2px !important;
+    text-align: right;
+    margin: 0 -2px 0 4px;
 }
 
-.disabled .ts-control {
-    @apply opacity-50 bg-gray-100;
-}
-
-.input-hidden .ts-control>input {
-    @apply opacity-0 absolute;
-    left: -10000px;
-}
-
+/* Dropdown */
 .ts-dropdown {
-    @apply absolute top-full left-0 w-full z-10 border border-gray-300 dark:border-gray-600 bg-white mt-1 box-border rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1056;
+    margin-top: 0.25rem;
+    background-color: #ffffff;
+    border: 1px solid #9ca3af;
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    max-height: 15rem;
+    overflow: hidden;
+    color: #212529;
 }
 
-.ts-dropdown [data-selectable] {
-    @apply cursor-pointer overflow-hidden;
+.ts-dropdown.select2-dropdown--below {
+    border-top: 0 solid transparent;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
-.ts-dropdown [data-selectable] .highlight {
-    background: rgba(125, 168, 208, 0.2);
-    border-radius: 1px;
+.ts-dropdown.select2-dropdown--above {
+    border-bottom: 0 solid transparent;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
-.ts-dropdown .option,
-.ts-dropdown .optgroup-header,
-.ts-dropdown .no-results,
-.ts-dropdown .create {
-    padding: 5px 8px;
+/* Dropdown content */
+.ts-dropdown-content {
+    max-height: 14rem;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
-.ts-dropdown .option,
-.ts-dropdown [data-disabled],
-.ts-dropdown [data-disabled] [data-selectable].option {
-    cursor: inherit;
+/* Options */
+.ts-dropdown .option {
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #A5A9B0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.ts-dropdown .option:hover {
+    background-color: #e9ecef;
+    color: #000000;
+}
+
+.ts-dropdown .option.active {
+    background-color: #e9ecef;
+    color: #000000;
+}
+
+.ts-dropdown .option.selected {
+    background-color: #A5A9B0;
+    color: #ffffff;
+    font-weight: 400;
+}
+
+/* Disabled options */
+.ts-dropdown [data-disabled] {
     opacity: 0.5;
+    cursor: not-allowed;
+    color: #6c757d;
 }
 
-.ts-dropdown [data-selectable].option {
-    @apply opacity-100 cursor-pointer dark:text-gray-100 p-2.5;
+.ts-dropdown [data-disabled]:hover {
+    background-color: transparent;
 }
 
-.ts-dropdown .optgroup:first-child .optgroup-header {
-    @apply border-t-0;
-}
-
+/* Optgroup headers */
 .ts-dropdown .optgroup-header {
-    @apply cursor-default bg-white;
-    color: #303030;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    cursor: default;
 }
 
-/* Color for item list hover */
-.ts-dropdown .create:hover,
-.ts-dropdown .option:hover,
-.ts-dropdown .active {
-    @apply bg-gray-300 dark:bg-gray-800 dark:text-gray-100;
+/* Create new option */
+.ts-dropdown .create {
+    padding: 0.375rem 0.75rem;
+    color: rgba(33, 37, 41, 0.5);
+    cursor: pointer;
+    font-style: italic;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
-.ts-dropdown .create:hover.create,
-.ts-dropdown .option:hover.create,
-.ts-dropdown .active.create {
+.ts-dropdown .create:hover {
+    background-color: #e9ecef;
     color: #495c68;
 }
 
-.ts-dropdown .create {
-    color: rgba(48, 48, 48, 0.5);
+.ts-dropdown .create.active {
+    background-color: #e9ecef;
+    color: #495c68;
 }
 
+/* No results */
+.ts-dropdown .no-results {
+    padding: 0.375rem 0.75rem;
+    color: #6c757d;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Loading spinner */
 .ts-dropdown .spinner {
-    @apply inline-block w-7 h-7 m-1 mx-2;
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0.25rem 0.5rem;
 }
 
 .ts-dropdown .spinner:after {
-    @apply block w-6 h-6 m-1 rounded-full border-4 border-gray-300;
     content: " ";
-    border-color: #FF7828 transparent #FF7828 transparent;
-    animation: lds-dual-ring 1.2s linear infinite;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    margin: 0.125rem;
+    border-radius: 50%;
+    border: 1px solid #ced4da;
+    border-color: #6b7280 transparent #6b7280 transparent;
+    animation: spin 1.2s linear infinite;
 }
 
-@keyframes lds-dual-ring {
+@keyframes spin {
     0% {
         transform: rotate(0deg);
     }
@@ -294,14 +448,26 @@
     }
 }
 
-.ts-dropdown-content {
-    @apply overflow-y-auto overflow-x-hidden max-h-[200px];
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+/* Highlight text in search */
+.ts-dropdown [data-selectable] .highlight {
+    background-color: rgba(255, 235, 59, 0.4);
+    padding: 0 2px;
 }
 
+.ts-dropdown [data-selectable] {
+    cursor: pointer;
+    overflow: hidden;
+}
+
+/* Hidden accessibility helper */
 .ts-hidden-accessible {
-    @apply border-0 h-0.5 overflow-hidden p-0 absolute w-0.5 whitespace-nowrap;
-    clip: rect(0 0 0 0) !important;
-    clip-path: inset(50%) !important;
+    border: 0;
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
 }

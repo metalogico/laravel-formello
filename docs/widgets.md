@@ -42,14 +42,17 @@ Keys
 - `multiple`: boolean. When true, `name` becomes `name[]` and `multiple` attribute is set
 - `attributes`: standard HTML attributes (e.g., `id`, `class`)
 
-## Select2 (`Select2Widget`)
+## Select2 (`Select2Widget`) - Deprecated
+Use "tomselect" instead.
+
+## TomSelect (`TomSelectWidget`)
 Keys
 - `label`, `help`
 - `multiple`: boolean. When true, `name` becomes `name[]` and `multiple` attribute is set
 - When NOT using AJAX
   - `choices`: array or callable returning `[value => label]`
 - When using AJAX
-  - `select2`: array with
+  - `tomselect`: array with
     - `route`: URL used by Select2 AJAX
     - `model`: FQCN used to preload current value(s) into choices
     - `label_field`: defaults to `name`
@@ -62,7 +65,7 @@ Keys
       - `depends_param`: request param name sent to AJAX; defaults to `depends_on` if omitted
       - Behavior: on parent change, child is cleared; AJAX requests include `{ term, [depends_param]: parentValue }`
   - Defaults in template when AJAX is enabled: `minimumInputLength=2`, `delay=250ms`
-- `attributes`: standard HTML attributes (e.g., `id`, `class`). Default `class` includes `select2`.
+- `attributes`: standard HTML attributes (e.g., `id`, `class`). Default `class` includes `tomselect`.
 
 ## Radio (`RadioWidget`)
 Keys

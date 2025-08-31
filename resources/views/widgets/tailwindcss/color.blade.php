@@ -6,7 +6,7 @@
 
     @php
         $hasGroup = isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']);
-        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : '';
+        $errorState = $errors ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : '';
     @endphp
 
     @if ($hasGroup)
@@ -19,7 +19,7 @@
             @endif
 
             <input name="{{ $name }}" value="{{ old($name, $value) }}"
-                class="block w-full min-w-0 flex-1 rounded-none {{ (isset($config['prefix']) || isset($config['icon'])) ? 'rounded-r-md' : 'rounded-md' }} border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+                class="block w-full min-w-0 flex-1 rounded-none {{ (isset($config['prefix']) || isset($config['icon'])) ? 'rounded-r-md' : 'rounded-md' }} border-gray-300 focus:border-blue-300 focus:ring-blue-300 {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
                 @foreach ($config['attributes'] as $attr => $attrValue)
                     @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
                 @endforeach>
@@ -30,7 +30,7 @@
         </div>
     @else
         <input name="{{ $name }}" value="{{ old($name, $value) }}"
-            class="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+            class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-300 focus:ring-blue-300 {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
             @foreach ($config['attributes'] as $attr => $attrValue)
                 @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
             @endforeach>

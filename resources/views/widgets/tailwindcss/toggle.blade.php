@@ -5,7 +5,7 @@
     @endif
 
     @php
-        $errorState = $errors ? 'ring-2 ring-red-500' : '';
+        $errorState = $errors ? 'ring-1 ring-red-300' : '';
     @endphp
 
     <div class="mt-2">
@@ -22,7 +22,7 @@
                 @endforeach
             >
 
-            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full {{ $errorState }}"></div>
+            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-green-300 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full {{ $errorState }}"></div>
 
             @if (!empty($config['toggle_text']))
                 <span class="ms-3 text-gray-900">{{ $config['toggle_text'] }}</span>
