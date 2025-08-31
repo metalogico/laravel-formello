@@ -31,6 +31,7 @@
           var dependsOnId = ajax.depends_on || null;
           var dependsParam = ajax.depends_param || dependsOnId;
           var parentEl = dependsOnId ? document.getElementById(dependsOnId) : null;
+          var ts = null;
 
           if (parentEl) {
             var pv = parentEl.value;
@@ -44,11 +45,28 @@
                 el.setAttribute('disabled','disabled');
                 el.value = '';
                 el.dispatchEvent(new Event('change', { bubbles: true }));
+                if (ts) { try { ts.disable(); } catch(e){} }
               } else {
                 el.removeAttribute('disabled');
+                // Clear and refresh child options so it fetches for the new parent
+                if (ts) {
+                  try {
+                    ts.enable();
+                    ts.clear();
+                    ts.clearOptions();
+                    // This triggers shouldLoad('') check and load if allowed
+                    ts.refreshOptions(false);
+                  } catch (e) {}
+                }
               }
             });
           }
+
+          // Only load when query satisfies minLength (0 means allow empty)
+          tsOptions.shouldLoad = function(query){
+            if (minLength && (!query || query.length < minLength)) return false;
+            return true;
+          };
 
           tsOptions.load = function(query, callback){
             try {
@@ -72,7 +90,15 @@
           };
         }
 
-        new TomSelect(el, tsOptions);
+        ts = new TomSelect(el, tsOptions);
+        // Sync TS enabled state with current dependency value
+        try {
+          if (parentEl) {
+            var pv = parentEl.value;
+            var disable = !pv || (Array.isArray(pv) && pv.length === 0);
+            if (disable) ts.disable(); else ts.enable();
+          }
+        } catch(e){}
       } catch (e) {
         console.error('Formello Tom Select init error:', e);
       }

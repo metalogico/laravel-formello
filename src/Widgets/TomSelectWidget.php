@@ -43,13 +43,19 @@ class TomSelectWidget extends BaseWidget
         ];
 
         if ($usesAjax) {
+            $dependsOn = $tsConfig['depends_on'] ?? null;
+            $minLenProvided = array_key_exists('minLength', $tsConfig) || array_key_exists('min_length', $tsConfig);
+            $minLen = $tsConfig['minLength'] ?? ($tsConfig['min_length'] ?? null);
+            if ($minLen === null) {
+                $minLen = $dependsOn ? 0 : 2; // if dependent, allow empty query by default
+            }
+
             $defaultOptions['ajax'] = [
                 'url' => $tsConfig['route'],
                 'delay' => $tsConfig['delay'] ?? 250,
-                'depends_on' => $tsConfig['depends_on'] ?? null,
-                'depends_param' => $tsConfig['depends_param'] ?? ($tsConfig['depends_on'] ?? null),
-                // accept snake_case min_length too
-                'minLength' => $tsConfig['minLength'] ?? ($tsConfig['min_length'] ?? 2),
+                'depends_on' => $dependsOn,
+                'depends_param' => $tsConfig['depends_param'] ?? $dependsOn,
+                'minLength' => $minLen,
             ];
         }
 
