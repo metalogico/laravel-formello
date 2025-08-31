@@ -13,7 +13,7 @@ class Select2Widget extends BaseWidget
     {
         // Imposta i valori di default
         $defaults = [
-            'class' => 'form-control select2',
+            'class' => 'select2',
             'multiple' => false,
         ];
 
@@ -73,9 +73,7 @@ class Select2Widget extends BaseWidget
 
     public function getAssets(?array $fieldConfig = null): ?array
     {
-        return [
-            'scripts' => ['select2.min.js'],
-            'styles' => ['select2.min.css', 'select2-bootstrap-5-theme.min.css'],
-        ];
+        // Deprecated: do not load Select2 assets anymore.
+        return null;
     }
 }

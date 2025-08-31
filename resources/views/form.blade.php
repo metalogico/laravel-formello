@@ -18,10 +18,21 @@
         @endforeach
     </div>
 
-    <div class="form-group mt-5 border-top pt-5">
-        <button type="submit" class="btn btn-sm btn-primary">{{ $formConfig['submit_label'] ?? __('Save') }}</button>
-        <a href="{{ url()->previous() }}" class="btn btn-sm btn-secondary ms-2">{{ $formConfig['cancel_label'] ?? __('Cancel') }}</a>
-    </div>
+    @if ($formello->getCssFramework() === 'bootstrap5')
+        <div class="form-group mt-5 border-top pt-5">
+            <button type="submit" class="btn btn-sm btn-primary">{{ $formConfig['submit_label'] ?? __('Save') }}</button>
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-secondary ms-2">{{ $formConfig['cancel_label'] ?? __('Cancel') }}</a>
+        </div>
+    @else
+        <div class="mt-5 border-t pt-5">
+            <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded bg-blue-600 text-white hover:bg-blue-700">
+                {{ $formConfig['submit_label'] ?? __('Save') }}
+            </button>
+            <a href="{{ url()->previous() }}" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded bg-gray-100 text-gray-700 hover:bg-gray-200 ml-2">
+                {{ $formConfig['cancel_label'] ?? __('Cancel') }}
+            </a>
+        </div>
+    @endif
 
 </form>
 

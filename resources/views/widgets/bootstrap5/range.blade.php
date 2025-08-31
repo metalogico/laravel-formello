@@ -12,9 +12,9 @@
     <input
         name="{{ $name }}"
         value="{{ $value }}"
-        class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+        class="form-range {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue)
-            {{ $attr }}="{{ $attrValue }}"
+            @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
         @endforeach
     >
 

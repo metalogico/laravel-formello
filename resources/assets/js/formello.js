@@ -123,6 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
         console.warn('Jodit not loaded but WYSIWYG elements found. Make sure to include Jodit script before formello.js');
     }
 
+    // Tom Select initialization is handled within each widget template via a Blade partial.
+
     // Select2 initialization
     const select2Elements = document.querySelectorAll('[data-formello-select2]');
     if (typeof $ !== 'undefined' && $.fn.select2) {

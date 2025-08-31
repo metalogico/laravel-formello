@@ -4,9 +4,9 @@
     @endif
     <div class="form-check form-switch">
         <input type="hidden" name="{{ $name }}" value="0"> <!-- for the unchecked value -->
-        <input name="{{ $name }}" value="1"
+        <input name="{{ $name }}" value="1" class="form-check-input {{ $config['attributes']['class'] ?? '' }}"
             @foreach ($config['attributes'] as $attr => $attrValue)
-                {{ $attr }}="{{ $attrValue }}" @endforeach>
+                @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>
     </div>
     @if (isset($config['help']))
         <div class="form-text">{!! $config['help'] !!}</div>

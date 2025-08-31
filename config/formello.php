@@ -3,7 +3,7 @@
 return [
 
     /**
-     * For now, only bootstrap 5 is supported
+     * Options bootstrap5 tailwindcss
      */
     'css_framework' => 'bootstrap5',
 
@@ -33,6 +33,7 @@ return [
         'upload' => Metalogico\Formello\Widgets\UploadWidget::class,
         'hidden' => Metalogico\Formello\Widgets\HiddenWidget::class,
         'select2' => Metalogico\Formello\Widgets\Select2Widget::class,
+        'tomselect' => Metalogico\Formello\Widgets\TomSelectWidget::class,
         'color' => Metalogico\Formello\Widgets\ColorWidget::class,
         'colorswatch' => Metalogico\Formello\Widgets\ColorSwatchWidget::class,
         'wysiwyg' => Metalogico\Formello\Widgets\WysiwygWidget::class,
@@ -44,7 +45,8 @@ return [
      * Set to false any library you already have in your theme to avoid conflicts
      */
     'assets' => [
-        'select2' => true,
+        'select2' => false, // deprecated
+        'tomselect' => true,
         'date' => true,
         'datetime' => true,
         'mask' => true,

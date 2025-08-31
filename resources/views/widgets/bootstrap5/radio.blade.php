@@ -11,7 +11,7 @@
                    id="{{ $name }}_{{ $optionValue }}" 
                    value="{{ $optionValue }}"
                    {{ $value == $optionValue ? 'checked' : '' }}
-                   class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+                   class="form-check-input {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
                    @foreach ($config['attributes'] as $attr => $attrValue) 
                        {{ $attr }}="{{ $attrValue }}"
                    @endforeach

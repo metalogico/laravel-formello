@@ -414,6 +414,10 @@ class CustomWidget extends BaseWidget
 | `jodit` | WysiwygWidget | jodit.min.js, jodit.min.css |
 
 
+## 📚 Documentation
+
+- Widget configuration reference: [docs/widgets.md](docs/widgets.md)
+
 ## ⚖️ License
 
 Laravel Formello is open-sourced software licensed under the [MIT license](LICENSE.md).

@@ -20,5 +20,8 @@ storage/*.key
 Homestead.yaml
 Homestead.json
 /.vagrant
+/.vscode
+/.idea
+/.zed
 .phpunit.result.cache
 .DS_Store

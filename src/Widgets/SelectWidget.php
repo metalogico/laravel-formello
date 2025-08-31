@@ -12,7 +12,7 @@ class SelectWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-select');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
 
         // Add support for multiple selection
@@ -45,8 +45,8 @@ class SelectWidget extends BaseWidget
     public function getAssets(?array $fieldConfig = null): ?array
     {
         return [
-            'scripts' => ['select2.min.js'],
-            'styles' => ['select2.min.css'],
+            'scripts' => [],
+            'styles' => [],
         ];
     }
 }

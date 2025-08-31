@@ -1,4 +1,9 @@
 <div class="form-group mb-3">
+    <div class="alert alert-warning" role="alert">
+        Deprecated: Select2 widget is deprecated. Use 'tomselect' widget instead.
+    </div>
+    @php return; @endphp
+
     @if (isset($label))
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif

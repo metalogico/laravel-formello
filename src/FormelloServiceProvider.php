@@ -47,10 +47,10 @@ class FormelloServiceProvider extends ServiceProvider
             // Quill.js
             __DIR__.'/../resources/assets/js/jodit.min.js' => public_path('vendor/formello/js/jodit.min.js'),
             __DIR__.'/../resources/assets/css/jodit.min.css' => public_path('vendor/formello/css/jodit.min.css'),
-            // Select2
-            __DIR__.'/../resources/assets/js/select2.min.js' => public_path('vendor/formello/js/select2.min.js'),
-            __DIR__.'/../resources/assets/css/select2.min.css' => public_path('vendor/formello/css/select2.min.css'),
-            __DIR__.'/../resources/assets/css/select2-bootstrap-5-theme.min.css' => public_path('vendor/formello/css/select2-bootstrap-5-theme.min.css'),
+            // Tom Select
+            __DIR__.'/../resources/assets/js/tom-select.complete.js' => public_path('vendor/formello/js/tom-select.complete.js'),
+            __DIR__.'/../resources/assets/css/tom-select.default.min.css' => public_path('vendor/formello/css/tom-select.default.min.css'),
+            __DIR__.'/../resources/assets/css/tom-select.tailwind.css' => public_path('vendor/formello/css/tom-select.tailwind.css'),
         ], 'formello-assets');
 
         if ($this->app->runningInConsole()) {
