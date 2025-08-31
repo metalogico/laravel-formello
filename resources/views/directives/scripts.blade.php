@@ -10,5 +10,4 @@
 @endif
 
 {{-- Always load formello.js --}}
-@push('formello-scripts')
 <script src="{{ asset('vendor/formello/js/formello.js') }}"></script>

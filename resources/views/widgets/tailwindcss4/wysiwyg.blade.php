@@ -26,4 +26,8 @@
         </ul>
     @endif
 
+    @once
+        @include('formello::widgets.partials.wysiwyg-script')
+    @endonce
+
 </div>
