@@ -11,7 +11,7 @@
             @elseif (isset($config['icon']))
                 <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
             @endif
-            <input name="{{ $name }}" value="{{ old($name, $value) }}" class="form-control {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif" @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>
+            <input name="{{ $name }}" value="{{ old($name, $value) }}" class="form-control bg-white {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif" @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>
             @if (isset($config['suffix']))
                 <span class="input-group-text">{{ $config['suffix'] }}</span>
             @endif

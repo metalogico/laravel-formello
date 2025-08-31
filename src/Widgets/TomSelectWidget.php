@@ -24,15 +24,21 @@ class TomSelectWidget extends BaseWidget
 
         // Tom Select options
         $tsConfig = $fieldConfig['tomselect'] ?? [];
-        $usesAjax = !empty($tsConfig['route']);
+        $usesAjax = ! empty($tsConfig['route']);
+
+        // Normalize option keys (accept snake_case and camelCase)
+        $searchFieldOpt = $tsConfig['searchField'] ?? ($tsConfig['search_field'] ?? 'text');
+        // For AJAX, we must match backend payload fields: id/text
+        $valueFieldOpt = $usesAjax ? 'id' : ($tsConfig['valueField'] ?? ($tsConfig['value_field'] ?? 'id'));
+        $labelFieldOpt = $usesAjax ? 'text' : ($tsConfig['labelField'] ?? ($tsConfig['label_field'] ?? 'text'));
 
         // Default options passed to JS
         $defaultOptions = [
             'placeholder' => $tsConfig['placeholder'] ?? ($fieldConfig['placeholder'] ?? __('Select')),
             'maxOptions' => $tsConfig['maxOptions'] ?? 100,
-            'searchField' => $tsConfig['searchField'] ?? 'text',
-            'valueField' => $tsConfig['valueField'] ?? 'id',
-            'labelField' => $tsConfig['labelField'] ?? 'text',
+            'searchField' => $searchFieldOpt,
+            'valueField' => $valueFieldOpt,
+            'labelField' => $labelFieldOpt,
             'create' => false,
         ];
 
@@ -42,7 +48,8 @@ class TomSelectWidget extends BaseWidget
                 'delay' => $tsConfig['delay'] ?? 250,
                 'depends_on' => $tsConfig['depends_on'] ?? null,
                 'depends_param' => $tsConfig['depends_param'] ?? ($tsConfig['depends_on'] ?? null),
-                'minLength' => $tsConfig['minLength'] ?? 2,
+                // accept snake_case min_length too
+                'minLength' => $tsConfig['minLength'] ?? ($tsConfig['min_length'] ?? 2),
             ];
         }
 
@@ -90,9 +97,9 @@ class TomSelectWidget extends BaseWidget
 
     public function getAssets(?array $fieldConfig = null): ?array
     {
-        $framework = config('formello.css_framework', 'bootstrap5');
+        // Respect per-form CSS framework when available
         $styles = ['tom-select.default.min.css'];
-        if ($framework === 'tailwindcss4') {
+        if (app('formello')->getCssFramework() === 'tailwindcss4') {
             $styles[] = 'tom-select.tailwind.css';
         }
 

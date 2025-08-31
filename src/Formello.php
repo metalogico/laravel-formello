@@ -61,8 +61,9 @@ abstract class Formello
             $this->setFormMode('create');
         }
 
-        $this->initializeFields();
         $this->initializeForm();
+        $this->initializeFields();
+        $this->ensureMultipartIfNeeded();
     }
 
     abstract protected function fields(): array;
@@ -91,14 +92,6 @@ abstract class Formello
         } else {
             throw new \RuntimeException('No form configuration method found.');
         }
-
-        // if there's an upload widget in the form add the multipart form attribute
-        if ($this->hasUploadWidget()) {
-            if (! isset($this->formConfig['attributes'])) {
-                $this->formConfig['attributes'] = [];
-            }
-            $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
-        }
     }
 
     protected function hasUploadWidget(): bool
@@ -110,6 +103,19 @@ abstract class Formello
         }
 
         return false;
+    }
+
+    /**
+     * Ensure the form has the correct enctype if an upload widget is present
+     */
+    protected function ensureMultipartIfNeeded(): void
+    {
+        if ($this->hasUploadWidget()) {
+            if (! isset($this->formConfig['attributes'])) {
+                $this->formConfig['attributes'] = [];
+            }
+            $this->formConfig['attributes']['enctype'] = 'multipart/form-data';
+        }
     }
 
     /**
@@ -296,6 +302,8 @@ abstract class Formello
         }
 
         // Get assets from widget, passing field configuration for conditional assets
+        // Bind current form instance so widgets can resolve per-form settings during asset selection
+        app()->instance('formello', $this);
         $assets = $widget->getAssets($fieldConfig);
 
         if ($assets) {

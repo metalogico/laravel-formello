@@ -13,7 +13,7 @@
     @if ($hasGroup)
         <div class="mt-1 flex rounded-md">
             @if (isset($config['prefix']) || isset($config['icon']))
-                <span class="inline-flex items-center rounded-l-md border border-gray-300 bg-gray-50 px-3 text-sm text-gray-500 gap-1">
+                <span class="inline-flex items-center rounded-l-md border border-gray-300 px-3 text-sm text-gray-500 gap-1">
                     @if (isset($config['icon'])) <i class="{!! $config['icon'] !!}"></i> @endif
                     @if (isset($config['prefix'])) {{ $config['prefix'] }} @endif
                 </span>
@@ -26,7 +26,7 @@
                 @endforeach>
 
             @if (isset($config['suffix']))
-                <span class="inline-flex items-center rounded-r-md border border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">{{ $config['suffix'] }}</span>
+                <span class="inline-flex items-center rounded-r-md border border-gray-300 px-3 text-sm text-gray-500">{{ $config['suffix'] }}</span>
             @endif
         </div>
     @else

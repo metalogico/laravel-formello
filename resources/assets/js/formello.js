@@ -4,7 +4,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const maskElements = document.querySelectorAll('[data-formello-mask]');
     maskElements.forEach(function (el) {
         try {
-            const maskOptions = JSON.parse(el.getAttribute('data-formello-mask'));
+            const data = JSON.parse(el.getAttribute('data-formello-mask'));
+
+            // Coerce special literals 'Number' and 'Date' to actual constructors for IMask
+            let maskOptions = data;
+            if (typeof maskOptions === 'string') {
+                if (maskOptions === 'Number') {
+                    maskOptions = { mask: Number };
+                } else if (maskOptions === 'Date') {
+                    maskOptions = { mask: Date };
+                } else {
+                    // Treat any other string as a pattern string
+                    maskOptions = { mask: maskOptions };
+                }
+            } else if (maskOptions && typeof maskOptions === 'object') {
+                if (typeof maskOptions.mask === 'string') {
+                    if (maskOptions.mask === 'Number') {
+                        maskOptions.mask = Number;
+                    } else if (maskOptions.mask === 'Date') {
+                        maskOptions.mask = Date;
+                    }
+                    // Any other string stays as-is
+                }
+            }
+
             IMask(el, maskOptions);
         } catch (e) {
             console.error('Error parsing Formello mask options:', e);
@@ -121,25 +144,5 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     } else if (wysiwygElements.length > 0) {
         console.warn('Jodit not loaded but WYSIWYG elements found. Make sure to include Jodit script before formello.js');
-    }
-
-    // Tom Select initialization is handled within each widget template via a Blade partial.
-
-    // Select2 initialization
-    const select2Elements = document.querySelectorAll('[data-formello-select2]');
-    if (typeof $ !== 'undefined' && $.fn.select2) {
-        select2Elements.forEach(function (el) {
-            try {
-
-                $(el).select2({
-                    theme: 'bootstrap-5',
-                });
-
-            } catch (e) {
-                console.error('Error initializing Formello Select2:', e);
-            }
-        });
-    } else if (select2Elements.length > 0) {
-        console.warn('Select2 not loaded but Select2 elements found. Make sure to include Select2 script and jQuery before formello.js');
     }
 });

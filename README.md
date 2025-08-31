@@ -2,7 +2,7 @@
 
 # Formello
 
-A Laravel package for generating Bootstrap 5 forms based on models. Laravel 9+
+A Laravel package for generating Bootstrap and Tailwind CSS forms based on models. Laravel 9+
 
 Formello is a comprehensive form generation and handling tool for Laravel applications, inspired by Django forms.
 
@@ -14,7 +14,7 @@ The Laravel ecosystem offers powerful tools for building applications, from full
 
 Formello was created for developers who need to generate forms quickly without the overhead of a complete admin panel, but who also want a simpler, more intuitive API than more complex form libraries. It's designed to automate the repetitive aspects of form creation while giving you full control over the final output.
 
-Currently, Formello ships with built-in support for **Bootstrap 5**, and support for **Tailwind CSS** is coming soon™!
+Currently, Formello ships with built-in support for **Bootstrap 5** and **Tailwind CSS 4**.
 
 If you use this project, please consider giving it a ⭐.
 
@@ -26,7 +26,7 @@ If you use this project, please consider giving it a ⭐.
   - Text
   - Textarea
   - Select (with multiple)
-  - Select2
+  - Select2 (deprecated)
   - Radio
   - Checkboxes
   - Toggle
@@ -407,9 +407,10 @@ class CustomWidget extends BaseWidget
 
 | Library | Widgets that use it | Assets loaded |
 |----------|-------------------|----------------|
-| `select2` | SelectWidget, Select2Widget | select2.min.js, select2.min.css, select2-bootstrap-5-theme.min.css |
+| `tomselect` | TomSelectWidget | tom-select.complete.js, tom-select.default.min.css (+ tom-select.tailwind.css when using tailwindcss4) |
+| `select2` | Select2Widget (deprecated) | — |
 | `flatpickr` | DateWidget, DateTimeWidget | flatpickr.min.js, l10n/it.js, flatpickr.min.css |
-| `imask` | TextWidget (with mask) | imask.min.js |
+| `imask` | MaskWidget | imask.min.js |
 | `pickr` | ColorWidget, ColorSwatchWidget | pickr.min.js, nano.min.css |
 | `jodit` | WysiwygWidget | jodit.min.js, jodit.min.css |
 

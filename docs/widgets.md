@@ -53,11 +53,11 @@ Keys
   - `choices`: array or callable returning `[value => label]`
 - When using AJAX
   - `tomselect`: array with
-    - `route`: URL used by Select2 AJAX
+    - `route`: URL used by Tom Select AJAX
     - `model`: FQCN used to preload current value(s) into choices
     - `label_field`: defaults to `name`
     - `value_field`: defaults to `id`
-    - `placeholder`: string for Select2 placeholder (default: "Select")
+    - `placeholder`: string for Tom Select placeholder (default: "Select")
     - `dropdownParent`: CSS selector for dropdown parent (default: `body`)
     - `theme`: theme string (default: `bootstrap-5` in the Bootstrap template)
     - Dependencies (optional)
@@ -153,7 +153,7 @@ Keys
 - See `config/formello.php`:
   - `css_framework`: `bootstrap5` or `tailwindcss4`
   - `default_widgets`: map widget names to classes
-  - `assets`: enable/disable library loading per widget type (e.g., `select2`, `date`, `datetime`, `mask`, `color`, `colorswatch`, `wysiwyg`)
+  - `assets`: enable/disable library loading per widget type (e.g., `tomselect`, `date`, `datetime`, `mask`, `color`, `colorswatch`, `wysiwyg`, `select2` (deprecated))
 
 ## Examples
 Minimal field definitions in a Formello form class:

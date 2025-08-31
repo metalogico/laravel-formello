@@ -10,13 +10,23 @@
     @endif
 
     {{-- Grid container per columnSpan --}}
-    <div class="row">
-        @foreach ($formello->getFields() as $name => $field)
-            <div class="col-md-{{ $field['config']['columns'] ?? 12 }} mb-3">
-                {!! $formello->renderField($name) !!}
-            </div>
-        @endforeach
-    </div>
+    @if ($formello->getCssFramework() === 'bootstrap5')
+        <div class="row">
+            @foreach ($formello->getFields() as $name => $field)
+                <div class="col-md-{{ $field['config']['columns'] ?? 12 }} mb-3">
+                    {!! $formello->renderField($name) !!}
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="grid grid-cols-12 gap-3">
+            @foreach ($formello->getFields() as $name => $field)
+                <div class="col-span-{{ $field['config']['columns'] ?? 12 }} mb-3">
+                    {!! $formello->renderField($name) !!}
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     @if ($formello->getCssFramework() === 'bootstrap5')
         <div class="form-group mt-5 border-top pt-5">
@@ -35,6 +45,3 @@
     @endif
 
 </form>
-
-@stack('formello-scripts')
-<script src="{{ asset('vendor/formello/js/formello.js') }}"></script>
