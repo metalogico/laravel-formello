@@ -33,9 +33,4 @@ class FormelloManager extends Formello
     {
         return [];
     }
-
-    public function getCssFramework()
-    {
-        return config('formello.css_framework', 'bootstrap5');
-    }
 }

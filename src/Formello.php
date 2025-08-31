@@ -25,6 +25,12 @@ abstract class Formello
     private SchemaInspector $schemaInspector;
 
     /**
+     * Optional per-form CSS framework override.
+     * If null, falls back to the global config('formello.css_framework').
+     */
+    protected ?string $cssFramework = null;
+
+    /**
      * Creates a new instance of Formello.
      *
      * @param  Model|string  $model  Model instance or class-string
@@ -198,6 +204,9 @@ abstract class Formello
 
     public function renderForm()
     {
+        // Ensure widgets resolve the current form instance when calling app('formello')
+        app()->instance('formello', $this);
+
         return view('formello::form', [
             'formello' => $this,
             'formConfig' => $this->formConfig,
@@ -206,6 +215,9 @@ abstract class Formello
 
     public function render()
     {
+        // Ensure widgets resolve the current form instance when calling app('formello')
+        app()->instance('formello', $this);
+
         return view('formello::form', [
             'formello' => $this,
             'formConfig' => $this->formConfig,
@@ -225,12 +237,27 @@ abstract class Formello
         $value = old($name, $config['value'] ?? $this->model->{$name} ?? null);
         $errors = $this->errors->get($name);
 
+        // Ensure widgets resolve the current form instance when calling app('formello')
+        app()->instance('formello', $this);
+
         return $widget->render($name, $value, $config, $errors);
     }
 
     public function getCssFramework()
     {
-        return config('formello.css_framework', 'bootstrap5');
+        return $this->cssFramework
+            ?? ($this->formConfig['css_framework'] ?? null)
+            ?? config('formello.css_framework', 'bootstrap5');
+    }
+
+    /**
+     * Override the CSS framework for this form instance.
+     */
+    public function setCssFramework(string $framework): self
+    {
+        $this->cssFramework = $framework;
+
+        return $this;
     }
 
     public function getFields()
