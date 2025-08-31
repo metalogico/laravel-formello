@@ -92,7 +92,7 @@ class TomSelectWidget extends BaseWidget
     {
         $framework = config('formello.css_framework', 'bootstrap5');
         $styles = ['tom-select.default.min.css'];
-        if ($framework === 'tailwindcss') {
+        if ($framework === 'tailwindcss4') {
             $styles[] = 'tom-select.tailwind.css';
         }
 
