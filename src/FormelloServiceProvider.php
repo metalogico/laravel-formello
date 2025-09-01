@@ -50,7 +50,6 @@ class FormelloServiceProvider extends ServiceProvider
             // Tom Select
             __DIR__.'/../resources/assets/js/tom-select.complete.js' => public_path('vendor/formello/js/tom-select.complete.js'),
             __DIR__.'/../resources/assets/css/tom-select.default.min.css' => public_path('vendor/formello/css/tom-select.default.min.css'),
-            __DIR__.'/../resources/assets/css/tom-select.tailwind.css' => public_path('vendor/formello/css/tom-select.tailwind.css'),
         ], 'formello-assets');
 
         if ($this->app->runningInConsole()) {

@@ -103,15 +103,9 @@ class TomSelectWidget extends BaseWidget
 
     public function getAssets(?array $fieldConfig = null): ?array
     {
-        // Respect per-form CSS framework when available
-        $styles = ['tom-select.default.min.css'];
-        if (app('formello')->getCssFramework() === 'tailwindcss4') {
-            $styles[] = 'tom-select.tailwind.css';
-        }
-
         return [
             'scripts' => ['tom-select.complete.js'],
-            'styles' => $styles,
+            'styles' => ['tom-select.default.min.css'],
         ];
     }
 }
