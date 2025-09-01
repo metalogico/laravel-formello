@@ -22,4 +22,6 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 .vscode
+.idea
+.zed
 .DS_Store
