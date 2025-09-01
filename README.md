@@ -39,6 +39,21 @@ If you use this project, please consider giving it a ⭐.
 - Automatic error handling and display
 - Form validation integration
 
+
+## ⚠️ Breaking Changes in 1.5.0
+
+- **Select2 Widget**: The `Select2Widget` has been removed in favor of the `TomSelectWidget`. Same functionality.
+- HasSelect2Widget trait is now **HasTomSelectWidget**
+- **Removed** dependencies on **jQuery**
+- 'boolean' widget is now **'toggle'**
+
+**After update be sure to republish the assets!**
+
+```bash
+php artisan vendor:publish --tag=formello-assets --force
+```
+
+
 ## 🛠️ How to install 
 
 1. Install the package via Composer:
