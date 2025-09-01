@@ -53,11 +53,4 @@ class AssetManager
         static::$styles = [];
     }
 
-    /**
-     * Get the asset path
-     */
-    public static function assetPath(string $path): string
-    {
-        return asset("vendor/formello/{$path}");
-    }
 }

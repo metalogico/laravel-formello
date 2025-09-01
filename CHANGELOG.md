@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Tailwind CSS 4 widgets**
 - **Tom Select Widget**: New `TomSelectWidget` using Tom Select for a modern, lightweight, and accessible select dropdown with features like search, pagination, and custom templates.
+- **Dependent Select**: It's possible now to make a select field dependent on another select field (using the new tomselect widget).
 
 ### Wargning: BREAKING CHANGES!
 - **Select2 Widget**: The `Select2Widget` has been removed in favor of the `TomSelectWidget`.

@@ -3,7 +3,6 @@
 namespace Metalogico\Formello;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ViewErrorBag;
 use Metalogico\Formello\Interfaces\WidgetInterface;
 use Metalogico\Formello\Widgets\UploadWidget;
@@ -104,7 +103,7 @@ abstract class Formello
     protected function hasUploadWidget(): bool
     {
         foreach ($this->fields as $field) {
-            if ($field['widget'] instanceof UploadWidget || $field['widget'] == 'upload') {
+            if ($field['widget'] instanceof UploadWidget) {
                 return true;
             }
         }
@@ -170,10 +169,6 @@ abstract class Formello
                 // Usa la factory per risolvere l'alias
                 return $this->widgetFactory->make($fieldConfig['widget']);
             }
-            // Se è una classe completa
-            if (is_string($fieldConfig['widget']) && class_exists($fieldConfig['widget'])) {
-                return new $fieldConfig['widget'];
-            }
             // Se è già un oggetto widget
             if ($fieldConfig['widget'] instanceof WidgetInterface) {
                 return $fieldConfig['widget'];
@@ -203,53 +198,13 @@ abstract class Formello
      */
     protected function getDefaultWidgetForField($field)
     {
-        // checks if the column exists and gets its type
-        $schema = $this->model->getConnection()->getSchemaBuilder();
-        if ($schema->hasColumn($this->model->getTable(), $field)) {
-            $columnType = $schema->getColumnType($this->model->getTable(), $field);
-        } else {
-            $columnType = 'text';
-        }
-
-        switch ($columnType) {
-            case 'char':
-            case 'varchar':
-            case 'text':
-                return new Widgets\TextWidget;
-            case 'textarea':
-                return new Widgets\TextareaWidget;
-            case 'boolean':
-            case 'tinyint':
-                return new Widgets\ToggleWidget;
-            case 'date':
-                return new Widgets\DateWidget;
-            case 'datetime':
-            case 'timestamp':
-                return new Widgets\DateTimeWidget;
-            default:
-                return new Widgets\TextWidget;
-        }
-    }
-
-    public function renderForm()
-    {
-        // Ensure widgets resolve the current form instance when calling app('formello')
-        app()->instance('formello', $this);
-
-        // Register assets now, so per-form CSS framework overrides are applied
-        $this->ensureAssetsRegistered();
-
-        return view('formello::form', [
-            'formello' => $this,
-            'formConfig' => $this->formConfig,
-        ])->render();
+        // Delegate type inference to SchemaInspector, then map via WidgetFactory
+        $columnType = $this->schemaInspector->getColumnType($this->model, $field);
+        return $this->widgetFactory->make($columnType);
     }
 
     public function render()
     {
-        // Ensure widgets resolve the current form instance when calling app('formello')
-        app()->instance('formello', $this);
-
         // Register assets now, so per-form CSS framework overrides are applied
         $this->ensureAssetsRegistered();
 
@@ -334,8 +289,6 @@ abstract class Formello
         }
 
         // Get assets from widget, passing field configuration for conditional assets
-        // Bind current form instance so widgets can resolve per-form settings during asset selection
-        app()->instance('formello', $this);
         $assets = $widget->getAssets($fieldConfig);
 
         if ($assets) {
