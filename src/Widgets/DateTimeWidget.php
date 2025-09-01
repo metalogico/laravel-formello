@@ -36,6 +36,14 @@ class DateTimeWidget extends DateWidget
         $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
         $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
 
+        // Propagate validation state to Flatpickr's alt input
+        $hasErrors = !empty($errors);
+        if (!empty($mergedOptions['altInput'])) {
+            $existingAltClass = $mergedOptions['altInputClass']
+                ?? ($data['config']['attributes']['class'] ?? 'form-control');
+            $mergedOptions['altInputClass'] = trim($existingAltClass . ($hasErrors ? ' is-invalid' : ''));
+        }
+
         // Update the data-formello-datepicker attribute
         $data['config']['attributes']['data-formello-datepicker'] = json_encode($mergedOptions);
 

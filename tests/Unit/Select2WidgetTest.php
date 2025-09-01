@@ -54,4 +54,73 @@ class Select2WidgetTest extends TestCase
         $output = $form->renderField('field');
         $this->assertIsString($output);
     }
+
+    public function test_select2_does_not_render_multiple_attribute_by_default()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new Select2Widget(),
+                        'choices' => ['a' => 'A', 'b' => 'B'],
+                        // 'multiple' omitted
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field');
+        $this->assertStringContainsString('data-multiple="false"', $output);
+        // Ensure the HTML boolean attribute 'multiple' is not present
+        $this->assertStringNotContainsString(' multiple', $output);
+    }
+
+    public function test_select2_does_not_render_multiple_attribute_when_config_false()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new Select2Widget(),
+                        'choices' => ['a' => 'A', 'b' => 'B'],
+                        'multiple' => false,
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field');
+        $this->assertStringContainsString('data-multiple="false"', $output);
+        // Ensure the HTML boolean attribute 'multiple' is not present
+        $this->assertStringNotContainsString(' multiple', $output);
+    }
+
+    public function test_select2_renders_multiple_attribute_when_config_true()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new Select2Widget(),
+                        'choices' => ['a' => 'A', 'b' => 'B'],
+                        'multiple' => true,
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field');
+        // data-multiple flag
+        $this->assertStringContainsString('data-multiple="true"', $output);
+        // HTML boolean attribute present
+        $this->assertStringContainsString(' multiple', $output);
+        // Name should be suffixed with [] for multiple selects
+        $this->assertStringContainsString('name="field[]"', $output);
+    }
 }
