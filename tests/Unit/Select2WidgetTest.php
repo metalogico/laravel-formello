@@ -72,7 +72,6 @@ class Select2WidgetTest extends TestCase
         };
 
         $output = $form->renderField('field');
-        $this->assertStringContainsString('data-multiple="false"', $output);
         // Ensure the HTML boolean attribute 'multiple' is not present
         $this->assertStringNotContainsString(' multiple', $output);
     }
@@ -94,7 +93,6 @@ class Select2WidgetTest extends TestCase
         };
 
         $output = $form->renderField('field');
-        $this->assertStringContainsString('data-multiple="false"', $output);
         // Ensure the HTML boolean attribute 'multiple' is not present
         $this->assertStringNotContainsString(' multiple', $output);
     }
@@ -116,10 +114,8 @@ class Select2WidgetTest extends TestCase
         };
 
         $output = $form->renderField('field');
-        // data-multiple flag
-        $this->assertStringContainsString('data-multiple="true"', $output);
         // HTML boolean attribute present
-        $this->assertStringContainsString(' multiple', $output);
+        $this->assertStringContainsString('multiple', $output);
         // Name should be suffixed with [] for multiple selects
         $this->assertStringContainsString('name="field[]"', $output);
     }

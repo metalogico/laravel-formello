@@ -13,22 +13,15 @@ class Select2Widget extends BaseWidget
     {
         // Imposta i valori di default
         $defaults = [
-            'class' => 'form-control select2',
+            'class' => 'form-control',
         ];
 
-        // Unisci con le configurazioni fornite (mantieni 'multiple' a livello config, non nelle attributes)
-        $fieldConfig = array_merge(['multiple' => false], $fieldConfig);
         $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
-
-        if ($fieldConfig['multiple']) {
-            $name .= '[]'; // Modify name to handle array submission
-            // Ensure the HTML select has the multiple attribute for native Select2 handling
-            $fieldConfig['attributes']['multiple'] = 'multiple';
-        } else {
-            // Se esistesse nelle attributes, rimuovi 'multiple' quando è false
-            if (isset($fieldConfig['attributes']['multiple']) && ! $fieldConfig['attributes']['multiple']) {
-                unset($fieldConfig['attributes']['multiple']);
-            }
+        if(isset($fieldConfig['multiple']) && $fieldConfig['multiple'] == true){
+            $fieldConfig['multiple'] = true;
+            $name .= '[]';
+        }else{
+            $fieldConfig['multiple'] = false;
         }
 
         // Estrai la configurazione specifica di select2
