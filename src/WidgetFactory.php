@@ -10,12 +10,14 @@ class WidgetFactory
 
     public function __construct()
     {
-        $this->widgetMap = config('formello.default_widgets', [
+        // Built-in widget aliases
+        $this->widgetMap = [
             'text' => Widgets\TextWidget::class,
             'textarea' => Widgets\TextareaWidget::class,
             'toggle' => Widgets\ToggleWidget::class,
             'date' => Widgets\DateWidget::class,
             'datetime' => Widgets\DateTimeWidget::class,
+            'timestamp' => Widgets\DateTimeWidget::class,
             'select' => Widgets\SelectWidget::class,
             'select2' => Widgets\Select2Widget::class,
             'checkboxes' => Widgets\CheckboxesWidget::class,
@@ -27,7 +29,14 @@ class WidgetFactory
             'colorswatch' => Widgets\ColorSwatchWidget::class,
             'wysiwyg' => Widgets\WysiwygWidget::class,
             'mask' => Widgets\MaskWidget::class,
-        ]);
+            'separator' => Widgets\SeparatorWidget::class,
+        ];
+
+        // Merge custom widgets from user config (overrides built-ins)
+        $custom = config('formello.custom_widgets', []);
+        if (is_array($custom) && ! empty($custom)) {
+            $this->widgetMap = array_merge($this->widgetMap, $custom);
+        }
     }
 
     public function make(string $type): WidgetInterface
