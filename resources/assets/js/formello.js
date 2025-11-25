@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     maxHeight: 300,
                     iframe: true,
                     toolbarSticky: false,
-                    safeMode: true,
                     showCharsCounter: false,
                     showWordsCounter: false,
                     showXPathInStatusbar: false,
