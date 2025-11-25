@@ -4,7 +4,7 @@
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
 
-    <textarea data-formello-wysiwyg="{{ json_encode($fieldConfig['jodit'] ?? []) }}" name="{{ $name }}" class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+    <textarea data-formello-wysiwyg="{{ json_encode($config['jodit'] ?? []) }}" name="{{ $name }}" class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
         @foreach ($config['attributes'] as $attr => $attrValue) {{ $attr }}="{{ $attrValue }}" @endforeach>{{ old($name, $value) }}</textarea>
 
     @if (isset($config['help']))        
