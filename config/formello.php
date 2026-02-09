@@ -28,6 +28,18 @@ return [
      * Asset loading configuration
      * Set to false any library you already have in your theme to avoid conflicts
      */
+    /**
+     * Reactive system configuration
+     */
+    'reactive' => [
+        'compute_path' => '/formello/compute',
+        // Whitelist of form classes allowed for server callbacks.
+        // Leave empty to allow all (not recommended in production).
+        'allowed_forms' => [
+            // App\Forms\ContractForm::class,
+        ],
+    ],
+
     'assets' => [
         'select2' => false, // deprecated
         'tomselect' => true,

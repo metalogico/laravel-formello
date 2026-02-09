@@ -296,4 +296,50 @@ abstract class Formello
             }
         }
     }
+
+    /**
+     * Get config for a single field (used by FormelloComputeController).
+     */
+    public function getFieldConfig(string $name): array
+    {
+        if (! isset($this->fields[$name])) {
+            throw new InvalidArgumentException("Field '{$name}' not found");
+        }
+
+        return $this->fields[$name]['config'];
+    }
+
+    /**
+     * Check if any field has reactive config.
+     */
+    public function hasReactiveFields(): bool
+    {
+        foreach ($this->fields as $field) {
+            if (! empty($field['config']['reactive'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Build the reactive map for the JS engine.
+     * Returns: { field_name: { client: [...], server: [...] } }
+     */
+    public function getReactiveMap(): array
+    {
+        $map = [];
+        foreach ($this->fields as $name => $field) {
+            $reactive = $field['config']['reactive'] ?? null;
+            if ($reactive) {
+                $map[$name] = [
+                    'client' => $reactive['client'] ?? null,
+                    'server' => $reactive['server'] ?? null,
+                ];
+            }
+        }
+
+        return $map;
+    }
 }

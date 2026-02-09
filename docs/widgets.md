@@ -2,187 +2,370 @@
 
 This document lists the configuration parameters supported by each built-in widget. It reflects the current implementation in `src/Widgets/` and the Blade templates under `resources/views/widgets/`.
 
-Notes
-- Common keys: `label`, `help`, `attributes` (HTML attributes), `class` (inside `attributes`), `id` (inside `attributes`).
-- Choices/options can be arrays or callables returning arrays.
-- Some inputs support `prefix`, `suffix`, and `icon` for grouped inputs in templates.
-- Frameworks: templates exist for `bootstrap5` and `tailwindcss4`. Rendering differs in classes only.
-- Assets: see `config/formello.php` under `assets` to enable/disable library loading.
+Since v2.0, fields are defined using the fluent `FormelloField` builder:
+
+```php
+use Metalogico\Formello\FormelloField;
+
+FormelloField::make('name')
+    ->label('Full Name')
+    ->widget('text')
+    ->help('Enter your full name')
+    ->attributes(['placeholder' => 'John Doe'])
+    ->required()
+    ->columns(6);
+```
+
+### Common fluent methods
+
+| Method | Description |
+|--------|-------------|
+| `->label(string)` | Field label |
+| `->help(string)` | Help text below the field |
+| `->widget(string, array $options)` | Widget type and widget-specific options |
+| `->columns(int)` | Grid column span (1-12) |
+| `->value(mixed)` | Explicit value (auto-resolved from model if omitted) |
+| `->choices(array\|Closure)` | Options for select/radio/checkboxes |
+| `->multiple(bool)` | Enable multiple selection |
+| `->attributes(array)` | HTML attributes |
+| `->required()` | Shortcut for `->attributes(['required' => true])` |
+| `->readonly()` | Shortcut for `->attributes(['readonly' => true])` |
+| `->disabled()` | Shortcut for `->attributes(['disabled' => true])` |
+| `->type(string)` | Input type (e.g., `email`, `password`, `number`) |
+| `->icon(string)` | Icon HTML for input group |
+| `->format(string)` | Date format |
+| `->reactive(array)` | Reactive config (see [reactive.md](reactive.md)) |
+| `->extra(string, mixed)` | Arbitrary extra config key |
+
+### Notes
+
+- Widget-specific options passed via `->widget('type', $options)` are stored under the widget type key (e.g., `'date' => [...]`, `'tomselect' => [...]`)
+- Frameworks: templates exist for `bootstrap5` and `tailwindcss4`. Rendering differs in classes only
+- Assets: see `config/formello.php` under `assets` to enable/disable library loading
 
 ---
 
 ## Text (`TextWidget`)
-Keys
-- `label`, `help`
-- `attributes`: supports `type` (default `text`). Special handling:
+
+```php
+FormelloField::make('email')
+    ->label('Email')
+    ->type('email')
+    ->icon('<i class="fa-solid fa-envelope"></i>')
+```
+
+- `->type()`: default `text`. Special handling:
   - `number` adds `inputmode=numeric` and `pattern=[0-9]*`
   - `email` adds `autocomplete=email`
   - `password` sets value to empty on render
-- `prefix`, `suffix`, `icon` (for input group templates)
+- `->icon()`: renders inside an input group (Bootstrap/Tailwind)
+- Supports `prefix`, `suffix` via `->extra('prefix', '...')`
 
 ## Textarea (`TextareaWidget`)
-Keys
-- `label`, `help`
-- `attributes`: includes `id`, `class`. Rendered as `<textarea>`
+
+```php
+FormelloField::make('description')
+    ->label('Description')
+    ->widget('textarea')
+    ->attributes(['rows' => 5])
+```
 
 ## Mask (`MaskWidget`)
-Extends Text.
-Keys
-- All Text keys
-- `mask`: array/object passed to `data-formello-mask` for IMask
+
+Extends Text. Uses IMask.js for input masking.
+
+```php
+FormelloField::make('price')
+    ->label('Price')
+    ->widget('mask', ['mask' => 'Number', 'scale' => 2])
+
+FormelloField::make('phone')
+    ->label('Phone')
+    ->widget('mask', ['mask' => '+00 000 000 0000'])
+```
+
+- Widget options are passed to IMask via `data-formello-mask`
 
 ## Hidden (`HiddenWidget`)
-Keys
-- No special keys. Renders hidden field with `name` and `value`.
+
+```php
+FormelloField::make('token')
+    ->widget('hidden')
+    ->value('abc123')
+```
 
 ## Select (`SelectWidget`)
-Keys
-- `label`, `help`
-- `choices`: array or callable returning `[value => label]`
-- `multiple`: boolean. When true, `name` becomes `name[]` and `multiple` attribute is set
-- `attributes`: standard HTML attributes (e.g., `id`, `class`)
 
-## Select2 (`Select2Widget`) - Deprecated
-Use "tomselect" instead.
+```php
+FormelloField::make('category_id')
+    ->label('Category')
+    ->widget('select')
+    ->choices(fn () => Category::pluck('name', 'id')->toArray())
+    ->multiple()
+```
+
+- `->choices()`: array or callable returning `[value => label]`
+- `->multiple()`: when true, `name` becomes `name[]`
+
+## Select2 (`Select2Widget`) — Deprecated
+
+Use `tomselect` instead.
 
 ## TomSelect (`TomSelectWidget`)
-Keys
-- `label`, `help`
-- `multiple`: boolean. When true, `name` becomes `name[]` and `multiple` attribute is set
-- When NOT using AJAX
-  - `choices`: array or callable returning `[value => label]`
-- When using AJAX
-  - `tomselect`: array with
-    - `route`: URL used by Tom Select AJAX
-    - `model`: FQCN used to preload current value(s) into choices
-    - `label_field`: defaults to `name`
-    - `value_field`: defaults to `id`
-    - `placeholder`: string for Tom Select placeholder (default: "Select")
-    - `dropdownParent`: CSS selector for dropdown parent (default: `body`)
-    - `theme`: theme string (default: `bootstrap-5` in the Bootstrap template)
-    - Dependencies (optional)
-      - `depends_on`: parent field id. Child select is disabled until parent has value
-      - `depends_param`: request param name sent to AJAX; defaults to `depends_on` if omitted
-      - Behavior: on parent change, child is cleared; AJAX requests include `{ term, [depends_param]: parentValue }`
-  - Defaults in template when AJAX is enabled: `minimumInputLength=2`, `delay=250ms`
-- `attributes`: standard HTML attributes (e.g., `id`, `class`). Default `class` includes `tomselect`.
+
+### Static choices
+
+```php
+FormelloField::make('status')
+    ->label('Status')
+    ->widget('tomselect')
+    ->choices(['active' => 'Active', 'inactive' => 'Inactive'])
+```
+
+### AJAX search
+
+```php
+FormelloField::make('category_id')
+    ->label('Category')
+    ->widget('tomselect', [
+        'route' => route('categories.search'),
+        'model' => Category::class,
+        'label_field' => 'name',
+        'value_field' => 'id',
+        'placeholder' => 'Search categories...',
+    ])
+```
+
+### Dependent selects
+
+```php
+FormelloField::make('region_id')
+    ->label('Region')
+    ->widget('tomselect', [
+        'route' => route('regions.search'),
+    ])
+
+FormelloField::make('province_id')
+    ->label('Province')
+    ->widget('tomselect', [
+        'route' => route('provinces.search'),
+        'depends_on' => 'region_id',
+        'depends_param' => 'region_id',
+    ])
+```
+
+Widget options (`->widget('tomselect', [...])`):
+- `route`: URL for AJAX search
+- `model`: FQCN used to preload current value(s) into choices
+- `label_field`: defaults to `name`
+- `value_field`: defaults to `id`
+- `placeholder`: default `"Select"`
+- `dropdownParent`: CSS selector (default: `body`)
+- `theme`: default `bootstrap-5` in Bootstrap template
+- `depends_on`: parent field id (child disabled until parent has value)
+- `depends_param`: request param name sent to AJAX (defaults to `depends_on`)
+- AJAX defaults: `minimumInputLength=2`, `delay=250ms`
+
+> **Tip:** For more complex dependent selects (e.g., cascading with DB queries), consider using the [reactive system](reactive.md) with `->reactive(['server' => 'onParentChanged'])`.
 
 ## Radio (`RadioWidget`)
-Keys
-- `label`, `help`
-- `options`: array or callable returning `[value => label]`
-- `attributes`: applied to each radio input. `class` is merged.
+
+```php
+FormelloField::make('gender')
+    ->label('Gender')
+    ->widget('radio')
+    ->choices(['m' => 'Male', 'f' => 'Female'])
+```
+
+- `->choices()`: array or callable returning `[value => label]`
 
 ## Checkboxes (`CheckboxesWidget`)
-Keys
-- `label`, `help`
-- `choices`: array or callable returning `[value => label]`
-- `select-all`: array (optional)
-  - `enabled`: boolean to show a Select All control
-  - `label`: string for the control text (default: "Select all / Unselect all")
-- `attributes`: applied to each checkbox input; `id` base used for grouping
+
+```php
+FormelloField::make('tags')
+    ->label('Tags')
+    ->widget('checkboxes')
+    ->choices(['php' => 'PHP', 'js' => 'JavaScript', 'go' => 'Go'])
+    ->extra('select-all', ['enabled' => true, 'label' => 'Select all'])
+```
+
+- `->choices()`: array or callable returning `[value => label]`
+- `select-all` (via `->extra()`): `enabled` (bool), `label` (string, default: "Select all / Unselect all")
 
 ## Toggle (`ToggleWidget`)
-Keys
-- `label`, `help`
-- `attributes`: merged with defaults
-  - Sets `type=checkbox` and `role=switch`
-  - If the value is truthy, `checked` is set
+
+```php
+FormelloField::make('in_stock')
+    ->label('In Stock')
+    ->widget('toggle')
+```
+
+- Renders as `type=checkbox` with `role=switch`
+- If the value is truthy, `checked` is set
 
 ## Range (`RangeWidget`)
-Keys
-- `label`, `help`
-- `attributes`:
-  - `type=range` (set automatically)
-  - `min` (default 0)
-  - `max` (default 100)
-  - `step` (default 1)
-- `showValue`: boolean (default true) for templates that display the current value
+
+```php
+FormelloField::make('rating')
+    ->label('Rating')
+    ->widget('range')
+    ->attributes(['min' => 1, 'max' => 10, 'step' => 1])
+```
+
+- `min` (default 0), `max` (default 100), `step` (default 1)
+- `showValue`: boolean (default true), display current value — via `->extra('showValue', false)`
 
 ## Date (`DateWidget`)
-Keys
-- `label`, `help`
-- `format`: PHP date format for incoming/outgoing value (default `Y-m-d`)
-- `flatpickr`: array of Flatpickr options, merged with defaults
-  - Defaults: `altInput=true`, `altFormat='d F Y'`, `dateFormat='Y-m-d'`, `locale='it'`
-- `attributes`:
-  - `type=text` (Flatpickr attaches to text inputs)
-  - `data-formello-datepicker` set with merged options (JSON)
-- `prefix`, `suffix`, `icon` supported by templates
+
+```php
+FormelloField::make('publish_at')
+    ->label('Publish at')
+    ->widget('date', ['altFormat' => 'd/m/Y'])
+    ->format('Y-m-d')
+```
+
+- `->format()`: PHP date format (default `Y-m-d`)
+- Widget options are Flatpickr options, merged with defaults:
+  - `altInput=true`, `altFormat='d F Y'`, `dateFormat='Y-m-d'`, `locale='it'`
+- Supports `->icon()` for input group
 
 ## DateTime (`DateTimeWidget`)
+
 Extends Date.
-Keys
-- Inherits all Date keys
-- Different defaults merged into `flatpickr`:
-  - `altFormat='d F Y H:i'`, `dateFormat='Y-m-d H:i'`, `enableTime=true`, `time_24hr=true`
-- `format` default: `Y-m-d H:i`
+
+```php
+FormelloField::make('event_at')
+    ->label('Event date & time')
+    ->widget('datetime')
+```
+
+- Inherits all Date options
+- Different defaults: `altFormat='d F Y H:i'`, `dateFormat='Y-m-d H:i'`, `enableTime=true`, `time_24hr=true`
+- `->format()` default: `Y-m-d H:i`
 
 ## Upload (`UploadWidget`)
-Keys
-- `label`, `help`
-- `type`: file input type (default `file`)
-- `attributes`: `id`, `class`, and any file input attributes
+
+```php
+FormelloField::make('avatar')
+    ->label('Avatar')
+    ->widget('upload')
+    ->attributes(['accept' => 'image/*'])
+```
+
+- Automatically sets `enctype="multipart/form-data"` on the form
 
 ## Color (`ColorWidget`)
-Keys
-- `label`, `help`
-- `pickr`: array of Pickr options, merged with defaults
-  - Defaults include: `theme='nano'`, `default` color (current value), components (preview, opacity, hue, interaction with hex, rgba, input, clear, save)
-- `attributes`:
-  - `type=text` and `data-formello-colorpicker` set with merged options (JSON)
-- `prefix`, `suffix`, `icon` supported by templates
+
+```php
+FormelloField::make('brand_color')
+    ->label('Brand Color')
+    ->widget('color')
+```
+
+- Uses Pickr nano library
+- Widget options (via `->widget('color', [...])`): Pickr options merged with defaults
+  - Defaults: `theme='nano'`, components (preview, opacity, hue, interaction with hex, rgba, input, clear, save)
+- Supports `->icon()` for input group
 
 ## ColorSwatch (`ColorSwatchWidget`)
-Extends Color. Uses the same template as Color.
-Keys
-- Inherits all Color keys
-- Different default Pickr options appropriate for swatches-only mode
-  - Disables preview/opacity/hue and interaction controls
-  - Provides a default `swatches` array you can override via `pickr.swatches`
+
+Extends Color. Swatches-only mode.
+
+```php
+FormelloField::make('theme_color')
+    ->label('Theme Color')
+    ->widget('colorswatch', [
+        'swatches' => ['#FF0000', '#00FF00', '#0000FF'],
+    ])
+```
+
+- Disables preview/opacity/hue and interaction controls
+- Provides a default set of 20 swatches, overridable via widget options
 
 ## Wysiwyg (`WysiwygWidget`)
-Keys
-- `label`, `help`
-- `jodit`: array of Jodit options; applied via `data-formello-wysiwyg` (JSON)
-- `attributes`: textarea HTML attributes (e.g., rows)
+
+```php
+FormelloField::make('content')
+    ->label('Content')
+    ->widget('wysiwyg', ['toolbarAdaptive' => false])
+```
+
+- Uses Jodit Editor (MIT, no CDN required)
+- Widget options are Jodit options, applied via `data-formello-wysiwyg`
+- Italian localization by default
+
+## Separator (`SeparatorWidget`)
+
+```php
+FormelloField::make('section_divider')
+    ->label('Additional Info')
+    ->widget('separator')
+    ->columns(12)
+```
+
+- Renders a visual divider between form sections
+- `->label()` is optional — renders as heading text above the separator line
+
+---
+
+## Reactive System
+
+Any field can be made reactive by adding `->reactive()`:
+
+```php
+FormelloField::make('status')
+    ->widget('select')
+    ->choices(['active' => 'Active', 'other' => 'Other...'])
+    ->reactive(['client' => 'onStatusChanged'])
+```
+
+See [reactive.md](reactive.md) for full documentation.
 
 ---
 
 ## Assets and Framework Config
-- See `config/formello.php`:
-  - `css_framework`: `bootstrap5` or `tailwindcss4`
-  - `custom_widgets`: map alias to FQCN to override built-in widgets
-  - `assets`: enable/disable library loading per widget type (e.g., `tomselect`, `date`, `datetime`, `mask`, `color`, `colorswatch`, `wysiwyg`, `select2` (deprecated))
+
+See `config/formello.php`:
+- `css_framework`: `bootstrap5` or `tailwindcss4`
+- `custom_widgets`: map alias to FQCN to override built-in widgets
+- `assets`: enable/disable library loading per widget type
+- `reactive`: configure compute endpoint and allowed forms whitelist
 
 ## Examples
-Minimal field definitions in a Formello form class:
+
+Field definitions using the fluent builder:
+
 ```php
+use Metalogico\Formello\FormelloField;
+
 protected function fields(): array
 {
     return [
-        'name' => [
-            'label' => 'Name',
-            'help' => 'Enter your full name',
-            'attributes' => ['placeholder' => 'John Doe'],
-        ],
-        'category_id' => [
-            'label' => 'Category',
-            'widget' => 'select',
-            'choices' => fn () => Category::pluck('name', 'id')->toArray(),
-            'multiple' => true,
-        ],
-        'publish_at' => [
-            'label' => 'Publish at',
-            'widget' => 'date',
-            'format' => 'Y-m-d',
-            'flatpickr' => ['altFormat' => 'd/m/Y'],
-        ],
-        'content' => [
-            'label' => 'Content',
-            'widget' => 'wysiwyg',
-            'jodit' => ['toolbarAdaptive' => false],
-        ],
+        FormelloField::make('name')
+            ->label('Name')
+            ->help('Enter your full name')
+            ->attributes(['placeholder' => 'John Doe'])
+            ->required(),
+
+        FormelloField::make('category_id')
+            ->label('Category')
+            ->widget('select')
+            ->choices(fn () => Category::pluck('name', 'id')->toArray())
+            ->multiple(),
+
+        FormelloField::make('publish_at')
+            ->label('Publish at')
+            ->widget('date', ['altFormat' => 'd/m/Y'])
+            ->format('Y-m-d'),
+
+        FormelloField::make('content')
+            ->label('Content')
+            ->widget('wysiwyg', ['toolbarAdaptive' => false]),
+
+        FormelloField::make('status')
+            ->widget('select')
+            ->choices(['active' => 'Active', 'other' => 'Other...'])
+            ->reactive(['client' => 'onStatusChanged']),
     ];
 }
 ```

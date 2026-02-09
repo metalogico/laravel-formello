@@ -1,6 +1,15 @@
 <form
     method="POST"
     action="{{ $formConfig['action'] ?? '' }}"
+    @if ($formello->hasReactiveFields())
+        data-formello-class="{{ get_class($formello) }}"
+        data-formello-compute="{{ route('formello.compute') }}"
+        data-formello-reactive="{{ json_encode($formello->getReactiveMap()) }}"
+        @if ($formello->isEditing())
+            data-formello-model-class="{{ get_class($formello->getModel()) }}"
+            data-formello-model-id="{{ $formello->getModel()->getKey() }}"
+        @endif
+    @endif
     @foreach ($formConfig['attributes'] ?? [] as $attr => $value)
         {{ $attr }}="{{ $value }}" @endforeach>
 
@@ -13,7 +22,8 @@
     @if ($formello->getCssFramework() === 'bootstrap5')
         <div class="row">
             @foreach ($formello->getFields() as $name => $field)
-                <div class="col-md-{{ $field['config']['columns'] ?? 12 }} mb-3">
+                <div class="col-md-{{ $field['config']['columns'] ?? 12 }} mb-3"
+                     data-formello-field="{{ $name }}">
                     {!! $formello->renderField($name) !!}
                 </div>
             @endforeach
@@ -21,7 +31,8 @@
     @else
         <div class="grid grid-cols-12 gap-3">
             @foreach ($formello->getFields() as $name => $field)
-                <div class="col-span-{{ $field['config']['columns'] ?? 12 }} mb-3">
+                <div class="col-span-{{ $field['config']['columns'] ?? 12 }} mb-3"
+                     data-formello-field="{{ $name }}">
                     {!! $formello->renderField($name) !!}
                 </div>
             @endforeach

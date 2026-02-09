@@ -3,8 +3,10 @@
 namespace Metalogico\Formello;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Metalogico\Formello\Console\MakeFormelloCommand;
+use Metalogico\Formello\Http\Controllers\FormelloComputeController;
 
 class FormelloServiceProvider extends ServiceProvider
 {
@@ -49,6 +51,8 @@ class FormelloServiceProvider extends ServiceProvider
             // Tom Select
             __DIR__.'/../resources/assets/js/tom-select.complete.js' => public_path('vendor/formello/js/tom-select.complete.js'),
             __DIR__.'/../resources/assets/css/tom-select.default.min.css' => public_path('vendor/formello/css/tom-select.default.min.css'),
+            // Reactive engine
+            __DIR__.'/../resources/assets/js/formello-reactive.js' => public_path('vendor/formello/js/formello-reactive.js'),
         ], 'formello-assets');
 
         if ($this->app->runningInConsole()) {
@@ -56,6 +60,7 @@ class FormelloServiceProvider extends ServiceProvider
         }
 
         $this->registerBladeDirectives();
+        $this->registerReactiveRoute();
     }
 
     /**
@@ -70,5 +75,19 @@ class FormelloServiceProvider extends ServiceProvider
         Blade::directive('formelloScripts', function () {
             return "<?php echo view('formello::directives.scripts')->render(); ?>";
         });
+    }
+
+    /**
+     * Register the POST route for reactive server callbacks.
+     */
+    protected function registerReactiveRoute(): void
+    {
+        $compute_path = config('formello.reactive.compute_path');
+
+        if ($compute_path) {
+            Route::post($compute_path, [FormelloComputeController::class, 'handle'])
+                ->name('formello.compute')
+                ->middleware('web');
+        }
     }
 }

@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0] - 2025-09-01
+## [2.1.0] - 2026-02-09
+
+### Added
+- **Reactive System**: Callback-based field interdependency engine with two execution layers:
+  - `reactive.client` — instant JS callbacks via `window.FormelloReactive`
+  - `reactive.server` — async PHP callbacks via POST endpoint
+- **FormelloState** (`src/Support/FormelloState.php`): State object with identical API in JS and PHP (`get`, `set`, `setOptions`, `setAttributes`)
+- **FormelloComputeController** (`src/Http/Controllers/FormelloComputeController.php`): POST endpoint for server-side reactive callbacks
+- **formello-reactive.js**: Client-side reactive engine with debounced input handling, widget-aware value setters (TomSelect, Flatpickr, Jodit), and initial state execution on page load
+- **Reactive config section** in `config/formello.php` with `compute_path` and `allowed_forms` whitelist
+- **Reactive data attributes** on `<form>` and field wrapper `<div>` elements for JS engine binding
+- New methods on `Formello.php`: `getFieldConfig()`, `hasReactiveFields()`, `getReactiveMap()`
+- Documentation: `docs/reactive.md`
+- Unit tests for `FormelloState` and reactive methods (13 new tests)
+
+## [2.0.0] - 2026-02-08
 
 ### Added
 - **Tailwind CSS 4 widgets**

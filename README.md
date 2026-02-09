@@ -2,7 +2,7 @@
 
 # Formello
 
-A Laravel package for generating Bootstrap and Tailwind CSS forms based on models. Laravel 9+
+A Laravel package for generating Bootstrap 5 and Tailwind CSS 4 forms based on models. Laravel 11+
 
 Formello is a comprehensive form generation and handling tool for Laravel applications, inspired by Django forms.
 
@@ -20,41 +20,74 @@ If you use this project, please consider giving it a ⭐.
 
 ## ✨ Features
 
-- Easy form definition using Laravel classes
-- Automatic form rendering
-- Support for various field types:
-  - Text
-  - Textarea
-  - Select (with multiple)
-  - Select2 (deprecated)
-  - Radio
-  - Checkboxes
-  - Toggle
-  - Range
-  - Date
-  - DateTime
-  - Upload
-  - Hidden
-- Customizable widgets
+- **Fluent field builder** with `FormelloField::make()` API
+- **Reactive system** for field interdependencies (client-side JS and/or server-side PHP callbacks)
+- Automatic form rendering with **Bootstrap 5** and **Tailwind CSS 4**
+- Rich set of built-in widgets:
+  - **Text**, **Textarea**, **Hidden**
+  - **Select** (with multiple), **TomSelect** (AJAX, search, dependent selects)
+  - **Radio**, **Checkboxes**, **Toggle**
+  - **Range**
+  - **Date**, **DateTime** (Flatpickr with Italian localization)
+  - **Mask** (IMask.js input masking)
+  - **Color**, **ColorSwatch** (Pickr nano)
+  - **Wysiwyg** (Jodit Editor)
+  - **Upload**
+  - **Separator**
+- Customizable and extensible widgets
+- Modular asset management (disable libraries your theme already includes)
 - Automatic error handling and display
-- Form validation integration
+- Artisan scaffolding command
 
+## ⚠️ Upgrading to v2.x
 
-## ⚠️ Breaking Changes in 1.5.0
+Versions 2.0 and 2.1 introduce **breaking changes** from the 1.x series.
 
-- **Select2 Widget**: The `Select2Widget` has been removed in favor of the `TomSelectWidget`. Same functionality.
-- HasSelect2Widget trait is now **HasTomSelectWidget**
-- **Removed** dependencies on **jQuery**
-- 'boolean' widget is now **'toggle'**
+### Breaking changes in v2.0
 
-**After update be sure to republish the assets!**
+- **Fluent field builder**: `fields()` now returns `FormelloField[]` instead of associative arrays
+- **Select2 removed**: use `TomSelectWidget` instead. `HasSelect2Widget` trait replaced by `HasTomSelectWidget`
+- **jQuery removed**: no longer a dependency
+- **Widget rename**: `'boolean'` is now `'toggle'`
+- **Tailwind CSS 4**: full widget support added
+
+### New in v2.1
+
+- **Reactive System**: callback-based field interdependencies with `reactive.client` (JS) and `reactive.server` (PHP)
+
+### Migration from v1.x
+
+```php
+// Before (v1.x)
+protected function fields(): array
+{
+    return [
+        'name' => [
+            'label' => 'Name',
+            'widget' => 'text',
+        ],
+    ];
+}
+
+// After (v2.x)
+use Metalogico\Formello\FormelloField;
+
+protected function fields(): array
+{
+    return [
+        FormelloField::make('name')->label('Name')->widget('text'),
+    ];
+}
+```
+
+**After upgrading, republish the assets:**
 
 ```bash
 php artisan vendor:publish --tag=formello-assets --force
+php artisan vendor:publish --tag=formello-config --force
 ```
 
-
-## 🛠️ How to install 
+## 🛠️ Installation
 
 1. Install the package via Composer:
 
@@ -80,23 +113,20 @@ To ensure that Formello's assets are automatically updated every time you run `c
 }
 ```
 
-This will overwrite the existing assets with the latest ones from the package.
-
-
 ## 😎 How to use
 
-Creating a Form
-Create a new form class that extends `Metalogico\Formello\Formello`.
+### Creating a Form
 
-Here's a simple example for a product form.
+Create a new form class that extends `Metalogico\Formello\Formello`. Fields are defined using the fluent `FormelloField` builder.
 
 ```php
 <?php
 
 namespace App\Forms;
 
+use App\Models\Category;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\SelectWidget;
+use Metalogico\Formello\FormelloField;
 
 class ProductForm extends Formello
 {
@@ -111,29 +141,37 @@ class ProductForm extends Formello
     protected function edit(): array
     {
         return [
-            'method' => 'POST',
+            'method' => 'PATCH',
             'action' => route('products.update', $this->model->id),
         ];
-    }    
+    }
 
     protected function fields(): array
     {
         return [
-            'name' => [
-                'label' => __('Product Name'),
-                'help' => 'Enter the name of the product',
-            ],
-            'description' => [
-                'label' => __('Description'),
-            ],
-            'category_id' => [
-                'label' => __('Category'),
-                'widget' => 'select',
-                'choices' => Category::pluck('name', 'id')->toArray();
-            ],
-            'in_stock' => [
-              'label' => __('In Stock'),
-            ],
+            FormelloField::make('name')
+                ->label(__('Product Name'))
+                ->help('Enter the name of the product')
+                ->required(),
+
+            FormelloField::make('description')
+                ->label(__('Description'))
+                ->widget('textarea'),
+
+            FormelloField::make('category_id')
+                ->label(__('Category'))
+                ->widget('select')
+                ->choices(Category::pluck('name', 'id')->toArray()),
+
+            FormelloField::make('price')
+                ->label(__('Price'))
+                ->widget('mask', ['mask' => 'Number', 'scale' => 2])
+                ->columns(6),
+
+            FormelloField::make('in_stock')
+                ->label(__('In Stock'))
+                ->widget('toggle')
+                ->columns(6),
         ];
     }
 }
@@ -142,21 +180,19 @@ class ProductForm extends Formello
 Remember to add these fields to your model's `$fillable` array otherwise Formello will not render them.
 
 ```php
-
 class Product extends Model
 {
-    // ...
     protected $fillable = [
         'name',
         'category_id',
         'description',
+        'price',
         'in_stock',
     ];
-
 }
 ```
 
-## Using the provided artisan command
+### Using the artisan command
 
 You can generate a basic formello file using this command:
 
@@ -166,19 +202,17 @@ php artisan make:formello --model=Product
 
 The script will generate a skeleton file that contains a basic field definition for each fillable field found in your model.
 
-
-## Rendering the Form
+### Rendering the Form
 
 In your controller for an empty form (create action):
 
 ```php
 public function create()
 {
-    // create the form
     $formello = new ProductForm(Product::class);
-    // pass it to the view
+
     return view('products.create', [
-      'formello' => $formello
+        'formello' => $formello,
     ]);
 }
 ```
@@ -188,83 +222,152 @@ or, for an edit form:
 ```php
 public function edit(Product $product)
 {
-    // pass the model to the form
     $formello = new ProductForm($product);
-    // pass it to the view
+
     return view('products.edit', [
-        'formello' => $formello
+        'formello' => $formello,
     ]);
 }
 ```
 
-Then in you blade template:
+Then in your blade template:
 
-```php
+```blade
 {!! $formello->render() !!}
 ```
 
-If you want to render only the fields (without the \<form\> tag) you can use:
+If you want to render only the fields (without the `<form>` tag) you can use:
 
-```php
+```blade
 @foreach ($formello->getFields() as $name => $field)
     {!! $formello->renderField($name) !!}
 @endforeach
 ```
 
-## Conditional Logic
+### Conditional Logic
 
-You can use `isCreating()` and `isEditing()` methods in your form class to dynamically change fields, labels, rules, or other options based on the form's mode.
-
-Here's an example of how to use these methods to change a field's behavior:
+You can use `isCreating()` and `isEditing()` methods in your form class to dynamically change fields based on the form's mode:
 
 ```php
 protected function fields(): array
 {
-    $fields = [
-        'name' => [
-            'label' => __('User Name'),
-            'help' => 'Enter the name of the user',
-        ],
-        'password' => [
-            'label' => __('Password'),
-            'type' => 'password',
-            'required' => $this->isCreating(),
-            'help' => $this->isEditing() ? 'Leave the field empty to keep the current password' : '',
-        ],
-    ];
+    $password_field = FormelloField::make('password')
+        ->label(__('Password'))
+        ->type('password');
 
-    return $fields;
+    if ($this->isCreating()) {
+        $password_field->required();
+    }
+
+    if ($this->isEditing()) {
+        $password_field->help('Leave empty to keep the current password');
+    }
+
+    return [
+        FormelloField::make('name')
+            ->label(__('User Name'))
+            ->help('Enter the name of the user'),
+
+        $password_field,
+    ];
 }
 ```
 
+### CSS Framework Override
+
+By default, Formello uses the framework set in `config/formello.php`. You can override it per form:
+
+```php
+$formello = new ProductForm($product);
+$formello->setCssFramework('tailwindcss4');
+```
+
+## ⚡ Reactive System
+
+The reactive system enables field interdependencies without writing custom JavaScript from scratch. Add `->reactive()` to any field to declare callbacks.
+
+### Client-side (instant)
+
+```php
+protected function fields(): array
+{
+    return [
+        FormelloField::make('status')
+            ->widget('select')
+            ->choices(['active' => 'Active', 'other' => 'Other...'])
+            ->reactive(['client' => 'onStatusChanged']),
+
+        FormelloField::make('status_other')
+            ->label('Specify'),
+    ];
+}
+```
+
+```js
+window.FormelloReactive = {
+    onStatusChanged(state) {
+        const isOther = state.get('status') === 'other';
+        state.setAttributes('status_other', {
+            hidden: !isOther,
+            required: isOther,
+        });
+        if (!isOther) state.set('status_other', '');
+    },
+};
+```
+
+### Server-side (async PHP)
+
+For operations that need database access (e.g., dependent selects):
+
+```php
+FormelloField::make('region_id')
+    ->widget('tomselect')
+    ->reactive(['server' => 'onRegionChanged']),
+
+FormelloField::make('province_id')
+    ->widget('tomselect'),
+```
+
+```php
+use Metalogico\Formello\Support\FormelloState;
+
+public function onRegionChanged(FormelloState $state): void
+{
+    $region_id = $state->get('region_id');
+    $provinces = Province::where('region_id', $region_id)
+        ->pluck('name', 'id')->toArray();
+
+    $state->setOptions('province_id', $provinces);
+    $state->set('province_id', null);
+}
+```
+
+> **Note:** Server-side reactive requires a `<meta name="csrf-token" content="{{ csrf_token() }}">` tag in your layout.
+
+For full documentation see [docs/reactive.md](docs/reactive.md).
+
 ## Creating Custom Widgets
 
-Formello is designed to be extensible, allowing you to create your own custom widgets. This is useful when you need a specific form control that isn't included in the default set.
+Formello is designed to be extensible. To create a custom widget:
 
-To create a custom widget, you need to follow these steps:
-
-### First of all, the config file!
-
-You need to have the config file to add the widget in the Formello list of available widgets.
+### 1. Publish the config file
 
 ```bash
 php artisan vendor:publish --tag=formello-config
 ```
-In this file you will see a list of all the available widgets. 
-Add your widget to the list with a name, for example: `star-rating`.
 
+Add your widget alias to the `custom_widgets` array:
 
-### 1. Create a Widget Class
+```php
+'custom_widgets' => [
+    'star-rating' => App\Widgets\StarRatingWidget::class,
+],
+```
 
-Then, create a new PHP class for your widget. This class must extend the `Metalogico\Formello\Widgets\BaseWidget` class.
+### 2. Create the Widget Class
 
-You can place this class anywhere in your project, for example, in `app/Widgets`.
-
-To maintain a clean separation of concerns, the `getViewData` method should return an array of data that will be used to render the widget.
-
-To set the template you can use the `getTemplate` method.
-
-Here is an example of a `StarRatingWidget` class:
+Create a class extending `Metalogico\Formello\Widgets\BaseWidget`:
 
 ```php
 <?php
@@ -287,158 +390,115 @@ class StarRatingWidget extends BaseWidget
 
     public function getTemplate(): string
     {
-        return "widgets.star-rating";
+        return 'widgets.star-rating';
     }
 }
 ```
 
-### 2. Create the Widget's Blade Template
+### 3. Create the Blade Template
 
-Next, create the Blade template that will render the widget's HTML. For instance, you can create the file `resources/views/widgets/star-rating.blade.php`:
+Create `resources/views/widgets/star-rating.blade.php`:
 
-```php
+```blade
 <div class="mb-3">
     <label for="{{ $name }}" class="form-label">{{ $config['label'] }}</label>
-    <input type="number" 
-           name="{{ $name }}" 
-           id="{{ $name }}" 
-           value="{{ $value }}" 
-           class="form-control @if ($errors) is-invalid @endif" 
-           min="1" 
-           max="5"/>
+    <input type="number"
+           name="{{ $name }}"
+           id="{{ $name }}"
+           value="{{ $value }}"
+           class="form-control @if ($errors) is-invalid @endif"
+           min="1"
+           max="5" />
 
     @if ($errors)
         <div class="invalid-feedback">
-            <ul>
-                @foreach ($errors as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+            @foreach ($errors as $error)
+                <div>{{ $error }}</div>
+            @endforeach
         </div>
     @endif
 </div>
 ```
 
-### 3. Use the Custom Widget in Your Form
-
-Once you have created your widget class, you can use it in your Formello form by specifying the fully qualified class name in the `widget` option for a field.
+### 4. Use it in your form
 
 ```php
-<?php
-
-namespace App\Forms;
-
-use Metalogico\Formello\Formello;
-
-class ProductForm extends Formello
-{
-    // ... create() and edit() methods
-    
-    protected function fields(): array
-    {
-        return [
-            // ... other fields
-            'rating' => [
-                'label' => __('Product Rating'),
-                'widget' => 'star-rating',
-            ],
-        ];
-    }
-}
+FormelloField::make('rating')
+    ->label(__('Product Rating'))
+    ->widget('star-rating'),
 ```
 
-Formello will automatically instantiate your widget class and call its `render` method to generate the HTML for the form field.
+Custom widgets get the reactive system for free — just add `->reactive()` to the field config.
 
-## 🎨 Asset Management - Modular System
+## 🎨 Asset Management
 
-Formello uses a modular and flexible system for loading JavaScript and CSS assets, avoiding conflicts with themes that already include the same libraries.
+Formello uses a modular system for loading JS and CSS assets, avoiding conflicts with themes that already include the same libraries.
 
-### How It Works
+### Blade Directives
 
-#### 1. Widget-Based Asset Management
-
-Each widget defines its own assets through the `getAssets()` method (optional):
-
-```php
-public function getAssets(?array $fieldConfig = null): ?array
-{
-    return [
-        'scripts' => ['flatpickr.min.js'],
-        'styles' => ['flatpickr.min.css'],
-    ];
-}
-```
-
-#### 2. Blade Directives
-
-Use the new blade directives in your layout:
+Add these directives to your layout:
 
 ```blade
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Your App</title>
-    
+
     <!-- Your existing CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Formello CSS - loads only what's needed -->
     @formelloStyles
 </head>
 <body>
     <!-- Your content -->
-    
+
     <!-- Your existing JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Formello JS - loads only what's needed -->
     @formelloScripts
 </body>
 </html>
 ```
 
-#### 3. Custom Widgets
+### Disabling Libraries
 
-Custom widgets can optionally implement `getAssets()`:
+If your theme already includes a library, disable it in `config/formello.php`:
 
 ```php
-class CustomWidget extends BaseWidget
-{
-    // The getAssets() method is OPTIONAL
-    public function getAssets(?array $fieldConfig = null): ?array
-    {
-        return [
-            'scripts' => ['my-custom-lib.js'],
-            'styles' => ['my-custom-styles.css'],
-        ];
-    }
-    
-    // If you don't implement getAssets(), the widget still works
-}
+'assets' => [
+    'tomselect' => false, // theme already has Tom Select
+    'date' => true,
+    'datetime' => true,
+    'mask' => true,
+    'color' => true,
+    'colorswatch' => true,
+    'wysiwyg' => true,
+],
 ```
 
 ### Supported Libraries
 
-| Library | Widgets that use it | Assets loaded |
-|----------|-------------------|----------------|
-| `tomselect` | TomSelectWidget | tom-select.complete.js, tom-select.default.min.css (+ tom-select.tailwind.css when using tailwindcss4) |
-| `select2` | Select2Widget (deprecated) | — |
-| `flatpickr` | DateWidget, DateTimeWidget | flatpickr.min.js, l10n/it.js, flatpickr.min.css |
-| `imask` | MaskWidget | imask.min.js |
-| `pickr` | ColorWidget, ColorSwatchWidget | pickr.min.js, nano.min.css |
-| `jodit` | WysiwygWidget | jodit.min.js, jodit.min.css |
-
+| Widget | Library | Assets |
+|--------|---------|--------|
+| TomSelect | Tom Select | tom-select.complete.js, tom-select.default.min.css |
+| Date, DateTime | Flatpickr | flatpickr.min.js, l10n/it.js, flatpickr.min.css |
+| Mask | IMask | imask.min.js |
+| Color, ColorSwatch | Pickr | pickr.min.js, nano.min.css |
+| Wysiwyg | Jodit | jodit.min.js, jodit.min.css |
 
 ## 📚 Documentation
 
-- Widget configuration reference: [docs/widgets.md](docs/widgets.md)
+- [Widget configuration reference](docs/widgets.md)
+- [Reactive system](docs/reactive.md)
 
 ## ⚖️ License
 
 Laravel Formello is open-sourced software licensed under the [MIT license](LICENSE.md).
 
-
 ## 🍺 Donations
-If you really like this project and you want to help me please consider [buying me a beer 🍺](https://www.buymeacoffee.com/metalogico
-) 
+
+If you really like this project and you want to help me please consider [buying me a beer 🍺](https://www.buymeacoffee.com/metalogico).
