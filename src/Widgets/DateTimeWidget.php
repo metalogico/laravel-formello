@@ -33,7 +33,7 @@ class DateTimeWidget extends DateWidget
         ];
 
         // Merge with user options
-        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $userFlatpickrOptions = $fieldConfig['datetime'] ?? [];
         $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
 
         // Propagate validation state to Flatpickr's alt input

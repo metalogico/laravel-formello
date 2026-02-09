@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Widgets\Select2Widget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
@@ -34,10 +35,9 @@ class Select2WidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new Select2Widget(),
-                        'choices' => ['a' => 'A', 'b' => 'B'],
-                    ],
+                    FormelloField::make('field')
+                        ->widget('select2')
+                        ->choices(['a' => 'A', 'b' => 'B']),
                 ];
             }
             protected function create(): array { return []; }
@@ -60,11 +60,10 @@ class Select2WidgetTest extends TestCase
         $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new Select2Widget(),
-                        'choices' => ['a' => 'A', 'b' => 'B'],
-                        // 'multiple' omitted
-                    ],
+                    FormelloField::make('field')
+                        ->widget('select2')
+                        ->choices(['a' => 'A', 'b' => 'B']),
+                    // 'multiple' omitted
                 ];
             }
             protected function create(): array { return []; }
@@ -81,11 +80,10 @@ class Select2WidgetTest extends TestCase
         $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new Select2Widget(),
-                        'choices' => ['a' => 'A', 'b' => 'B'],
-                        'multiple' => false,
-                    ],
+                    FormelloField::make('field')
+                        ->widget('select2')
+                        ->choices(['a' => 'A', 'b' => 'B'])
+                        ->multiple(false),
                 ];
             }
             protected function create(): array { return []; }
@@ -97,16 +95,15 @@ class Select2WidgetTest extends TestCase
         $this->assertStringNotContainsString(' multiple', $output);
     }
 
-    public function test_select2_renders_multiple_attribute_when_config_true()
+    public function test_select2_renders_deprecation_warning()
     {
         $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new Select2Widget(),
-                        'choices' => ['a' => 'A', 'b' => 'B'],
-                        'multiple' => true,
-                    ],
+                    FormelloField::make('field')
+                        ->widget('select2')
+                        ->choices(['a' => 'A', 'b' => 'B'])
+                        ->multiple(),
                 ];
             }
             protected function create(): array { return []; }
@@ -114,9 +111,8 @@ class Select2WidgetTest extends TestCase
         };
 
         $output = $form->renderField('field');
-        // HTML boolean attribute present
-        $this->assertStringContainsString('multiple', $output);
-        // Name should be suffixed with [] for multiple selects
-        $this->assertStringContainsString('name="field[]"', $output);
+        // Select2 is deprecated: template shows a warning and returns early
+        $this->assertStringContainsString('Deprecated', $output);
+        $this->assertStringContainsString('tomselect', $output);
     }
 }

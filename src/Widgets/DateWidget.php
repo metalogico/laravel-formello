@@ -12,7 +12,7 @@ class DateWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
         $fieldConfig['attributes']['type'] = 'text'; // Flatpickr works on text inputs
 
@@ -25,7 +25,7 @@ class DateWidget extends BaseWidget
         ];
 
         // Merge default options with user-provided options
-        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $userFlatpickrOptions = $fieldConfig['date'] ?? [];
         $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
 
         // Propagate validation state to Flatpickr's alt input

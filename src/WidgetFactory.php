@@ -20,6 +20,7 @@ class WidgetFactory
             'timestamp' => Widgets\DateTimeWidget::class,
             'select' => Widgets\SelectWidget::class,
             'select2' => Widgets\Select2Widget::class,
+            'tomselect' => Widgets\TomSelectWidget::class,
             'checkboxes' => Widgets\CheckboxesWidget::class,
             'radio' => Widgets\RadioWidget::class,
             'range' => Widgets\RangeWidget::class,

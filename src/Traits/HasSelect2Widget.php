@@ -7,6 +7,9 @@ use Illuminate\Http\JsonResponse;
 trait HasSelect2Widget
 {
     /**
+     * @deprecated Deprecated. Use HasTomSelectWidget trait instead.
+     */
+    /**
      * Handle AJAX search for Select2 widgets
      *
      * @param  string|\Illuminate\Database\Eloquent\Builder  $query  Model class name (e.g., Category::class) or Query Builder instance
@@ -23,27 +26,7 @@ trait HasSelect2Widget
         string $valueField = 'id',
         int $limit = 50
     ): JsonResponse {
-        // Create new query or use existing query builder
-        $queryBuilder = is_string($query) ? app($query)->newQuery() : $query;
-
-        // Apply search term if provided
-        if ($term && ! empty($searchFields)) {
-            $queryBuilder->where(function ($q) use ($searchFields, $term) {
-                foreach ($searchFields as $field) {
-                    $q->orWhere($field, 'LIKE', "%{$term}%");
-                }
-            });
-        }
-
-        // Execute query and format results
-        $items = $queryBuilder
-            ->limit($limit)
-            ->get()
-            ->map(fn ($item) => [
-                'id' => $item->$valueField,
-                'text' => data_get($item, $labelField), // supports nested fields like 'user.name'
-            ]);
-
-        return response()->json(['results' => $items]);
+        throw new \RuntimeException("Deprecated: HasSelect2Widget is deprecated. Use HasTomSelectWidget trait instead.");
     }
 }
+

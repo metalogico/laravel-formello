@@ -13,10 +13,10 @@
             @endif
     @endif
     <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ old($name, $value) }}"
-        class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+        class="form-control {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
         @if (isset($config['attributes']['data-formello-mask'])) data-formello-mask='{{ $config['attributes']['data-formello-mask'] }}' @endif
         @foreach ($config['attributes'] as $attr => $attrValue)
-            @if (!in_array($attr, ['data-formello-mask']))
+            @if (!in_array($attr, ['data-formello-mask', 'class']))
                 {{ $attr }}="{{ $attrValue }}"
             @endif
         @endforeach>

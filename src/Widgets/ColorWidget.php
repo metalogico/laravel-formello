@@ -12,7 +12,7 @@ class ColorWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-control');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
         $fieldConfig['attributes']['type'] = 'text'; // Pickr works on text inputs
 
@@ -35,7 +35,7 @@ class ColorWidget extends BaseWidget
         ];
 
         // Merge default options with user-provided options
-        $userPickrOptions = $fieldConfig['pickr'] ?? [];
+        $userPickrOptions = $fieldConfig['color'] ?? [];
         $mergedOptions = array_merge($defaultPickrOptions, $userPickrOptions);
 
         // Pass the final options to the view

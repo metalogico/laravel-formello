@@ -12,7 +12,7 @@ class RadioWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-check-input');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
 
         return [
             'name' => $name,
@@ -20,18 +20,19 @@ class RadioWidget extends BaseWidget
             'label' => $fieldConfig['label'] ?? null,
             'config' => $fieldConfig,
             'errors' => $errors,
-            'options' => $this->getOptions($fieldConfig),
+            'choices' => $this->resolveChoices($fieldConfig),
         ];
     }
 
-    protected function getOptions(array $fieldConfig): array
+    protected function resolveChoices(array $fieldConfig): array
     {
-        $options = $fieldConfig['options'] ?? [];
+        // Accept 'choices' (preferred) or 'options' (backward compat)
+        $choices = $fieldConfig['choices'] ?? ($fieldConfig['options'] ?? []);
 
-        if (is_callable($options)) {
-            $options = call_user_func($options);
+        if (is_callable($choices)) {
+            $choices = call_user_func($choices);
         }
 
-        return $options;
+        return $choices;
     }
 }

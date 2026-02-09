@@ -12,8 +12,7 @@ class WysiwygWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $defaults = [
-            'class' => 'form-control',
-            'data-formello-wysiwyg' => json_encode($fieldConfig['jodit'] ?? []),
+            'data-formello-wysiwyg' => json_encode($fieldConfig['wysiwyg'] ?? []),
         ];
 
         $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);

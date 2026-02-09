@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
 use Metalogico\Formello\Widgets\TextWidget;
@@ -42,9 +43,7 @@ class CustomWidgetsOverrideTest extends TestCase
         $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => 'text',
-                    ],
+                    FormelloField::make('field')->widget('text'),
                 ];
             }
             protected function create(): array { return []; }

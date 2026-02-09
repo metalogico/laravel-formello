@@ -9,4 +9,8 @@ interface WidgetInterface
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array;
 
     public function getTemplate(): string;
+
+    public function getWidgetName(): string;
+
+    public function getAssets(?array $fieldConfig = null): ?array;
 }

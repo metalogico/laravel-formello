@@ -12,7 +12,7 @@ class RangeWidget extends BaseWidget
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? '').' form-range');
+        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
         $fieldConfig['attributes']['type'] = 'range';
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
 

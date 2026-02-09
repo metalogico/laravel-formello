@@ -57,7 +57,7 @@ class ColorSwatchWidget extends ColorWidget
         ];
 
         // Merge with user options (user can override swatches)
-        $userPickrOptions = $fieldConfig['pickr'] ?? [];
+        $userPickrOptions = $fieldConfig['colorswatch'] ?? [];
         $mergedOptions = array_merge($defaultPickrOptions, $userPickrOptions);
 
         // Update the data-formello-colorpicker attribute

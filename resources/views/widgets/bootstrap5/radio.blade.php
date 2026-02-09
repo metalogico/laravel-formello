@@ -4,14 +4,14 @@
         <label class="form-label">{{ $label }}</label>
     @endif
     
-    @foreach ($options as $optionValue => $optionLabel)
+    @foreach ($choices as $optionValue => $optionLabel)
         <div class="form-check">
             <input type="radio" 
                    name="{{ $name }}" 
                    id="{{ $name }}_{{ $optionValue }}" 
                    value="{{ $optionValue }}"
                    {{ $value == $optionValue ? 'checked' : '' }}
-                   class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+                   class="form-check-input {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
                    @foreach ($config['attributes'] as $attr => $attrValue) 
                        {{ $attr }}="{{ $attrValue }}"
                    @endforeach
@@ -21,10 +21,6 @@
             </label>
         </div>
     @endforeach
-
-    @if (isset($config['help']))
-        <div class="form-text">{!! $config['help'] !!}</div>
-    @endif
 
     @if (isset($config['help']))
         <div class="form-text">{!! $config['help'] !!}</div>

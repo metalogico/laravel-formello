@@ -3,8 +3,10 @@
 namespace Metalogico\Formello;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Metalogico\Formello\Console\MakeFormelloCommand;
+use Metalogico\Formello\Http\Controllers\FormelloComputeController;
 
 class FormelloServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,6 @@ class FormelloServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/formello.php', 'formello');
 
         $this->app->singleton('formello', FormelloManager::class);
-        $this->app->bind(Formello::class, FormelloManager::class);
 
         // Register factory and inspector
         $this->app->singleton(WidgetFactory::class);
@@ -44,13 +45,14 @@ class FormelloServiceProvider extends ServiceProvider
             // Pickr
             __DIR__.'/../resources/assets/js/pickr.min.js' => public_path('vendor/formello/js/pickr.min.js'),
             __DIR__.'/../resources/assets/css/nano.min.css' => public_path('vendor/formello/css/nano.min.css'),
-            // Quill.js
+            // Jodit
             __DIR__.'/../resources/assets/js/jodit.min.js' => public_path('vendor/formello/js/jodit.min.js'),
             __DIR__.'/../resources/assets/css/jodit.min.css' => public_path('vendor/formello/css/jodit.min.css'),
-            // Select2
-            __DIR__.'/../resources/assets/js/select2.min.js' => public_path('vendor/formello/js/select2.min.js'),
-            __DIR__.'/../resources/assets/css/select2.min.css' => public_path('vendor/formello/css/select2.min.css'),
-            __DIR__.'/../resources/assets/css/select2-bootstrap-5-theme.min.css' => public_path('vendor/formello/css/select2-bootstrap-5-theme.min.css'),
+            // Tom Select
+            __DIR__.'/../resources/assets/js/tom-select.complete.js' => public_path('vendor/formello/js/tom-select.complete.js'),
+            __DIR__.'/../resources/assets/css/tom-select.default.min.css' => public_path('vendor/formello/css/tom-select.default.min.css'),
+            // Reactive engine
+            __DIR__.'/../resources/assets/js/formello-reactive.js' => public_path('vendor/formello/js/formello-reactive.js'),
         ], 'formello-assets');
 
         if ($this->app->runningInConsole()) {
@@ -58,6 +60,7 @@ class FormelloServiceProvider extends ServiceProvider
         }
 
         $this->registerBladeDirectives();
+        $this->registerReactiveRoute();
     }
 
     /**
@@ -72,5 +75,19 @@ class FormelloServiceProvider extends ServiceProvider
         Blade::directive('formelloScripts', function () {
             return "<?php echo view('formello::directives.scripts')->render(); ?>";
         });
+    }
+
+    /**
+     * Register the POST route for reactive server callbacks.
+     */
+    protected function registerReactiveRoute(): void
+    {
+        $compute_path = config('formello.reactive.compute_path');
+
+        if ($compute_path) {
+            Route::post($compute_path, [FormelloComputeController::class, 'handle'])
+                ->name('formello.compute')
+                ->middleware('web');
+        }
     }
 }

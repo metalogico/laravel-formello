@@ -12,7 +12,7 @@
                 <span class="input-group-text"><i class="{!! $config['icon'] !!}"></i></span>
             @endif
             <input name="{{ $name }}" value="{{ old($name, $value) }}"
-                class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+                class="form-control bg-white {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
                 @foreach ($config['attributes'] as $attr => $attrValue)
                     @if ($attr !== 'class')
                         {{ $attr }}="{{ $attrValue }}"
@@ -33,7 +33,7 @@
         </div>
     @else
         <input name="{{ $name }}" value="{{ old($name, $value) }}"
-            class="{{ $config['attributes']['class'] }} @if ($errors) is-invalid @endif"
+            class="form-control bg-white {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
             @foreach ($config['attributes'] as $attr => $attrValue)
                 @if ($attr !== 'class')
                     {{ $attr }}="{{ $attrValue }}"

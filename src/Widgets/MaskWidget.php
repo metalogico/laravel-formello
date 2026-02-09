@@ -11,7 +11,7 @@ class MaskWidget extends TextWidget
 
     public function getTemplate(): string
     {
-        // Use the same template as DateWidget since they're identical
+        // Reuse the text template since mask is just a text input with IMask
         $framework = app('formello')->getCssFramework();
 
         return "formello::widgets.{$framework}.text";

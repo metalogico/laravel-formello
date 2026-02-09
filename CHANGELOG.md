@@ -5,17 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.8] - 2025-09-02
+## [2.1.0] - 2026-02-09
 
-### Changed
-- Separator widget for dividing sections in your forms.
-- config/formello.php removed "default_widgets" and added "custom_widgets" to alias your custom widgets.
+### Added
+- **Reactive System**: Callback-based field interdependency engine with two execution layers:
+  - `reactive.client` — instant JS callbacks via `window.FormelloReactive`
+  - `reactive.server` — async PHP callbacks via POST endpoint
+- **FormelloState** (`src/Support/FormelloState.php`): State object with identical API in JS and PHP (`get`, `set`, `setOptions`, `setAttributes`)
+- **FormelloComputeController** (`src/Http/Controllers/FormelloComputeController.php`): POST endpoint for server-side reactive callbacks
+- **formello-reactive.js**: Client-side reactive engine with debounced input handling, widget-aware value setters (TomSelect, Flatpickr, Jodit), and initial state execution on page load
+- **Reactive config section** in `config/formello.php` with `compute_path` and `allowed_forms` whitelist
+- **Reactive data attributes** on `<form>` and field wrapper `<div>` elements for JS engine binding
+- New methods on `Formello.php`: `getFieldConfig()`, `hasReactiveFields()`, `getReactiveMap()`
+- Documentation: `docs/reactive.md`
+- Unit tests for `FormelloState` and reactive methods (13 new tests)
 
-## [1.2.7] - 2025-09-01
+## [2.0.0] - 2026-02-08
+
+### Added
+- **Tailwind CSS 4 widgets**
+- **Tom Select Widget**: New `TomSelectWidget` using Tom Select for a modern, lightweight, and accessible select dropdown with features like search, pagination, and custom templates.
+- **Dependent Select**: It's possible now to make a select field dependent on another select field (using the new tomselect widget).
+- **Separator Widget**: New separator widget for dividing sections in your forms.
+- **Custom Widgets Config**: config/formello.php now uses "custom_widgets" to alias your custom widgets.
+
+### Warning: BREAKING CHANGES!
+- **Select2 Widget**: The `Select2Widget` has been deprecated in favor of the `TomSelectWidget`.
+- Removed dependencies on jQuery
+- 'boolean' widget is now 'toggle'
 
 ### Fixed
 - Date and DateTime: error messages now appear below the field and the red highlight works correctly, including with icons/prefix/suffix.
-- Select2: fields remain single-select unless the multiple option is enabled.
+- Jodit WYSIWYG: removed safeMode so plugins load by default; fixed config binding.
 
 ## [1.2.6] - 2025-08-06
 

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Widgets\TextWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
@@ -34,9 +35,7 @@ class TextWidgetTest extends TestCase
         return new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field' => [
-                        'widget' => new TextWidget(),
-                    ],
+                    FormelloField::make('field')->widget('text'),
                 ];
             }
             protected function create(): array { return []; }
@@ -59,10 +58,9 @@ class TextWidgetTest extends TestCase
         $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
             protected function fields(): array {
                 return [
-                    'field_with_icon' => [
-                        'widget' => new TextWidget(),
-                        'icon' => '<i class="fa-solid fa-user"></i>',
-                    ],
+                    FormelloField::make('field_with_icon')
+                        ->widget('text')
+                        ->icon('<i class="fa-solid fa-user"></i>'),
                 ];
             }
             protected function create(): array { return []; }

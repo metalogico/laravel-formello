@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Orchestra\Testbench\TestCase;
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Widgets\SeparatorWidget;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
@@ -31,19 +32,17 @@ class SeparatorWidgetTest extends TestCase
 
     private function makeFormWithSeparator(?string $label)
     {
-        $labelConfig = is_null($label) ? [] : ['label' => $label];
-
-        return new class($this->makeDummyModel(), new ViewErrorBag(), $labelConfig) extends Formello {
-            public function __construct($model, $errors, private array $labelConfig)
+        return new class($this->makeDummyModel(), new ViewErrorBag(), $label) extends Formello {
+            public function __construct($model, $errors, private ?string $sepLabel)
             {
                 parent::__construct($model, $errors);
             }
             protected function fields(): array {
-                return [
-                    'sep' => array_merge([
-                        'widget' => new SeparatorWidget(),
-                    ], $this->labelConfig),
-                ];
+                $field = FormelloField::make('sep')->widget('separator');
+                if ($this->sepLabel !== null) {
+                    $field->label($this->sepLabel);
+                }
+                return [$field];
             }
             protected function create(): array { return []; }
             protected function edit(): array { return []; }
