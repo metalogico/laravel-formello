@@ -8,7 +8,6 @@
         <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
     @endif
 
-
     <div class="input-group flex-nowrap">
         <span class="input-group-text">
             <i class="fas fa-search fs-6"></i>
@@ -16,11 +15,8 @@
         <div class="overflow-hidden flex-grow-1">
             <select id="{{ $config['attributes']['id'] }}"
                 name="{{ $name }}"
-                class="form-select rounded-start-0"
-                @if(empty(data_get($config, 'select2.depends_on')))
-                    data-formello-select2="true"
-                @endif
-                data-multiple="{{ $config['multiple'] ?? 'false' }}"
+                data-formello-select2="true"
+                class="form-select rounded-start-0 {{ $config['attributes']['class'] ?? '' }}"
                 @if($usesAjax)
                     data-ajax--url="{{ $config['select2']['route'] }}"
                     data-ajax--cache="true"
@@ -29,19 +25,19 @@
                 @endif
                 data-placeholder="{{ $config['select2']['placeholder'] ?? __('Select') }}"
                 data-allow-clear="true"
-                data-language="it"
                 data-dropdown-parent="{{ $config['select2']['dropdownParent'] ?? 'body' }}"
                 data-theme="{{ $config['select2']['theme'] ?? 'bootstrap-5' }}"
                 @if(!empty(data_get($config, 'select2.depends_on')) && (empty($value) || (is_array($value) && count($value) === 0)))
                     disabled
                 @endif
+                @if($config['multiple']) multiple="multiple" @endif
                 @foreach ($config['attributes'] as $attr => $attrValue)
-                    {{ $attr }}="{{ $attrValue }}"
+                    @if (!in_array($attr, ['id','class','multiple']))
+                        {{ $attr }}="{{ $attrValue }}"
+                    @endif
                 @endforeach
                 >
-
-
-                {{-- Render pre-selected options for AJAX or all options for non-AJAX --}}
+                @if(!$config['multiple']) <option></option> @endif
                 @foreach ($choices as $optionValue => $optionLabel)
                     <option value="{{ $optionValue }}" {{ in_array($optionValue, (array)$value) ? 'selected' : '' }}>
                         {{ $optionLabel }}

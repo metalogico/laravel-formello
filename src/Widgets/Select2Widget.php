@@ -17,14 +17,12 @@ class Select2Widget extends BaseWidget
             'multiple' => false,
         ];
 
-        // Unisci con le configurazioni fornite
-        $fieldConfig = array_merge($defaults, $fieldConfig);
         $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
-
-        if ($fieldConfig['multiple']) {
-            $name .= '[]'; // Modify name to handle array submission
-            // Ensure the HTML select has the multiple attribute for native Select2 handling
-            $fieldConfig['attributes']['multiple'] = 'multiple';
+        if(isset($fieldConfig['multiple']) && $fieldConfig['multiple'] == true){
+            $fieldConfig['multiple'] = true;
+            $name .= '[]';
+        }else{
+            $fieldConfig['multiple'] = false;
         }
 
         // Estrai la configurazione specifica di select2

@@ -54,4 +54,68 @@ class Select2WidgetTest extends TestCase
         $output = $form->renderField('field');
         $this->assertIsString($output);
     }
+
+    public function test_select2_does_not_render_multiple_attribute_by_default()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new Select2Widget(),
+                        'choices' => ['a' => 'A', 'b' => 'B'],
+                        // 'multiple' omitted
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field');
+        // Ensure the HTML boolean attribute 'multiple' is not present
+        $this->assertStringNotContainsString(' multiple', $output);
+    }
+
+    public function test_select2_does_not_render_multiple_attribute_when_config_false()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new Select2Widget(),
+                        'choices' => ['a' => 'A', 'b' => 'B'],
+                        'multiple' => false,
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field');
+        // Ensure the HTML boolean attribute 'multiple' is not present
+        $this->assertStringNotContainsString(' multiple', $output);
+    }
+
+    public function test_select2_renders_deprecation_warning()
+    {
+        $form = new class($this->makeDummyModel(), new ViewErrorBag()) extends Formello {
+            protected function fields(): array {
+                return [
+                    'field' => [
+                        'widget' => new Select2Widget(),
+                        'choices' => ['a' => 'A', 'b' => 'B'],
+                        'multiple' => true,
+                    ],
+                ];
+            }
+            protected function create(): array { return []; }
+            protected function edit(): array { return []; }
+        };
+
+        $output = $form->renderField('field');
+        // Select2 is deprecated: template shows a warning and returns early
+        $this->assertStringContainsString('Deprecated', $output);
+        $this->assertStringContainsString('tomselect', $output);
+    }
 }

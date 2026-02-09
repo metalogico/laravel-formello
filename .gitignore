@@ -24,4 +24,7 @@ Homestead.json
 /.idea
 /.zed
 .phpunit.result.cache
+.vscode
+.idea
+.zed
 .DS_Store
