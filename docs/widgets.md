@@ -152,7 +152,7 @@ Keys
 ## Assets and Framework Config
 - See `config/formello.php`:
   - `css_framework`: `bootstrap5` or `tailwindcss4`
-  - `default_widgets`: map widget names to classes
+  - `custom_widgets`: map alias to FQCN to override built-in widgets
   - `assets`: enable/disable library loading per widget type (e.g., `tomselect`, `date`, `datetime`, `mask`, `color`, `colorswatch`, `wysiwyg`, `select2` (deprecated))
 
 ## Examples

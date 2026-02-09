@@ -25,7 +25,7 @@ class DateWidget extends BaseWidget
         ];
 
         // Merge default options with user-provided options
-        $userFlatpickrOptions = $fieldConfig['flatpickr'] ?? [];
+        $userFlatpickrOptions = $fieldConfig['date'] ?? [];
         $mergedOptions = array_merge($defaultFlatpickrOptions, $userFlatpickrOptions);
 
         // Propagate validation state to Flatpickr's alt input

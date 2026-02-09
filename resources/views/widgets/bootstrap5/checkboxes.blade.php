@@ -52,8 +52,6 @@
         const selectAllCheckbox = document.getElementById("select-all-{{ $config['attributes']['id'] }}");
         const checkboxes = document.querySelectorAll(".{{ $name }}-checkbox");
 
-        console.log(checkboxes);
-
         // Handle "select all/unselect all" toggle
         selectAllCheckbox.addEventListener('change', function () {
             const isChecked = selectAllCheckbox.checked;

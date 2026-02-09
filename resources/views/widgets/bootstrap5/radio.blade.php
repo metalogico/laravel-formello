@@ -4,7 +4,7 @@
         <label class="form-label">{{ $label }}</label>
     @endif
     
-    @foreach ($options as $optionValue => $optionLabel)
+    @foreach ($choices as $optionValue => $optionLabel)
         <div class="form-check">
             <input type="radio" 
                    name="{{ $name }}" 
@@ -21,10 +21,6 @@
             </label>
         </div>
     @endforeach
-
-    @if (isset($config['help']))
-        <div class="form-text">{!! $config['help'] !!}</div>
-    @endif
 
     @if (isset($config['help']))
         <div class="form-text">{!! $config['help'] !!}</div>

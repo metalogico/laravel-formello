@@ -28,6 +28,7 @@ class ToggleWidget extends BaseWidget
         return [
             'name' => $name,
             'value' => old($name, $value),
+            'label' => $fieldConfig['label'] ?? null,
             'config' => $fieldConfig,
             'errors' => $errors,
         ];

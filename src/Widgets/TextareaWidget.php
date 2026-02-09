@@ -14,7 +14,6 @@ class TextareaWidget extends BaseWidget
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
         $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
         $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'text';
 
         return [
             'name' => $name,

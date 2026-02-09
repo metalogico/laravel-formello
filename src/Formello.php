@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
 use Metalogico\Formello\Interfaces\WidgetInterface;
 use Metalogico\Formello\Widgets\UploadWidget;
+use InvalidArgumentException;
 
 abstract class Formello
 {
-    public string $formMode;
+    protected string $formMode;
 
     protected Model $model;
 
@@ -50,7 +51,7 @@ abstract class Formello
         ?WidgetFactory $widgetFactory = null,
         ?SchemaInspector $schemaInspector = null
     ) {
-        // Se è una stringa, creiamo una nuova istanza del modello
+        // If a class-string is given, instantiate a new model
         if (is_string($model)) {
             $this->model = new $model;
         } else {
@@ -91,13 +92,9 @@ abstract class Formello
      */
     protected function initializeForm()
     {
-        if (method_exists($this, 'create') && ! $this->model->exists) {
-            $this->formConfig = $this->create();
-        } elseif (method_exists($this, 'edit') && $this->model->exists) {
-            $this->formConfig = $this->edit();
-        } else {
-            throw new \RuntimeException('No form configuration method found.');
-        }
+        $this->formConfig = $this->model->exists
+            ? $this->edit()
+            : $this->create();
     }
 
     protected function hasUploadWidget(): bool
@@ -129,14 +126,28 @@ abstract class Formello
      */
     protected function initializeFields(): void
     {
-        $definedFields = $this->fields();
+        $defined_fields = $this->fields();
 
-        foreach ($definedFields as $name => $fieldConfig) {
+        foreach ($defined_fields as $field) {
+            if (! $field instanceof FormelloField) {
+                throw new InvalidArgumentException(
+                    'fields() must return an array of FormelloField instances.'
+                );
+            }
 
-            $widget = $this->resolveWidget($fieldConfig, $name);
+            $name = $field->getName();
+            $field_config = $field->toArray();
+
+            // Auto-resolve value from model when not explicitly set
+            if (! $field->hasValueSet() && isset($this->model->{$name})) {
+                $field_config['value'] = $this->model->{$name};
+            }
+
+            $widget = $this->resolveWidget($field_config, $name);
             $this->fields[$name] = [
+                'field' => $field,
                 'widget' => $widget,
-                'config' => $fieldConfig,
+                'config' => $field_config,
             ];
         }
     }
@@ -160,47 +171,19 @@ abstract class Formello
         $this->assetsRegistered = true;
     }
 
-    protected function resolveWidget(array $fieldConfig, string $fieldName): WidgetInterface
+    protected function resolveWidget(array $field_config, string $field_name): WidgetInterface
     {
-        // Se widget specificato esplicitamente
-        if (isset($fieldConfig['widget'])) {
-            // Se è un alias (stringa breve, es: 'text', 'select2', ecc.)
-            if (is_string($fieldConfig['widget'])) {
-                // Usa la factory per risolvere l'alias
-                return $this->widgetFactory->make($fieldConfig['widget']);
+        if (isset($field_config['widget'])) {
+            if (is_string($field_config['widget'])) {
+                return $this->widgetFactory->make($field_config['widget']);
             }
-            // Se è già un oggetto widget
-            if ($fieldConfig['widget'] instanceof WidgetInterface) {
-                return $fieldConfig['widget'];
-            }
-            // Se arriva qui, il valore non è valido
-            throw new \InvalidArgumentException("Invalid widget definition for field '$fieldName'");
+            throw new InvalidArgumentException("Invalid widget definition for field '$field_name'");
         }
 
-        // Auto-detect dal database schema
-        $columnType = $this->schemaInspector->getColumnType($this->model, $fieldName);
+        // Auto-detect from database schema
+        $column_type = $this->schemaInspector->getColumnType($this->model, $field_name);
 
-        return $this->widgetFactory->make($columnType);
-    }
-
-    protected function getDefaultFields()
-    {
-        $defaults = [];
-        foreach ($this->fields() as $field => $config) {
-            $defaults[$field] = $this->getDefaultWidgetForField($field);
-        }
-
-        return $defaults;
-    }
-
-    /**
-     * Map database field types to default widgets
-     */
-    protected function getDefaultWidgetForField($field)
-    {
-        // Delegate type inference to SchemaInspector, then map via WidgetFactory
-        $columnType = $this->schemaInspector->getColumnType($this->model, $field);
-        return $this->widgetFactory->make($columnType);
+        return $this->widgetFactory->make($column_type);
     }
 
     public function render()

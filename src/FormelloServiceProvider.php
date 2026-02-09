@@ -13,7 +13,6 @@ class FormelloServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/formello.php', 'formello');
 
         $this->app->singleton('formello', FormelloManager::class);
-        $this->app->bind(Formello::class, FormelloManager::class);
 
         // Register factory and inspector
         $this->app->singleton(WidgetFactory::class);
@@ -44,7 +43,7 @@ class FormelloServiceProvider extends ServiceProvider
             // Pickr
             __DIR__.'/../resources/assets/js/pickr.min.js' => public_path('vendor/formello/js/pickr.min.js'),
             __DIR__.'/../resources/assets/css/nano.min.css' => public_path('vendor/formello/css/nano.min.css'),
-            // Quill.js
+            // Jodit
             __DIR__.'/../resources/assets/js/jodit.min.js' => public_path('vendor/formello/js/jodit.min.js'),
             __DIR__.'/../resources/assets/css/jodit.min.css' => public_path('vendor/formello/css/jodit.min.css'),
             // Tom Select

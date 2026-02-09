@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
 use Metalogico\Formello\Formello;
-use Metalogico\Formello\Widgets\TextWidget;
+use Metalogico\Formello\FormelloField;
 use Orchestra\Testbench\TestCase;
 
 class FormelloTest extends TestCase
@@ -40,11 +40,9 @@ class FormelloTest extends TestCase
             protected function fields(): array
             {
                 return [
-                    'field' => [
-                        'name' => 'test',
-                        'label' => 'Test',
-                        'widget' => new TextWidget,
-                    ],
+                    FormelloField::make('field')
+                        ->label('Test')
+                        ->widget('text'),
                 ];
             }
 

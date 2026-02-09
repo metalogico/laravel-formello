@@ -11,7 +11,7 @@ class Select2Widget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        // Imposta i valori di default
+        // Set default values
         $defaults = [
             'class' => 'select2',
             'multiple' => false,
@@ -25,14 +25,14 @@ class Select2Widget extends BaseWidget
             $fieldConfig['multiple'] = false;
         }
 
-        // Estrai la configurazione specifica di select2
+        // Extract Select2-specific configuration
         $select2Config = $fieldConfig['select2'] ?? [];
         $usesAjax = ! empty($select2Config['route']);
 
         $currentValue = old($name, $value);
         $choices = [];
 
-        // Se usiamo AJAX e c'è un valore, dobbiamo caricare l'opzione iniziale
+        // If using AJAX and there is a value, load the initial option
         if ($usesAjax && ! empty($currentValue)) {
             $modelClass = $select2Config['model'] ?? null;
             $labelField = $select2Config['label_field'] ?? 'name';
@@ -45,7 +45,7 @@ class Select2Widget extends BaseWidget
                 }
             }
         } elseif (! $usesAjax) {
-            // Altrimenti, se non usiamo AJAX, risolviamo le choices come prima
+            // Otherwise, if not using AJAX, resolve choices normally
             $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
         }
 

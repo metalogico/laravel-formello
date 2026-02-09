@@ -39,7 +39,7 @@ class TomSelectWidget extends BaseWidget
             'searchField' => $searchFieldOpt,
             'valueField' => $valueFieldOpt,
             'labelField' => $labelFieldOpt,
-            'create' => false,
+            'create' => $tsConfig['create'] ?? false,
         ];
 
         if ($usesAjax) {

@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ViewErrorBag;
 use Metalogico\Formello\Formello;
+use Metalogico\Formello\FormelloField;
 use Metalogico\Formello\Widgets\WysiwygWidget;
 use Orchestra\Testbench\TestCase;
 
@@ -40,13 +41,11 @@ class WysiwygWidgetTest extends TestCase
             protected function fields(): array
             {
                 return [
-                    'content' => [
-                        'widget' => new WysiwygWidget,
-                        'jodit' => [
+                    FormelloField::make('content')
+                        ->widget('wysiwyg', [
                             'toolbar' => ['bold', 'italic', 'link'],
                             'language' => 'it',
-                        ],
-                    ],
+                        ]),
                 ];
             }
 
@@ -79,7 +78,7 @@ class WysiwygWidgetTest extends TestCase
     {
         $widget = new WysiwygWidget;
         $viewData = $widget->getViewData('content', 'test value', [
-            'jodit' => [
+            'wysiwyg' => [
                 'toolbar' => ['bold', 'italic'],
                 'language' => 'en',
             ],

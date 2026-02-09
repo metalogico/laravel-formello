@@ -22,7 +22,7 @@
           labelField: labelField,
           searchField: searchField,
           placeholder: placeholder,
-          create: false,
+          create: !!options.create,
         };
 
         if (options.ajax && options.ajax.url) {

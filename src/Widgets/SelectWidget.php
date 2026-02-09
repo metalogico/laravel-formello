@@ -44,9 +44,6 @@ class SelectWidget extends BaseWidget
 
     public function getAssets(?array $fieldConfig = null): ?array
     {
-        return [
-            'scripts' => [],
-            'styles' => [],
-        ];
+        return null;
     }
 }

@@ -9,7 +9,7 @@
     @endphp
 
     <div class="mt-2 space-y-2">
-        @foreach ($options as $optionValue => $optionLabel)
+        @foreach ($choices as $optionValue => $optionLabel)
             @php $optionId = $name . '_' . $optionValue; @endphp
             <label for="{{ $optionId }}" class="flex items-center gap-2 text-sm text-gray-700">
                 <input type="radio"

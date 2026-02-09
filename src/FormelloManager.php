@@ -2,35 +2,17 @@
 
 namespace Metalogico\Formello;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\ViewErrorBag;
-
-class FormelloManager extends Formello
+/**
+ * Lightweight proxy bound as app('formello').
+ *
+ * Before a real Formello form instance is rendered, widgets may call
+ * app('formello')->getCssFramework(). This class provides a safe
+ * default that reads from config without requiring a model or fields.
+ */
+class FormelloManager
 {
-    public function __construct(?Model $model = null, ?ViewErrorBag $errors = null)
+    public function getCssFramework(): string
     {
-        if (! $model) {
-            // Instead of creating a new Model, we'll use a null object pattern
-            $model = new class extends Model {};
-        }
-
-        $errors = $errors ?? new ViewErrorBag;
-
-        parent::__construct($model, $errors);
-    }
-
-    protected function fields(): array
-    {
-        return [];
-    }
-
-    protected function create(): array
-    {
-        return [];
-    }
-
-    protected function edit(): array
-    {
-        return [];
+        return config('formello.css_framework', 'bootstrap5');
     }
 }

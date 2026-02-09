@@ -35,7 +35,7 @@ class ColorWidget extends BaseWidget
         ];
 
         // Merge default options with user-provided options
-        $userPickrOptions = $fieldConfig['pickr'] ?? [];
+        $userPickrOptions = $fieldConfig['color'] ?? [];
         $mergedOptions = array_merge($defaultPickrOptions, $userPickrOptions);
 
         // Pass the final options to the view
