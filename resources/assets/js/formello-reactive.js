@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     // ── Client State (mirrors PHP FormelloState API) ─────────────
@@ -54,7 +54,7 @@
     // ── Reactive Engine ──────────────────────────────────────────
     const engine = {
         form_el: null,
-        reactive_map: {},    // { field_name: { client: [...], server: [...] } }
+        reactive_map: {},
         compute_url: null,
         model_class: null,
         model_id: null,
@@ -101,8 +101,8 @@
                 );
                 if (!wrapper) continue;
 
-                // Text/number/email (debounced)
-                wrapper.querySelectorAll('input[type="text"],input[type="number"],input[type="email"],input[type="hidden"],textarea')
+                // Text/number/email/range (debounced)
+                wrapper.querySelectorAll('input[type="text"],input[type="number"],input[type="email"],input[type="hidden"],input[type="range"],textarea')
                     .forEach(el => {
                         el.addEventListener('input', () => this.debounce(field_name));
                         el.addEventListener('change', () => this.trigger(field_name));
@@ -224,7 +224,7 @@
 
         setFieldValue(field, value) {
             const el = this.form_el.querySelector(`#${CSS.escape(field)}`)
-                    || this.form_el.querySelector(`[name="${CSS.escape(field)}"]`);
+                || this.form_el.querySelector(`[name="${CSS.escape(field)}"]`);
             if (!el) return;
 
             // Widget-aware setters
@@ -244,7 +244,7 @@
 
         setFieldOptions(field, options) {
             const el = this.form_el.querySelector(`select#${CSS.escape(field)}`)
-                    || this.form_el.querySelector(`select[name="${CSS.escape(field)}"]`);
+                || this.form_el.querySelector(`select[name="${CSS.escape(field)}"]`);
             if (!el) return;
 
             if (el.tomselect) {
@@ -273,7 +273,7 @@
 
         setFieldAttributes(field, attrs) {
             const el = this.form_el.querySelector(`#${CSS.escape(field)}`)
-                    || this.form_el.querySelector(`[name="${CSS.escape(field)}"]`);
+                || this.form_el.querySelector(`[name="${CSS.escape(field)}"]`);
             if (!el) return;
 
             // hidden applies to the wrapper, not the input
