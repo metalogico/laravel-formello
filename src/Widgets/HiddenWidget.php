@@ -13,7 +13,7 @@ class HiddenWidget extends BaseWidget
     {
         return [
             'name' => $name,
-            'value' => old($name, $value),
+            'value' => $value,
         ];
     }
 }

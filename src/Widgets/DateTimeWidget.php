@@ -53,11 +53,11 @@ class DateTimeWidget extends DateWidget
 
         // Handle datetime value formatting
         if ($value instanceof \DateTime) {
-            $data['value'] = old($name, $value->format($format));
+            $data['value'] = $value->format($format);
         } elseif (is_string($value) && $format !== 'Y-m-d H:i') {
             $date = \DateTime::createFromFormat($format, $value);
             if ($date) {
-                $data['value'] = old($name, $date->format('Y-m-d H:i'));
+                $data['value'] = $date->format('Y-m-d H:i');
             }
         }
 

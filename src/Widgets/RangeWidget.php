@@ -11,23 +11,15 @@ class RangeWidget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
-        $fieldConfig['attributes']['type'] = 'range';
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $fieldConfig = $this->normalizeAttributes($fieldConfig, $name, [
+            'type' => 'range',
+            'min' => 0,
+            'max' => 100,
+            'step' => 1,
+        ]);
 
-        // Set default min, max, and step if not provided
-        $fieldConfig['attributes']['min'] = $fieldConfig['attributes']['min'] ?? 0;
-        $fieldConfig['attributes']['max'] = $fieldConfig['attributes']['max'] ?? 100;
-        $fieldConfig['attributes']['step'] = $fieldConfig['attributes']['step'] ?? 1;
-
-        return [
-            'name' => $name,
-            'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
+        return $this->viewPayload($name, $value, $fieldConfig, $errors, [
             'showValue' => $fieldConfig['showValue'] ?? true,
-        ];
+        ]);
     }
 }

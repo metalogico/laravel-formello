@@ -171,7 +171,7 @@ abstract class Formello
         $this->assetsRegistered = true;
     }
 
-    protected function resolveWidget(array $field_config, string $field_name): WidgetInterface
+    protected function resolveWidget(array &$field_config, string $field_name): WidgetInterface
     {
         if (isset($field_config['widget'])) {
             if (is_string($field_config['widget'])) {
@@ -180,8 +180,12 @@ abstract class Formello
             throw new InvalidArgumentException("Invalid widget definition for field '$field_name'");
         }
 
-        // Auto-detect from database schema
         $column_type = $this->schemaInspector->getColumnType($this->model, $field_name);
+
+        if (in_array($column_type, ['email', 'password'], true)) {
+            $field_config['type'] = $field_config['type'] ?? $column_type;
+            $column_type = 'text';
+        }
 
         return $this->widgetFactory->make($column_type);
     }
@@ -207,7 +211,10 @@ abstract class Formello
         $widget = $fieldConfig['widget'];
         $config = $fieldConfig['config'];
 
-        $value = old($name, $config['value'] ?? $this->model->{$name} ?? null);
+        $value = $config['value'] ?? $this->model->{$name} ?? null;
+        if (! $widget instanceof UploadWidget) {
+            $value = old($name, $value);
+        }
         $errors = $this->errors->get($name);
 
         // Ensure widgets resolve the current form instance when calling app('formello')

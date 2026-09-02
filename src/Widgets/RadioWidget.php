@@ -11,28 +11,10 @@ class RadioWidget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
+        $fieldConfig = $this->normalizeAttributes($fieldConfig, $name);
 
-        return [
-            'name' => $name,
-            'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
-            'choices' => $this->resolveChoices($fieldConfig),
-        ];
-    }
-
-    protected function resolveChoices(array $fieldConfig): array
-    {
-        // Accept 'choices' (preferred) or 'options' (backward compat)
-        $choices = $fieldConfig['choices'] ?? ($fieldConfig['options'] ?? []);
-
-        if (is_callable($choices)) {
-            $choices = call_user_func($choices);
-        }
-
-        return $choices;
+        return $this->viewPayload($name, $value, $fieldConfig, $errors, [
+            'choices' => $this->resolveChoices($fieldConfig['choices'] ?? ($fieldConfig['options'] ?? [])),
+        ]);
     }
 }

@@ -4,13 +4,7 @@
         <label for="{{ $config['attributes']['id'] }}" class="block text-sm font-medium text-gray-700">{{ $label }}</label>
     @endif
 
-    @php
-        $hasGroup = isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']);
-        // Use ring-based error styling, compatible with modern Tailwind styles
-        $errorState = $errors ? 'ring-red-300 focus:ring-red-300 border-red-500' : '';
-    @endphp
-
-    @if ($hasGroup)
+    @if (isset($config['icon']) || isset($config['prefix']) || isset($config['suffix']))
         <div class="mt-1 flex rounded-md">
             @if (isset($config['prefix']) || isset($config['icon']))
                 <span class="inline-flex items-center rounded-l-md border border-gray-300 px-3 text-sm text-gray-500 gap-1">
@@ -19,8 +13,8 @@
                 </span>
             @endif
 
-            <input name="{{ $name }}" value="{{ old($name, $value) }}"
-                class="block w-full min-w-0 flex-1 rounded-none {{ (isset($config['prefix']) || isset($config['icon'])) ? 'rounded-r-md' : 'rounded-md' }} appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-1 focus:ring-blue-300 focus:outline-none border-0 px-3 py-2 transition {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+            <input name="{{ $name }}" value="{{ $value }}"
+                class="block w-full min-w-0 flex-1 rounded-none {{ (isset($config['prefix']) || isset($config['icon'])) ? 'rounded-r-md' : 'rounded-md' }} appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-1 focus:ring-blue-300 focus:outline-none border-0 px-3 py-2 transition {{ $errors ? 'ring-red-300 focus:ring-red-300 border-red-500' : '' }} {{ $config['attributes']['class'] ?? '' }}"
                 @foreach ($config['attributes'] as $attr => $attrValue)
                     @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
                 @endforeach>
@@ -30,8 +24,8 @@
             @endif
         </div>
     @else
-        <input name="{{ $name }}" value="{{ old($name, $value) }}"
-            class="mt-1 block w-full rounded-md appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-1 focus:ring-blue-300 focus:outline-none border-0 px-3 py-2 transition {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+        <input name="{{ $name }}" value="{{ $value }}"
+            class="mt-1 block w-full rounded-md appearance-none bg-white text-gray-900 placeholder:text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-1 focus:ring-blue-300 focus:outline-none border-0 px-3 py-2 transition {{ $errors ? 'ring-red-300 focus:ring-red-300 border-red-500' : '' }} {{ $config['attributes']['class'] ?? '' }}"
             @foreach ($config['attributes'] as $attr => $attrValue)
                 @if ($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif
             @endforeach>

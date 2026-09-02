@@ -11,15 +11,11 @@ class TomSelectWidget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $fieldConfig = $this->normalizeAttributes($fieldConfig, $name);
 
-        // multiple support
-        $multiple = !empty($fieldConfig['multiple']);
+        $multiple = ! empty($fieldConfig['multiple']);
         if ($multiple) {
             $fieldConfig['attributes']['multiple'] = 'multiple';
-            $name .= '[]';
         }
 
         // Tom Select options
@@ -40,16 +36,14 @@ class TomSelectWidget extends BaseWidget
             'valueField' => $valueFieldOpt,
             'labelField' => $labelFieldOpt,
             'create' => $tsConfig['create'] ?? false,
+            'dropdownParent' => $tsConfig['dropdownParent'] ?? ($tsConfig['dropdown_parent'] ?? 'body'),
         ];
 
         if ($usesAjax) {
             $dependsOn = $tsConfig['depends_on'] ?? null;
-            $minLenProvided = array_key_exists('minLength', $tsConfig) || array_key_exists('min_length', $tsConfig);
-            $minLen = $tsConfig['minLength'] ?? ($tsConfig['min_length'] ?? null);
-            if ($minLen === null) {
-                $minLen = $dependsOn ? 0 : 2; // if dependent, allow empty query by default
-            }
+            $minLen = $tsConfig['minLength'] ?? ($tsConfig['min_length'] ?? 0);
 
+            $defaultOptions['preload'] = $tsConfig['preload'] ?? 'focus';
             $defaultOptions['ajax'] = [
                 'url' => $tsConfig['route'],
                 'delay' => $tsConfig['delay'] ?? 250,
@@ -61,44 +55,35 @@ class TomSelectWidget extends BaseWidget
 
         $fieldConfig['attributes']['data-formello-tomselect'] = json_encode($defaultOptions);
 
-        $currentValue = old($name, $value);
         $choices = [];
 
         // Preload initial options when AJAX is used and there is a current value
-        if ($usesAjax && !empty($currentValue)) {
+        if ($usesAjax && ! empty($value)) {
             $modelClass = $tsConfig['model'] ?? null;
             $labelField = $tsConfig['label_field'] ?? 'name';
             $valueField = $tsConfig['value_field'] ?? 'id';
 
             if ($modelClass && class_exists($modelClass)) {
-                $ids = (array) $currentValue;
+                $ids = (array) $value;
                 $initialItems = $modelClass::whereIn($valueField, $ids)->get();
                 foreach ($initialItems as $item) {
                     $choices[$item->$valueField] = data_get($item, $labelField);
                 }
             }
-        } elseif (!$usesAjax) {
+        } elseif (! $usesAjax) {
             $choices = $this->resolveChoices($fieldConfig['choices'] ?? []);
         }
 
-        return [
-            'name' => $name,
-            'value' => $currentValue,
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
-            'choices' => $choices,
-            'usesAjax' => $usesAjax,
-        ];
-    }
-
-    protected function resolveChoices($choices): array
-    {
-        if (is_callable($choices)) {
-            return call_user_func($choices);
-        }
-
-        return $choices;
+        return $this->viewPayload(
+            $this->inputName($name, $fieldConfig),
+            $value,
+            $fieldConfig,
+            $errors,
+            [
+                'choices' => $choices,
+                'usesAjax' => $usesAjax,
+            ]
+        );
     }
 
     public function getAssets(?array $fieldConfig = null): ?array

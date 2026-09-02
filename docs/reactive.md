@@ -188,14 +188,25 @@ In `config/formello.php`:
 ```php
 'reactive' => [
     'compute_path' => '/formello/compute',
+    'middleware' => ['web', 'auth'],
     'allowed_forms' => [
-        // App\Forms\ContractForm::class,
+        App\Forms\ContractForm::class,
     ],
+    // Optional: deny model load (IDOR protection)
+    // 'authorize_model' => fn ($request, $model) => $request->user()?->can('view', $model) ?? false,
 ],
 ```
 
-- **`compute_path`**: The POST endpoint for server callbacks
-- **`allowed_forms`**: Whitelist of form classes allowed for server callbacks. Leave empty to allow all (not recommended in production)
+- **`compute_path`**: The POST endpoint for server callbacks. Set to `null`/`false` to disable the route.
+- **`middleware`**: Applied to the compute route. Defaults to `['web', 'auth']` (session, CSRF, authentication). Use `['web']` only if guests must call server callbacks.
+- **`allowed_forms`**: Whitelist of form FQCNs. **Empty = reject all (fail-closed).** Required in production for any server callback. Use `['*']` only for local development to allow every `Formello` subclass.
+- **`authorize_model`**: Optional callable `fn (Request $request, $model): bool`. Return `false` to respond with 403 before the form is instantiated. Use this to enforce policies on `model_class` / `model_id` from the client.
+
+### Production checklist (server callbacks)
+
+1. Publish config and list every form that uses `reactive.server` in `allowed_forms`.
+2. Keep `auth` (or your app equivalent) in `middleware`.
+3. Set `authorize_model` when edit forms load models by id from the request.
 
 ## Execution Flow
 

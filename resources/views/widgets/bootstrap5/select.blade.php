@@ -11,8 +11,8 @@
             <option value="">{{ $config['placeholder'] }}</option>
         @endif
         @foreach ($choices as $optionValue => $optionLabel)
-            <option value="{{ $optionValue }}" 
-                {{ in_array($optionValue, (array)old($name, $value)) ? 'selected' : '' }}>
+            <option value="{{ $optionValue }}"
+                {{ in_array($optionValue, (array) $value) ? 'selected' : '' }}>
                 {{ $optionLabel }}
             </option>
         @endforeach

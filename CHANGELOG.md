@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- `old()` is applied once in `Formello::renderField`; widgets and Blade templates consume the resolved `$value`
+- Schema inspector `email` / `password` fields now render as `TextWidget` with the matching `type`
+- Removed unused `css_overrides` config (classes remain in the widget templates)
+- `help` and `icon` field values are trusted HTML (`{!! !!}`); do not pass user-controlled strings
+
+### Fixed
+- Toggle checked state now follows flashed old input after validation errors
+- Select / TomSelect `multiple` keeps `old()` on the bare field name while the HTML name uses `[]`
+- Checkboxes no longer share a duplicate `id`; missing `choices` no longer warns
+- Bootstrap upload widget no longer sets `value` on file inputs
+
+### Removed
+- Select2 widget, templates, tests, and `HasSelect2Widget` trait (use TomSelect)
+
+### Security
+- Reactive compute endpoint is **fail-closed**: empty `allowed_forms` rejects all form classes; use `['*']` only for local development
+- Default compute middleware is now `['web', 'auth']` (configurable via `reactive.middleware`)
+- `form_class` must be a subclass of `Metalogico\Formello\Formello`
+- Optional `reactive.authorize_model` callback to authorize models loaded from `model_class` / `model_id`
+- `model_class` must be an Eloquent `Model` subclass; invalid values return 403
+- Feature tests covering whitelist, Formello subclass check, authorize_model, and happy-path compute
+
 ## [2.1.0] - 2026-02-09
 
 ### Added

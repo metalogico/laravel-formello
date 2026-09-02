@@ -13,13 +13,14 @@ class WidgetFactory
         // Built-in widget aliases
         $this->widgetMap = [
             'text' => Widgets\TextWidget::class,
+            'email' => Widgets\TextWidget::class,
+            'password' => Widgets\TextWidget::class,
             'textarea' => Widgets\TextareaWidget::class,
             'toggle' => Widgets\ToggleWidget::class,
             'date' => Widgets\DateWidget::class,
             'datetime' => Widgets\DateTimeWidget::class,
             'timestamp' => Widgets\DateTimeWidget::class,
             'select' => Widgets\SelectWidget::class,
-            'select2' => Widgets\Select2Widget::class,
             'tomselect' => Widgets\TomSelectWidget::class,
             'checkboxes' => Widgets\CheckboxesWidget::class,
             'radio' => Widgets\RadioWidget::class,

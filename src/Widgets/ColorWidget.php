@@ -11,12 +11,10 @@ class ColorWidget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = 'text'; // Pickr works on text inputs
+        $fieldConfig = $this->normalizeAttributes($fieldConfig, $name, [
+            'type' => 'text',
+        ]);
 
-        // Define default Pickr options
         $defaultPickrOptions = [
             'theme' => 'nano',
             'default' => $value ?: '#3498db',
@@ -34,20 +32,12 @@ class ColorWidget extends BaseWidget
             ],
         ];
 
-        // Merge default options with user-provided options
         $userPickrOptions = $fieldConfig['color'] ?? [];
         $mergedOptions = array_merge($defaultPickrOptions, $userPickrOptions);
 
-        // Pass the final options to the view
         $fieldConfig['attributes']['data-formello-colorpicker'] = json_encode($mergedOptions);
 
-        return [
-            'name' => $name,
-            'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
-        ];
+        return $this->viewPayload($name, $value, $fieldConfig, $errors);
     }
 
     public function getAssets(?array $fieldConfig = null): ?array

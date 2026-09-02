@@ -5,7 +5,7 @@
     @endif
 
     <textarea name="{{ $name }}" class="form-control {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
-        @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>{{ old($name, $value) }}</textarea>
+        @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>{{ $value }}</textarea>
 
     @if (isset($config['help']))        
         <div class="form-text">{!! $config['help'] !!}</div>

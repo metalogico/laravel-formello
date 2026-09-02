@@ -51,5 +51,7 @@ class ToggleWidgetTest extends TestCase
         $this->assertInstanceOf(ToggleWidget::class, $fields['field']['widget']);
         $output = $form->renderField('field');
         $this->assertIsString($output);
+        $this->assertStringContainsString('type="checkbox"', $output);
+        $this->assertStringContainsString('form-check-input', $output);
     }
 }

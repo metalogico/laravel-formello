@@ -109,6 +109,9 @@ class TomSelectWidgetTest extends TestCase
         $ts_config = json_decode($view_data['config']['attributes']['data-formello-tomselect'], true);
         $this->assertArrayHasKey('ajax', $ts_config);
         $this->assertEquals('/api/search', $ts_config['ajax']['url']);
+        $this->assertSame(0, $ts_config['ajax']['minLength']);
+        $this->assertSame('focus', $ts_config['preload']);
+        $this->assertSame('body', $ts_config['dropdownParent']);
     }
 
     public function test_tomselect_widget_returns_assets()

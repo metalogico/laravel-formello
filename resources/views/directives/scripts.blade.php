@@ -1,13 +1,7 @@
 {{-- Formello Scripts --}}
-@php
-    $scripts = \Metalogico\Formello\AssetManager::getScripts();
-@endphp
-
-@if(!empty($scripts))
-    @foreach($scripts as $script)
-        <script src="{{ asset('vendor/formello/js/' . $script) }}"></script>
-    @endforeach
-@endif
+@foreach(\Metalogico\Formello\AssetManager::getScripts() as $script)
+    <script src="{{ asset('vendor/formello/js/' . $script) }}"></script>
+@endforeach
 
 {{-- Always load formello.js --}}
 <script src="{{ asset('vendor/formello/js/formello.js') }}"></script>

@@ -11,10 +11,8 @@ class TextWidget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
-        $fieldConfig['attributes']['type'] = $fieldConfig['type'] ?? 'text';
+        $fieldConfig = $this->normalizeAttributes($fieldConfig, $name);
+        $fieldConfig['attributes']['type'] = $fieldConfig['type'] ?? ($fieldConfig['attributes']['type'] ?? 'text');
 
         $typeAttributes = match ($fieldConfig['attributes']['type']) {
             'number' => ['inputmode' => 'numeric', 'pattern' => '[0-9]*'],
@@ -25,25 +23,10 @@ class TextWidget extends BaseWidget
 
         $fieldConfig['attributes'] = array_merge($fieldConfig['attributes'], $typeAttributes);
 
-        $safeValue = $value;
         if ($fieldConfig['attributes']['type'] === 'password') {
-            $safeValue = '';
+            $value = '';
         }
 
-        return [
-            'name' => $name,
-            'value' => old($name, $safeValue),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
-        ];
-    }
-
-    /**
-     * Get assets for TextWidget - no assets needed
-     */
-    public function getAssets(?array $fieldConfig = null): ?array
-    {
-        return null;
+        return $this->viewPayload($name, $value, $fieldConfig, $errors);
     }
 }

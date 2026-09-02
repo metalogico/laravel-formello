@@ -23,7 +23,12 @@
           searchField: searchField,
           placeholder: placeholder,
           create: !!options.create,
+          dropdownParent: options.dropdownParent || 'body',
         };
+
+        if (options.preload) {
+          tsOptions.preload = options.preload;
+        }
 
         if (options.ajax && options.ajax.url) {
           var ajax = options.ajax;

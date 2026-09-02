@@ -46,7 +46,7 @@ Versions 2.0 and 2.1 introduce **breaking changes** from the 1.x series.
 ### Breaking changes in v2.0
 
 - **Fluent field builder**: `fields()` now returns `FormelloField[]` instead of associative arrays
-- **Select2 removed**: use `TomSelectWidget` instead. `HasSelect2Widget` trait replaced by `HasTomSelectWidget`
+- **Select2 removed**: use `TomSelectWidget` instead. The `HasSelect2Widget` trait has been removed; use `HasTomSelectWidget`.
 - **jQuery removed**: no longer a dependency
 - **Widget rename**: `'boolean'` is now `'toggle'`
 - **Tailwind CSS 4**: full widget support added
@@ -177,7 +177,7 @@ class ProductForm extends Formello
 }
 ```
 
-Remember to add these fields to your model's `$fillable` array otherwise Formello will not render them.
+Remember to add these fields to your model's `$fillable` array if you mass-assign them on save. Formello renders whatever `fields()` returns, independently of `$fillable`.
 
 ```php
 class Product extends Model
@@ -344,6 +344,8 @@ public function onRegionChanged(FormelloState $state): void
 ```
 
 > **Note:** Server-side reactive requires a `<meta name="csrf-token" content="{{ csrf_token() }}">` tag in your layout.
+>
+> **Security:** Publish `formello-config` and whitelist every form that uses `reactive.server` in `allowed_forms` (empty whitelist rejects all). Default middleware is `web` + `auth`. See [docs/reactive.md](docs/reactive.md) for `authorize_model` and the production checklist.
 
 For full documentation see [docs/reactive.md](docs/reactive.md).
 
