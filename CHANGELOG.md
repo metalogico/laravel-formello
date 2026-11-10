@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Select2 widget, templates, tests, and `HasSelect2Widget` trait (use TomSelect)
 
 ### Security
+- Updated locked Laravel Framework from 12.68.0 to 12.71.0 to include the debug page XSS fix.
+- Updated locked CommonMark from 2.10.0 to 2.10.7 to include Markdown parsing denial-of-service and raw HTML filtering fixes.
+- Updated locked Symfony HttpFoundation, HttpKernel, Routing, and Yaml to 7.4.23, and Mime to 7.4.22, covering the latest security advisories.
 - Reactive compute endpoint is **fail-closed**: empty `allowed_forms` rejects all form classes; use `['*']` only for local development
 - Default compute middleware is now `['web', 'auth']` (configurable via `reactive.middleware`)
 - `form_class` must be a subclass of `Metalogico\Formello\Formello`
