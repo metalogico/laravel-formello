@@ -4,20 +4,15 @@
         <span class="block text-sm font-medium text-gray-700">{{ $label }}</span>
     @endif
 
-    @php
-        $colorState = $errors ? 'text-red-600 focus:ring-red-300' : 'text-blue-600 focus:ring-blue-300';
-    @endphp
-
     <div class="mt-2 space-y-2">
         @foreach ($choices as $optionValue => $optionLabel)
-            @php $optionId = $name . '_' . $optionValue; @endphp
-            <label for="{{ $optionId }}" class="flex items-center gap-2 text-sm text-gray-700">
+            <label for="{{ $name }}_{{ $optionValue }}" class="flex items-center gap-2 text-sm text-gray-700">
                 <input type="radio"
                        name="{{ $name }}"
-                       id="{{ $optionId }}"
+                       id="{{ $name }}_{{ $optionValue }}"
                        value="{{ $optionValue }}"
                        {{ $value == $optionValue ? 'checked' : '' }}
-                       class="h-4 w-4 bg-white border-gray-300 focus:ring-1 {{ $colorState }} {{ $config['attributes']['class'] ?? '' }}"
+                       class="h-4 w-4 bg-white border-gray-300 focus:ring-1 {{ $errors ? 'text-red-600 focus:ring-red-300' : 'text-blue-600 focus:ring-blue-300' }} {{ $config['attributes']['class'] ?? '' }}"
                        @foreach ($config['attributes'] as $attr => $attrValue)
                            @if ($attr !== 'class' && $attr !== 'id') {{ $attr }}="{{ $attrValue }}" @endif
                        @endforeach

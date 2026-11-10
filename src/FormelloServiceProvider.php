@@ -85,9 +85,11 @@ class FormelloServiceProvider extends ServiceProvider
         $compute_path = config('formello.reactive.compute_path');
 
         if ($compute_path) {
+            $middleware = config('formello.reactive.middleware', ['web', 'auth']);
+
             Route::post($compute_path, [FormelloComputeController::class, 'handle'])
                 ->name('formello.compute')
-                ->middleware('web');
+                ->middleware($middleware);
         }
     }
 }

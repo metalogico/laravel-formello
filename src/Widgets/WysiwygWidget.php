@@ -17,13 +17,7 @@ class WysiwygWidget extends BaseWidget
 
         $fieldConfig = $this->mergeDefaultAttributes($fieldConfig, $defaults, $name);
 
-        return [
-            'name' => $name,
-            'value' => $value,
-            'config' => $fieldConfig,
-            'label' => $fieldConfig['label'] ?? null,
-            'errors' => $errors,
-        ];
+        return $this->viewPayload($name, $value, $fieldConfig, $errors);
     }
 
     public function getAssets(?array $fieldConfig = null): ?array

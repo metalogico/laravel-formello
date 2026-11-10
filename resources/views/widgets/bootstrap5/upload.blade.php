@@ -5,7 +5,7 @@
             <label for="{{ $config['attributes']['id'] }}" class="form-label">{{ $label }}</label>
         @endif
 
-        <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}" value="{{ $value }}" 
+        <input type="{{ $config['attributes']['type'] }}" name="{{ $name }}"
             class="form-control {{ $config['attributes']['class'] ?? '' }} @if ($errors) is-invalid @endif"
             @foreach ($config['attributes'] as $attr => $attrValue) @if($attr !== 'class') {{ $attr }}="{{ $attrValue }}" @endif @endforeach>
         

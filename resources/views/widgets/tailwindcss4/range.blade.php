@@ -9,15 +9,11 @@
         </label>
     @endif
 
-    @php
-        $errorState = $errors ? 'accent-red-500' : '';
-    @endphp
-
     <input
         type="range"
         name="{{ $name }}"
         value="{{ $value }}"
-        class="mt-2 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider {{ $errorState }} {{ $config['attributes']['class'] ?? '' }}"
+        class="mt-2 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider {{ $errors ? 'accent-red-500' : '' }} {{ $config['attributes']['class'] ?? '' }}"
         @foreach ($config['attributes'] as $attr => $attrValue)
             @if(!in_array($attr, ['class','type','value','name'])) {{ $attr }}="{{ $attrValue }}" @endif
         @endforeach

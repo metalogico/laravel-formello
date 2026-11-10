@@ -37,6 +37,8 @@ FormelloField::make('name')
 | `->reactive(array)` | Reactive config (see [reactive.md](reactive.md)) |
 | `->extra(string, mixed)` | Arbitrary extra config key |
 
+`->help()` and `->icon()` are rendered as raw HTML. Pass only trusted markup.
+
 ### Notes
 
 - Widget-specific options passed via `->widget('type', $options)` are stored under the widget type key (e.g., `'date' => [...]`, `'tomselect' => [...]`)
@@ -107,10 +109,6 @@ FormelloField::make('category_id')
 - `->choices()`: array or callable returning `[value => label]`
 - `->multiple()`: when true, `name` becomes `name[]`
 
-## Select2 (`Select2Widget`) — Deprecated
-
-Use `tomselect` instead.
-
 ## TomSelect (`TomSelectWidget`)
 
 ### Static choices
@@ -161,10 +159,9 @@ Widget options (`->widget('tomselect', [...])`):
 - `value_field`: defaults to `id`
 - `placeholder`: default `"Select"`
 - `dropdownParent`: CSS selector (default: `body`)
-- `theme`: default `bootstrap-5` in Bootstrap template
 - `depends_on`: parent field id (child disabled until parent has value)
 - `depends_param`: request param name sent to AJAX (defaults to `depends_on`)
-- AJAX defaults: `minimumInputLength=2`, `delay=250ms`
+- AJAX defaults: `minLength=0` (results load on open), `preload=focus`, `delay=250ms`
 
 > **Tip:** For more complex dependent selects (e.g., cascading with DB queries), consider using the [reactive system](reactive.md) with `->reactive(['server' => 'onParentChanged'])`.
 

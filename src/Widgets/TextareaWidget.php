@@ -11,16 +11,8 @@ class TextareaWidget extends BaseWidget
 
     public function getViewData($name, $value, array $fieldConfig, $errors = null): array
     {
-        $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
-        $fieldConfig['attributes']['class'] = trim(($fieldConfig['attributes']['class'] ?? ''));
-        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+        $fieldConfig = $this->normalizeAttributes($fieldConfig, $name);
 
-        return [
-            'name' => $name,
-            'value' => old($name, $value),
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-            'errors' => $errors,
-        ];
+        return $this->viewPayload($name, $value, $fieldConfig, $errors);
     }
 }

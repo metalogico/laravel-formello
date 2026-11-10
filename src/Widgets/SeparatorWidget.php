@@ -16,11 +16,7 @@ class SeparatorWidget extends BaseWidget
         $fieldConfig['attributes'] = $fieldConfig['attributes'] ?? [];
         $fieldConfig['hr'] = $fieldConfig['hr'] ?? [];
 
-        return [
-            'name' => $name,
-            'label' => $fieldConfig['label'] ?? null,
-            'config' => $fieldConfig,
-        ];
+        return $this->viewPayload($name, $value, $fieldConfig, $errors);
     }
 
     public function getAssets(?array $fieldConfig = null): ?array

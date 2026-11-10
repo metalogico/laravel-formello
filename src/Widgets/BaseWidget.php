@@ -40,6 +40,56 @@ abstract class BaseWidget implements WidgetInterface
     }
 
     /**
+     * Ensure attributes is an array with a default id and trimmed class.
+     */
+    protected function normalizeAttributes(array $fieldConfig, string $name, array $extra = []): array
+    {
+        $fieldConfig['attributes'] = array_merge(
+            $extra,
+            $fieldConfig['attributes'] ?? []
+        );
+        $fieldConfig['attributes']['class'] = trim((string) ($fieldConfig['attributes']['class'] ?? ''));
+        $fieldConfig['attributes']['id'] = $fieldConfig['attributes']['id'] ?? $name;
+
+        return $fieldConfig;
+    }
+
+    /**
+     * Resolve choices from an array or callable. Also accepts the legacy `options` key.
+     */
+    protected function resolveChoices(mixed $choices): array
+    {
+        if (is_callable($choices)) {
+            $choices = call_user_func($choices);
+        }
+
+        return is_array($choices) ? $choices : [];
+    }
+
+    /**
+     * HTML name for array fields. Does not change the old() / error bag key.
+     */
+    protected function inputName(string $name, array $fieldConfig): string
+    {
+        if (! empty($fieldConfig['multiple']) && ! str_ends_with($name, '[]')) {
+            return $name.'[]';
+        }
+
+        return $name;
+    }
+
+    protected function viewPayload(string $name, mixed $value, array $fieldConfig, $errors, array $extra = []): array
+    {
+        return array_merge([
+            'name' => $name,
+            'value' => $value,
+            'label' => $fieldConfig['label'] ?? null,
+            'config' => $fieldConfig,
+            'errors' => $errors,
+        ], $extra);
+    }
+
+    /**
      * Get assets required by this widget (optional)
      * Override in child classes to specify required assets
      *
